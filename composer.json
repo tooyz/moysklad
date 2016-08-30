@@ -1,7 +1,7 @@
 {
-    "name": "tooyz/moy-sklad",
+    "name": "tooyz/moysklad",
     "require": {
-        "guzzle/guzzle": "^3.9"
+        "guzzlehttp/guzzle": "^6.2.1"
     },
     "authors": [
         {
