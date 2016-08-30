@@ -1,0 +1,17 @@
+{
+    "name": "tooyz/moy-sklad",
+    "require": {
+        "guzzle/guzzle": "^3.9"
+    },
+    "authors": [
+        {
+            "name": "Tooyz",
+            "email": "tooy_m@mail.ru"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "MoySklad": "src/"
+        }
+    }
+}
