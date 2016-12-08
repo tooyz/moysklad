@@ -3,8 +3,13 @@
 namespace MoySklad\Utils;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
+use MoySklad\Exceptions\RequestFailedException;
+use MoySklad\Exceptions\ResponseParseException;
 
 class MoySkladClient{
+    const PRE_REQUEST_SLEEP_TIME = 200;
+
     private
         $endpoint = "https://online.moysklad.ru/api/remap/1.1/",
         $login,
@@ -16,16 +21,20 @@ class MoySkladClient{
         $this->password = $password;
     }
 
-    public function get($method, $payload){
-        return $this->get(
+    public function get($method, $payload = []){
+        return $this->makeRequest(
             'GET',
-            $this->endpoint . $method,
+            $method,
             $payload
         );
     }
 
-    public function post($method, $payload){
-
+    public function post($method, $payload = []){
+        return $this->makeRequest(
+            'POST',
+            $method,
+            $payload
+        );
     }
 
     private function makeRequest(
@@ -39,15 +48,31 @@ class MoySkladClient{
             "headers" => [
                 "Authorization" => "Basic " . base64_encode($this->login . ':' . $this->password)
             ],
-            "body" => $data
         ];
+        $requestBody = [];
+        if ( $requestType === 'GET' ){
+            $requestBody['query'] = $data;
+        } else if ( $requestType === 'POST' ){
+            $requestBody['json'] = $data;
+        }
 
         $client = new Client($requestOptions);
-        $res = $client->request(
-            $requestType,
-            $apiMethod
-        );
-
-        return $res->getBody();
+        try{
+            usleep(self::PRE_REQUEST_SLEEP_TIME);
+            $res = $client->request(
+                $requestType,
+                $apiMethod,
+                $requestBody
+            );
+            if ( is_null($result = \json_decode($res->getBody())) === false ){
+                return $result;
+            } else {
+                throw new ResponseParseException($res);
+            }
+        } catch (ClientException $e){
+            echo "REQUEST: " . $e->getRequest()->getBody() . "\n\n";
+            echo "RESPONSE: ". $e->getResponse()->getBody() . "\n\n";
+            throw new RequestFailedException();
+        }
     }
 }

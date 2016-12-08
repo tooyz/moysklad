@@ -2,10 +2,15 @@
 
 namespace MoySklad;
 
-use MoySklad\Entities\Entity;
+use MoySklad\Entities\AbstractEntity;
+use MoySklad\Entities\Product;
+use MoySklad\Exceptions\UnknownEntityException;
 use MoySklad\Utils\MoySkladClient;
 
 class MoySklad{
+
+    private
+        $client;
 
     public function __construct(
         $login,
@@ -13,6 +18,12 @@ class MoySklad{
     )
     {
         $this->client = new MoySkladClient($login, $password);
-        Entity::setClientInstance($this->client);
+    }
+
+    /**
+     * @return MoySkladClient
+     */
+    public function getClient(){
+        return $this->client;
     }
 }

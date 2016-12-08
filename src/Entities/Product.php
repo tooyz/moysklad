@@ -2,7 +2,7 @@
 
 namespace MoySklad\Entities;
 
-class Product extends Entity{
-    private static
+class Product extends AbstractEntity{
+    public static
         $entityName = 'product';
 }
