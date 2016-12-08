@@ -12,10 +12,6 @@ abstract class AbstractEntity implements \JsonSerializable {
     public $fields;
     public $links;
     protected $skladInstance;
-<<<<<<< HEAD
-=======
-    public $meta;
->>>>>>> bf259b93b7b8c7982e70c4e8fb5fc2a69d56e4d6
 
     public function __construct( MoySklad &$skladInstance, $fields = [])
     {
@@ -64,13 +60,11 @@ abstract class AbstractEntity implements \JsonSerializable {
         return $this;
     }
 
-<<<<<<< HEAD
-=======
+
     public function getSkladInstance(){
         return $this->skladInstance;
     }
 
->>>>>>> bf259b93b7b8c7982e70c4e8fb5fc2a69d56e4d6
     protected function mergeFieldsWithLinks(){
         $res = [];
         $links = $this->links->getLinks();
@@ -82,14 +76,7 @@ abstract class AbstractEntity implements \JsonSerializable {
         }
         return $res;
     }
-
-<<<<<<< HEAD
-    public function getSkladInstance(){
-        return $this->skladInstance;
-    }
-
-=======
->>>>>>> bf259b93b7b8c7982e70c4e8fb5fc2a69d56e4d6
+    
     function jsonSerialize()
     {
         return $this->fields;
