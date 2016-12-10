@@ -1,7 +1,8 @@
 <?php
 
-namespace MoySklad\Utils;
+namespace MoySklad\Components;
 
+use MoySklad\Components\Specs\LinkingSpecs;
 use MoySklad\Entities\Counterparty;
 use MoySklad\Entities\AbstractEntity;
 
@@ -9,10 +10,11 @@ class EntityLinker{
     private
         $buckets = [];
 
-    public function link(AbstractEntity $entity, $options = [] ){
-        $name = $options['name'];
-        $multiple = $options['multiple'];
-        $selectedFields = $options['fields'];
+    public function link(AbstractEntity $entity, LinkingSpecs $specs = null ){
+        if ( !$specs ) $specs = new LinkingSpecs();
+        $name = $specs->name;
+        $multiple = $specs->multiple;
+        $selectedFields = $specs->fields;
 
         $cls = get_class($entity);
         if ( $selectedFields ){
@@ -22,7 +24,8 @@ class EntityLinker{
                     $tFields[$k] = $v;
                 }
             }
-            $newEntity = new $cls($entity->getSkladInstance(), $tFields);
+            $skladInstance = $entity->getSkladInstance();
+            $newEntity = new $cls($skladInstance, $tFields);
         } else {
             $newEntity = clone $entity;
         }
@@ -45,5 +48,9 @@ class EntityLinker{
 
     public function getLinks(){
         return $this->buckets;
+    }
+
+    public function reattachLinks(EntityLinker $otherLinker){
+        $this->buckets = $otherLinker->getLinks();
     }
 }

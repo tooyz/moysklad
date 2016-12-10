@@ -1,6 +1,6 @@
 <?php
 
-namespace MoySklad\Utils;
+namespace MoySklad\Components;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;

@@ -1,12 +1,13 @@
 <?php
 
-namespace MoySklad\Utils;
+namespace MoySklad\Components\Fields;
 
-class EntityFields implements \JsonSerializable {
-    private $storage;
+abstract class AbstractFieldAccessor implements \JsonSerializable {
+    protected $storage;
 
     public function __construct($fields)
     {
+        $this->storage = new \stdClass();
         $this->replace($fields);
     }
 
@@ -29,6 +30,11 @@ class EntityFields implements \JsonSerializable {
     function __set($name, $value)
     {
         $this->storage->{$name} = $value;
+    }
+
+    function __isset($name)
+    {
+        return isset($this->storage->{$name});
     }
 
     function jsonSerialize()

@@ -2,13 +2,16 @@
 
 namespace MoySklad\Entities;
 
+use MoySklad\Components\MassRequest;
+use MoySklad\Lists\EntityList;
 use MoySklad\MoySklad;
-use MoySklad\Utils\EntityFields;
-use MoySklad\Utils\EntityLinker;
+use MoySklad\Components\Fields\EntityFields;
+use MoySklad\Components\EntityLinker;
+use MoySklad\Providers\RequestUrlProvider;
 
 abstract class AbstractEntity implements \JsonSerializable {
     const MAX_LIST_LIMIT = 100;
-    public static $entityName = 'entity';
+    public static $entityName = '_a_entity';
     public $fields;
     public $links;
     protected $skladInstance;
@@ -21,9 +24,38 @@ abstract class AbstractEntity implements \JsonSerializable {
         $this->skladInstance = $skladInstance;
     }
 
-    public static function getList(MoySklad $skladInstance, $params = []){
-        $limit = &$params['limit'];
-        $offset = &$params['offset'];
+    /**
+     * @param $targetClass
+     * @return mixed| AbstractEntity
+     */
+    public function transformToClass($targetClass){
+        return new $targetClass($this->skladInstance, $this->fields->getInternal());
+    }
+
+    public function transformToMetaClass(){
+        $eMeta = $this->getMeta();
+        if ( $eMeta ){
+            return $this->transformToClass(
+                $eMeta->getClass()
+            );
+        }
+        return $this;
+    }
+
+    public function getMeta(){
+        return $this->fields->getMeta();
+    }
+
+    /**
+     * @param MoySklad $skladInstance
+     * @param array $queryParams
+     * @param array $options
+     * @return array|EntityList
+     */
+    public static function getList(MoySklad &$skladInstance, $queryParams = [], $options = []){
+        $limit = &$queryParams['limit'];
+        $offset = &$queryParams['offset'];
+
         if ( !$limit ){
             $limit = self::MAX_LIST_LIMIT;
         }
@@ -32,40 +64,30 @@ abstract class AbstractEntity implements \JsonSerializable {
         }
         $res = $skladInstance->getClient()->get(
             'entity/' . static::$entityName,
-            $params
+            $queryParams
         );
-        $res = array_map(function($e) use($skladInstance){
-            return new static($skladInstance, $e);
-        }, $res->rows);
+        $resultingObjects = new EntityList(
+            $skladInstance,
+            array_map(function($e) use($skladInstance){
+                return new static($skladInstance, $e);
+            }, $res->rows)
+        );
+
         if ( $res->meta->size > $limit + $offset ){
             $offset += self::MAX_LIST_LIMIT;
-            $res = array_merge($res, self::getList($skladInstance, $params));
+            $resultingObjects = array_merge($resultingObjects->toArray(), self::getList($skladInstance, $queryParams));
         }
-        return $res;
+        return $resultingObjects;
     }
 
-    public static function byId(MoySklad $skladInstance, $id){
+    public static function byId(MoySklad &$skladInstance, $id){
         $res = $skladInstance->getClient()->get(
           'entity/' . static::$entityName . '/' . $id
         );
         return new static($skladInstance, $res);
     }
 
-    protected function _create(){
-        $res = $this->skladInstance->getClient()->post(
-            'entity/' . static::$entityName,
-            $this->mergeFieldsWithLinks()
-        );
-        $this->fields->replace($res);
-        return $this;
-    }
-
-
-    public function getSkladInstance(){
-        return $this->skladInstance;
-    }
-
-    protected function mergeFieldsWithLinks(){
+    public function mergeFieldsWithLinks(){
         $res = [];
         $links = $this->links->getLinks();
         foreach ($this->fields as $k => $v){
@@ -75,6 +97,10 @@ abstract class AbstractEntity implements \JsonSerializable {
             $res[$k] = $v;
         }
         return $res;
+    }
+
+    public function getSkladInstance(){
+        return $this->skladInstance;
     }
     
     function jsonSerialize()
@@ -90,5 +116,10 @@ abstract class AbstractEntity implements \JsonSerializable {
     function __set($name, $value)
     {
         $this->fields->{$name} = $value;
+    }
+
+    function __isset($name)
+    {
+        return isset($this->fields->{$name});
     }
 }
