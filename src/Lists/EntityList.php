@@ -23,9 +23,8 @@ class EntityList implements \JsonSerializable{
     }
 
     public function each(callable $cb){
-        foreach ($this->items as $i=>$item){
-            $cb($item, $i);
-        }
+        $this->getIterator()->each($cb);
+        return $this;
     }
 
     public function transformItemsToClass($targetClass){
@@ -42,9 +41,10 @@ class EntityList implements \JsonSerializable{
         return $this;
     }
 
-    public function makeCreateRequest(){
-        $sr = new MassRequest($this->skladInstance, $this->items);
-        $this->items = $sr->create();
+    public function massCreate(){
+        $mr = new MassRequest($this->skladInstance, $this->items);
+        $this->items = $mr->create();
+        return $this;
     }
 
     public function getIterator(){

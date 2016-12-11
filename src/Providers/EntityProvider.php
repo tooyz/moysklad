@@ -12,10 +12,9 @@ use MoySklad\Entities\Organization;
 use MoySklad\Entities\Products\AbstractProduct;
 use MoySklad\Entities\Products\Product;
 use MoySklad\Entities\Products\Service;
-use MoySklad\Interfaces\ISingleton;
 use MoySklad\Utils\AbstractSingleton;
 
-class EntityProvider implements ISingleton {
+class EntityProvider extends AbstractSingleton{
     protected static $instance = null;
     public $entities = [
         AbstractEntity::class,
@@ -36,11 +35,5 @@ class EntityProvider implements ISingleton {
         foreach ($this->entities as $i=>$e){
             $this->entityNames[$e::$entityName] = $e;
         }
-    }
-
-    public static function instance()
-    {
-        static::$instance?:static::$instance = new static();
-        return static::$instance;
     }
 }

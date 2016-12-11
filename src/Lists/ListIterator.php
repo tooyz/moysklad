@@ -27,5 +27,12 @@ class ListIterator{
     public function hasNext(){
         return $this->cursor < $this->length - 1;
     }
+
+    public function each(callable $cb){
+        while ( $item = $this->next() ){
+            $cb($item, $this->cursor);
+        }
+        return $this;
+    }
 }
 

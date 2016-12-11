@@ -7,6 +7,15 @@ use MoySklad\Providers\EntityProvider;
 
 class MetaField extends AbstractFieldAccessor{
 
+    public function __construct($fields)
+    {
+        if ( $fields instanceof static ) {
+            parent::__construct($fields->getInternal());
+        } else {
+            parent::__construct($fields);
+        }
+    }
+
     public function getClass(){
         $ep = EntityProvider::instance();
         if ( empty($this->type) ) return null;
