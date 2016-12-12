@@ -75,7 +75,7 @@ abstract class AbstractEntity implements \JsonSerializable {
 
         if ( $res->meta->size > $limit + $offset ){
             $offset += self::MAX_LIST_LIMIT;
-            $resultingObjects = array_merge($resultingObjects->toArray(), self::getList($skladInstance, $queryParams));
+            $resultingObjects = $resultingObjects->merge(self::getList($skladInstance, $queryParams));
         }
         return $resultingObjects;
     }

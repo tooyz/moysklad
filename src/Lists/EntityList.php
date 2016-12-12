@@ -5,7 +5,6 @@ namespace MoySklad\Lists;
 use MoySklad\Components\MassRequest;
 use MoySklad\Entities\AbstractEntity;
 use MoySklad\MoySklad;
-use MoySklad\Providers\EntityProvider;
 
 class EntityList implements \JsonSerializable{
     private
@@ -25,6 +24,10 @@ class EntityList implements \JsonSerializable{
     public function each(callable $cb){
         $this->getIterator()->each($cb);
         return $this;
+    }
+
+    public function merge(EntityList $list){
+        return new static($this->skladInstance, array_merge($this->items, $list->toArray()));
     }
 
     public function transformItemsToClass($targetClass){
