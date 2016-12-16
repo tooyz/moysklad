@@ -58,6 +58,15 @@ class EntityList implements \JsonSerializable{
         $this->items[] = $entity;
     }
 
+    public function get($key){
+        return $this->items[$key];
+    }
+
+    public function set($key, $value){
+        $this->items[$key] = $value;
+        return $this;
+    }
+
     public function count(){
         return count($this->items);
     }

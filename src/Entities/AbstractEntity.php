@@ -2,7 +2,9 @@
 
 namespace MoySklad\Entities;
 
+use MoySklad\Components\Fields\EntityRelation;
 use MoySklad\Components\MassRequest;
+use MoySklad\Components\Specs\ConstructionSpecs;
 use MoySklad\Lists\EntityList;
 use MoySklad\MoySklad;
 use MoySklad\Components\Fields\EntityFields;
@@ -16,12 +18,20 @@ abstract class AbstractEntity implements \JsonSerializable {
     public $links;
     protected $skladInstance;
 
-    public function __construct( MoySklad &$skladInstance, $fields = [])
+    public function __construct(MoySklad &$skladInstance, $fields = [], ConstructionSpecs $specs = null)
     {
+        if ( !$specs ) $specs = new ConstructionSpecs();
         if ( is_array($fields) === false && is_object($fields) === false) $fields = [$fields];
         $this->fields = new EntityFields($fields);
         $this->links = new EntityLinker();
         $this->skladInstance = $skladInstance;
+        $this->processConstructionSpecs($specs);
+    }
+
+    protected function processConstructionSpecs(ConstructionSpecs $specs){
+        if ( $specs->relations ){
+            EntityRelation::setupRelations($this->skladInstance, $this->fields);
+        }
     }
 
     /**

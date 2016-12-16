@@ -1,0 +1,19 @@
+{
+    "name": "tooyz/moysklad_tests",
+    "require": {
+        "illuminate/support": "^5.3",
+        "phpunit/phpunit": "^5.5",
+        "fzaninotto/faker": "^1.6"
+    },
+    "authors": [
+        {
+            "name": "Tooyz",
+            "email": "tooy_m@mail.ru"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "MoySklad\\": "cases/"
+        }
+    }
+}

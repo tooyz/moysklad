@@ -18,8 +18,9 @@ class ListIterator{
 
     public function next(){
         if ( $this->hasNext() ){
+            $i = $this->cursor;
             $this->cursor++;
-            return $this->items[$this->cursor];
+            return $this->items[$i];
         }
         return null;
     }
