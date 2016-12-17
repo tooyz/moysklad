@@ -11,7 +11,7 @@ class EntityLinker{
         $buckets = [];
 
     public function link(AbstractEntity $entity, LinkingSpecs $specs = null ){
-        if ( !$specs ) $specs = new LinkingSpecs();
+        if ( !$specs ) $specs = LinkingSpecs::create();
         $name = $specs->name;
         $multiple = $specs->multiple;
         $selectedFields = $specs->fields;

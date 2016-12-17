@@ -16,8 +16,8 @@ abstract class AbstractOrder extends AbstractEntity implements ICreatable
     public static $entityName = '_a_order';
 
     public function setCreate(Counterparty $counterparty = null, Organization $organization = null, $positions = [], CreationSpecs $specs = null){
-        if ( empty($specs) ) $specs = new CreationSpecs();
-        $this->links->link( $counterparty, new LinkingSpecs([
+        if ( empty($specs) ) $specs = CreationSpecs::create();
+        $this->links->link( $counterparty, LinkingSpecs::create([
             'name' => 'agent',
         ]));
         $this->links->link( $organization );
@@ -25,7 +25,7 @@ abstract class AbstractOrder extends AbstractEntity implements ICreatable
             $position->assortment = [
                 'meta' => $position->getMeta()
             ];
-            $this->links->link($position, new LinkingSpecs([
+            $this->links->link($position, LinkingSpecs::create([
                 'multiple' => true,
                 'name' => "positions",
                 'fields' => [

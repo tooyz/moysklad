@@ -7,7 +7,7 @@ use MoySklad\Providers\EntityProvider;
 
 class MetaField extends AbstractFieldAccessor{
 
-    private $ep;
+    private static $ep = null;
 
     public function __construct($fields)
     {
@@ -16,15 +16,28 @@ class MetaField extends AbstractFieldAccessor{
         } else {
             parent::__construct($fields);
         }
-        $this->ep = EntityProvider::instance();
+        if ( self::$ep === null ){
+            self::$ep = &EntityProvider::instance();
+        }
     }
 
     public function getClass(){
         if ( empty($this->type) ) return null;
-        if ( !isset($this->ep->entityNames[$this->type]) ){
+        if ( !isset(self::$ep->entityNames[$this->type]) ){
             throw new UnknownEntityException($this->type);
         }
-        return $this->ep->entityNames[$this->type];
+        return self::$ep->entityNames[$this->type];
+    }
+
+    public function getHref(){
+        return $this->href;
+    }
+
+    public function getId(){
+        if ( !empty($this->href) ){
+            $exp = explode("/", $this->href);
+            return $exp[count($exp) - 1];
+        }
     }
 
     public static function getClassFromPlainMeta($metaField){

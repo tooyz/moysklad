@@ -24,6 +24,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
     public function setUp()
     {
+        ob_end_flush();
         $auth = Config::getAuthData();
         $this->sklad = new MoySklad($auth->login, $auth->password);
         $this->faker = Faker::create('ru_RU');
@@ -31,6 +32,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
     public function tearDown()
     {
+        ob_start();
     }
 
     protected function say($info){

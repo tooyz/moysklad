@@ -16,11 +16,15 @@ abstract class AbstractEntity implements \JsonSerializable {
     public static $entityName = '_a_entity';
     public $fields;
     public $links;
+    /**
+     * @var EntityRelation|null $relations
+     */
+    public $relations = null;
     protected $skladInstance;
 
     public function __construct(MoySklad &$skladInstance, $fields = [], ConstructionSpecs $specs = null)
     {
-        if ( !$specs ) $specs = new ConstructionSpecs();
+        if ( !$specs ) $specs = ConstructionSpecs::create();
         if ( is_array($fields) === false && is_object($fields) === false) $fields = [$fields];
         $this->fields = new EntityFields($fields);
         $this->links = new EntityLinker();
@@ -30,8 +34,13 @@ abstract class AbstractEntity implements \JsonSerializable {
 
     protected function processConstructionSpecs(ConstructionSpecs $specs){
         if ( $specs->relations ){
-            EntityRelation::setupRelations($this->skladInstance, $this->fields);
+            EntityRelation::setupRelations($this->skladInstance, $this);
         }
+    }
+
+    public function setRelations($rels = []){
+        $this->relations = new EntityRelation($rels);
+        return $this;
     }
 
     /**
@@ -42,6 +51,9 @@ abstract class AbstractEntity implements \JsonSerializable {
         return new $targetClass($this->skladInstance, $this->fields->getInternal());
     }
 
+    /**
+     * @return $this|mixed|AbstractEntity
+     */
     public function transformToMetaClass(){
         $eMeta = $this->getMeta();
         if ( $eMeta ){
@@ -52,8 +64,19 @@ abstract class AbstractEntity implements \JsonSerializable {
         return $this;
     }
 
+    /**
+     * @return \MoySklad\Components\Fields\MetaField|null
+     */
     public function getMeta(){
         return $this->fields->getMeta();
+    }
+
+    /**
+     * @return AbstractEntity
+     */
+    public function fresh(){
+        $eId = $this->getMeta()->getId();
+        return static::byId($this->skladInstance, $eId);
     }
 
     /**
@@ -90,17 +113,30 @@ abstract class AbstractEntity implements \JsonSerializable {
         return $resultingObjects;
     }
 
+    /**
+     * @param MoySklad $skladInstance
+     * @param $id
+     * @return AbstractEntity
+     */
     public static function byId(MoySklad &$skladInstance, $id){
         $res = $skladInstance->getClient()->get(
-          'entity/' . static::$entityName . '/' . $id
+          RequestUrlProvider::instance()->getByIdUrl(static::$entityName, $id)
         );
         return new static($skladInstance, $res);
+    }
+
+    public function update(){
+        $res = $this->skladInstance->getClient()->put(
+            RequestUrlProvider::instance()->getUpdateUrl(static::$entityName, $this->id),
+            $this->mergeFieldsWithLinks()
+        );
+        return new static($this->skladInstance, $res);
     }
 
     public function mergeFieldsWithLinks(){
         $res = [];
         $links = $this->links->getLinks();
-        foreach ($this->fields as $k => $v){
+        foreach ($this->fields->getInternal() as $k => $v){
             $res[$k] = $v;
         }
         foreach ( $links as $k=>$v ){

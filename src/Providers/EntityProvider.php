@@ -5,6 +5,8 @@ namespace MoySklad\Providers;
 use MoySklad\Entities\AbstractEntity;
 use MoySklad\Entities\Assortment;
 use MoySklad\Entities\Counterparty;
+use MoySklad\Entities\Employee;
+use MoySklad\Entities\Group;
 use MoySklad\Entities\Orders\AbstractOrder;
 use MoySklad\Entities\Orders\CustomerOrder;
 use MoySklad\Entities\Orders\PurchaseOrder;
@@ -12,6 +14,7 @@ use MoySklad\Entities\Organization;
 use MoySklad\Entities\Products\AbstractProduct;
 use MoySklad\Entities\Products\Product;
 use MoySklad\Entities\Products\Service;
+use MoySklad\Entities\Uom;
 use MoySklad\Utils\AbstractSingleton;
 
 class EntityProvider extends AbstractSingleton{
@@ -26,7 +29,10 @@ class EntityProvider extends AbstractSingleton{
         Organization::class,
         AbstractProduct::class,
         Product::class,
-        Service::class
+        Service::class,
+        Employee::class,
+        Group::class,
+        Uom::class
     ];
     public $entityNames = [];
 

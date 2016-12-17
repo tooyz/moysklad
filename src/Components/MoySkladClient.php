@@ -37,6 +37,14 @@ class MoySkladClient{
         );
     }
 
+    public function put($method, $payload = []){
+        return $this->makeRequest(
+            'PUT',
+            $method,
+            $payload
+        );
+    }
+
     private function makeRequest(
         $requestType,
         $apiMethod,
@@ -52,7 +60,7 @@ class MoySkladClient{
         $requestBody = [];
         if ( $requestType === 'GET' ){
             $requestBody['query'] = $data;
-        } else if ( $requestType === 'POST' ){
+        } else if ( $requestType === 'POST' ||  $requestType === 'PUT' ){
             $requestBody['json'] = $data;
         }
 
@@ -70,8 +78,9 @@ class MoySkladClient{
                 throw new ResponseParseException($res);
             }
         } catch (ClientException $e){
-            echo "REQUEST: " . $e->getRequest()->getBody() . "\n\n";
-            echo "RESPONSE: ". $e->getResponse()->getBody() . "\n\n";
+            $res = "REQUEST: " . $e->getRequest()->getBody() . "\n\n".
+                   "RESPONSE: ". $e->getResponse()->getBody() . "\n\n";
+            echo $res;
             throw new RequestFailedException();
         }
     }

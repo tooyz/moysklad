@@ -5,7 +5,9 @@ namespace MoySklad\Components\Specs;
 use MoySklad\Exceptions\UnknownSpecException;
 
 abstract class AbstractSpecs{
-    public function __construct($specs = [])
+    protected static $cachedDefaultSpecs = null;
+
+    protected function __construct($specs = [])
     {
         $defaults = $this->getDefaults();
         foreach ( $defaults as $k=>$v ) {
@@ -17,6 +19,16 @@ abstract class AbstractSpecs{
             }
             $this->{$specName} = $spec;
         }
+        if ( empty($specs) ){
+            static::$cachedDefaultSpecs = $this;
+        }
+    }
+
+    public static function create($specs = []){
+        if ( empty($specs) && static::$cachedDefaultSpecs !== null){
+            return static::$cachedDefaultSpecs;
+        }
+        return new static($specs);
     }
 
     public function __get($name)

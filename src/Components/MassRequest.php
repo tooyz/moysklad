@@ -10,7 +10,6 @@ use MoySklad\Providers\RequestUrlProvider;
 class MassRequest{
     private $skladInstance = null;
     private $stack = [];
-    private $stackingRequestType = null;
 
     public function __construct(MoySklad $sklad, $stack = [])
     {
@@ -26,7 +25,6 @@ class MassRequest{
     }
 
     public function create(){
-        $this->checkSameMethodWasCalled(__FUNCTION__);
         $className = get_class($this->stack[0]);
         $url = RequestUrlProvider::instance()->getCreateUrl($className::$entityName);
         $res = $this->skladInstance->getClient()->post(
@@ -47,15 +45,5 @@ class MassRequest{
             $res[] = $newEntity;
         }
         return $res;
-    }
-
-    private function checkSameMethodWasCalled($methodName){
-        if ( $this->stackingRequestType !== null ){
-            if ( $methodName !==  $this->stackingRequestType ){
-                throw new StackingRequestDifferentMethodException($this->stackingRequestType, $methodName);
-            }
-        } else {
-            $this->stackingRequestType = $methodName;
-        }
     }
 }
