@@ -6,34 +6,21 @@ use MoySklad\Entities\AbstractEntity;
 use MoySklad\MoySklad;
 
 class EntityRelation extends AbstractFieldAccessor {
-    public static function setupRelations(MoySklad $sklad, AbstractEntity &$entity){
-        $entityFields = $entity->fields;
-        $intFields = $entity->fields->getInternal();
+    public static function createRelations(MoySklad $sklad, AbstractEntity &$entity){
+        $internalFields = $entity->fields->getInternal();
         $foundRelations = [];
-        foreach ($intFields as $k=>$v){
+        foreach ($internalFields as $k=>$v){
             if ( is_array($v) || is_object($v) ){
                 $ar = (array)$v;
-                array_walk($ar, function($e, $i) use($k, $ar, $entityFields, $foundRelations, $sklad){
+                array_walk($ar, function($e, $i) use($k, $ar, $foundRelations, $sklad){
                     if ( $i === 'meta' ){
                         $class = MetaField::getClassFromPlainMeta($e);
-                        $entityFields->{$k} = new $class($sklad, $ar);
-                        $foundRelations[$k] = &$entityFields->{$k};
+                        $foundRelations[$k] = new $class($sklad, $ar);
                     }
                 });
             }
         }
-        $entity->setRelations($foundRelations);
+        return new static($foundRelations);
     }
 
-    public function hideRelations(AbstractEntity $entity){
-        foreach ($this as $relName => $rel){
-            unset($entity->{$relName});
-        }
-    }
-
-    public function restoreRelations(AbstractEntity $entity){
-        foreach ($this as $relName => $rel){
-            $entity->{$relName} = $rel;
-        }
-    }
 }

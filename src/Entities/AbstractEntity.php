@@ -4,7 +4,10 @@ namespace MoySklad\Entities;
 
 use MoySklad\Components\Fields\EntityRelation;
 use MoySklad\Components\MassRequest;
+use MoySklad\Components\FilterQuery;
 use MoySklad\Components\Specs\ConstructionSpecs;
+use MoySklad\Components\Specs\LinkingSpecs;
+use MoySklad\Components\Specs\QuerySpecs;
 use MoySklad\Lists\EntityList;
 use MoySklad\MoySklad;
 use MoySklad\Components\Fields\EntityFields;
@@ -12,7 +15,6 @@ use MoySklad\Components\EntityLinker;
 use MoySklad\Providers\RequestUrlProvider;
 
 abstract class AbstractEntity implements \JsonSerializable {
-    const MAX_LIST_LIMIT = 100;
     public static $entityName = '_a_entity';
     public $fields;
     public $links;
@@ -24,23 +26,24 @@ abstract class AbstractEntity implements \JsonSerializable {
 
     public function __construct(MoySklad &$skladInstance, $fields = [], ConstructionSpecs $specs = null)
     {
-        if ( !$specs ) $specs = ConstructionSpecs::create();
+        if ( !$specs ) {
+            $specs = ConstructionSpecs::create();
+        }
         if ( is_array($fields) === false && is_object($fields) === false) $fields = [$fields];
         $this->fields = new EntityFields($fields);
         $this->links = new EntityLinker();
         $this->skladInstance = $skladInstance;
+        $this->relations = new EntityRelation([]);
         $this->processConstructionSpecs($specs);
     }
 
     protected function processConstructionSpecs(ConstructionSpecs $specs){
         if ( $specs->relations ){
-            EntityRelation::setupRelations($this->skladInstance, $this);
+            $this->relations = EntityRelation::createRelations($this->skladInstance, $this);
+            foreach ( $this->relations->getInternal() as $k=>$v ){
+                $this->fields->deleteKey($k);
+            }
         }
-    }
-
-    public function setRelations($rels = []){
-        $this->relations = new EntityRelation($rels);
-        return $this;
     }
 
     /**
@@ -72,6 +75,17 @@ abstract class AbstractEntity implements \JsonSerializable {
     }
 
     /**
+     * @return static
+     */
+    public function update(){
+        $res = $this->skladInstance->getClient()->put(
+            RequestUrlProvider::instance()->getUpdateUrl(static::$entityName, $this->id),
+            $this->mergeFieldsWithLinks()
+        );
+        return new static($this->skladInstance, $res);
+    }
+
+    /**
      * @return AbstractEntity
      */
     public function fresh(){
@@ -82,33 +96,51 @@ abstract class AbstractEntity implements \JsonSerializable {
     /**
      * @param MoySklad $skladInstance
      * @param array $queryParams
-     * @param array $options
      * @return array|EntityList
      */
-    public static function getList(MoySklad &$skladInstance, $queryParams = [], $options = []){
-        $limit = &$queryParams['limit'];
-        $offset = &$queryParams['offset'];
+    public static function getList(MoySklad &$skladInstance, QuerySpecs $querySpecs = null){
+        if ( !$querySpecs ) $querySpecs = QuerySpecs::create([]);
+        return self::recursiveRequest(function($skladInstance, $querySpecs){
+            return $skladInstance->getClient()->get(
+                RequestUrlProvider::instance()->getListUrl(static::$entityName),
+                $querySpecs->toArray()
+            );
+        }, $skladInstance, $querySpecs);
+    }
 
-        if ( !$limit ){
-            $limit = self::MAX_LIST_LIMIT;
-        }
-        if ( !$offset ){
-            $offset = 0;
-        }
-        $res = $skladInstance->getClient()->get(
-            'entity/' . static::$entityName,
-            $queryParams
-        );
-        $resultingObjects = new EntityList(
-            $skladInstance,
-            array_map(function($e) use($skladInstance){
+
+    public static function filter(MoySklad &$skladInstance, FilterQuery $filterQuery, QuerySpecs $querySpecs = null){
+        if ( !$querySpecs ) $querySpecs = QuerySpecs::create([]);
+        return self::recursiveRequest(function($skladInstance, $querySpecs, $filterQuery){
+            return $skladInstance->getClient()->get(
+                RequestUrlProvider::instance()->getFilterUrl(static::$entityName),
+                array_merge($querySpecs->toArray(), [
+                    "filter" => $filterQuery->getRaw()
+                ])
+            );
+        }, $skladInstance, $querySpecs, [
+            $filterQuery
+        ]);
+    }
+
+    /**
+     * @param callable $method
+     * @param MoySklad $skladInstance
+     * @param QuerySpecs $queryParams
+     * @param array $methodArgs
+     * @return EntityList
+     */
+    protected static function recursiveRequest(callable $method, MoySklad $skladInstance, QuerySpecs $queryParams, $methodArgs = []){
+        $res = call_user_func_array($method, array_merge([$skladInstance, $queryParams], $methodArgs));
+        $resultingObjects = (new EntityList($skladInstance, $res->rows))
+            ->map(function($e) use($skladInstance){
                 return new static($skladInstance, $e);
-            }, $res->rows)
-        );
-
-        if ( $res->meta->size > $limit + $offset ){
-            $offset += self::MAX_LIST_LIMIT;
-            $resultingObjects = $resultingObjects->merge(self::getList($skladInstance, $queryParams));
+            });
+        if ( $res->meta->size > $queryParams->limit + $queryParams->offset ){
+            $newQueryParams = QuerySpecs::create([
+                "offset" => $queryParams->offset + QuerySpecs::MAX_LIST_LIMIT
+            ]);
+            $resultingObjects = $resultingObjects->merge(self::recursiveRequest($method, $skladInstance, $newQueryParams, $methodArgs));
         }
         return $resultingObjects;
     }
@@ -125,14 +157,6 @@ abstract class AbstractEntity implements \JsonSerializable {
         return new static($skladInstance, $res);
     }
 
-    public function update(){
-        $res = $this->skladInstance->getClient()->put(
-            RequestUrlProvider::instance()->getUpdateUrl(static::$entityName, $this->id),
-            $this->mergeFieldsWithLinks()
-        );
-        return new static($this->skladInstance, $res);
-    }
-
     public function mergeFieldsWithLinks(){
         $res = [];
         $links = $this->links->getLinks();
@@ -143,6 +167,15 @@ abstract class AbstractEntity implements \JsonSerializable {
             $res[$k] = $v;
         }
         return $res;
+    }
+
+    public function copyRelationsToLinks(){
+        foreach ($this->relations->getInternal() as $k=>$v){
+            $this->links->link($v, LinkingSpecs::create([
+                "name" => $k
+            ]));
+        }
+        return $this;
     }
 
     public function getSkladInstance(){

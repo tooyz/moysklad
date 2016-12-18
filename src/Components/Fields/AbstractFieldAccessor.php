@@ -22,6 +22,10 @@ abstract class AbstractFieldAccessor implements \JsonSerializable {
         return $this->storage;
     }
 
+    public function deleteKey($key){
+        unset($this->storage[$key]);
+    }
+
     function __get($name)
     {
         return $this->storage->{$name};

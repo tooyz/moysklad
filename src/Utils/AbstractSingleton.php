@@ -6,7 +6,7 @@ abstract class AbstractSingleton{
     protected static $instance = null;
 
     /**
-     * @return AbstractSingleton|null
+     * @return static|null
      */
     final public static function instance() {
         if (is_null(static::$instance)) {

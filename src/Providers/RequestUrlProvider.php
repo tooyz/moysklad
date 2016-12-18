@@ -18,4 +18,12 @@ class RequestUrlProvider extends AbstractSingleton {
     public function getUpdateUrl($entityName, $id){
         return $this->getByIdUrl($entityName, $id);
     }
+
+    public function getListUrl($entityName){
+        return "entity/" . $entityName;
+    }
+
+    public function getFilterUrl($entityName){
+        return $this->getListUrl($entityName);
+    }
 }

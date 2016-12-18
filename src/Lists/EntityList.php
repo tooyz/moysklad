@@ -16,11 +16,17 @@ class EntityList implements \JsonSerializable, \ArrayAccess {
         $this->skladInstance = $skladInstance;
         if ( $items instanceof EntityList ){
             $this->items = $items->toArray();
+        } else if ( !is_array($items) ) {
+            $this->items = [$items];
         } else {
             $this->items = $items;
         }
     }
 
+    /**
+     * @param callable $cb
+     * @return EntityList $this
+     */
     public function each(callable $cb){
         $this->getIterator()->each($cb);
         return $this;
@@ -28,6 +34,14 @@ class EntityList implements \JsonSerializable, \ArrayAccess {
 
     public function merge(EntityList $list){
         return new static($this->skladInstance, array_merge($this->items, $list->toArray()));
+    }
+
+    public function map(callable $cb){
+        return new static($this->skladInstance, array_map($cb, $this->items));
+    }
+
+    public function filter(callable $cb){
+        return new static($this->skladInstance, array_filter($this->items, $cb));
     }
 
     public function transformItemsToClass($targetClass){

@@ -1,6 +1,6 @@
 <?php
 
-namespace MoySklad\Components;
+namespace MoySklad\Components\Http;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
@@ -45,6 +45,13 @@ class MoySkladClient{
         );
     }
 
+    public function getLastRequest(){
+        return [
+            "req" => $this->lastRequest,
+            "res" => $this->lastResponse
+        ];
+    }
+
     private function makeRequest(
         $requestType,
         $apiMethod,
@@ -73,6 +80,14 @@ class MoySkladClient{
                 $requestBody
             );
             if ( is_null($result = \json_decode($res->getBody())) === false ){
+                RequestLog::add([
+                    "res" => $result,
+                    "req" => [
+                        "type" => $requestType,
+                        "method" => $apiMethod,
+                        "body" => $requestBody
+                    ]
+                ]);
                 return $result;
             } else {
                 throw new ResponseParseException($res);

@@ -25,10 +25,15 @@ abstract class AbstractSpecs{
     }
 
     public static function create($specs = []){
-        if ( empty($specs) && static::$cachedDefaultSpecs !== null){
-            return static::$cachedDefaultSpecs;
+        $cl = get_called_class();
+        if ( empty($specs) && $cl::$cachedDefaultSpecs !== null){
+            return $cl::$cachedDefaultSpecs;
         }
         return new static($specs);
+    }
+
+    public function toArray(){
+        return (array)$this;
     }
 
     public function __get($name)

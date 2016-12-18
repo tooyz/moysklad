@@ -5,7 +5,7 @@ namespace MoySklad;
 use MoySklad\Entities\AbstractEntity;
 use MoySklad\Entities\Product;
 use MoySklad\Exceptions\UnknownEntityException;
-use MoySklad\Components\MoySkladClient;
+use MoySklad\Components\Http\MoySkladClient;
 
 class MoySklad{
 
