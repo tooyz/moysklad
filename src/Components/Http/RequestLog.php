@@ -11,6 +11,6 @@ abstract class RequestLog{
     }
 
     public static function getLast(){
-        return self::$history[count(self::$history) - 1];
+        return array_values(self::$history)[count(self::$history) - 1];
     }
 }
