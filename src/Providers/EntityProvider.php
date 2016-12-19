@@ -7,6 +7,7 @@ use MoySklad\Entities\Account;
 use MoySklad\Entities\Assortment;
 use MoySklad\Entities\ContactPerson;
 use MoySklad\Entities\Counterparty;
+use MoySklad\Entities\Country;
 use MoySklad\Entities\Employee;
 use MoySklad\Entities\Group;
 use MoySklad\Entities\Misc\State;
@@ -40,7 +41,8 @@ class EntityProvider extends AbstractSingleton{
         Account::class,
         ContactPerson::class,
         State::class,
-        CustomerOrderPosition::class
+        CustomerOrderPosition::class,
+        Country::class
     ];
     public $entityNames = [];
 
