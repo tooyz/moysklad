@@ -17,8 +17,7 @@ class MetaField extends AbstractFieldAccessor{
             parent::__construct($fields);
         }
         if ( self::$ep === null ){
-            $ep = &EntityProvider::instance();
-            self::$ep = &$ep;
+            self::$ep = EntityProvider::instance();
         }
     }
 
