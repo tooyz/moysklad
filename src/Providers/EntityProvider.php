@@ -3,6 +3,7 @@
 namespace MoySklad\Providers;
 
 use MoySklad\Entities\AbstractEntity;
+use MoySklad\Entities\Account;
 use MoySklad\Entities\Assortment;
 use MoySklad\Entities\Counterparty;
 use MoySklad\Entities\Employee;
@@ -32,7 +33,8 @@ class EntityProvider extends AbstractSingleton{
         Service::class,
         Employee::class,
         Group::class,
-        Uom::class
+        Uom::class,
+        Account::class
     ];
     public $entityNames = [];
 
