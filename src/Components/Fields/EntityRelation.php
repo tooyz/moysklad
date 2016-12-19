@@ -15,7 +15,11 @@ class EntityRelation extends AbstractFieldAccessor {
                 array_walk($ar, function($e, $i) use($k, $ar, $foundRelations, $sklad){
                     if ( $i === 'meta' ){
                         $class = MetaField::getClassFromPlainMeta($e);
-                        $foundRelations[$k] = new $class($sklad, $ar);
+                        //TODO: тут возможно списочная мета, типо https://online.moysklad.ru/api/remap/1.1/entity/customerorder/98cd43ba-c636-11e6-7a69-8f5500086c6c/documents
+                        //TODO: надо создать что то типо meta_list
+                        if ( $class ){
+                            $foundRelations[$k] = new $class($sklad, $ar);
+                        }
                     }
                 });
             }
