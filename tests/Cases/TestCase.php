@@ -7,16 +7,17 @@ use MoySklad\MoySklad;
 use Tests\Config;
 use Faker\Factory as Faker;
 
+require_once "vendor/autoload.php";
 require_once "../vendor/autoload.php";
-require_once "../../vendor/autoload.php";
-require_once "../includes.php";
+require_once "includes.php";
 
 abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
     /**
     * @var MoySklad $sklad
     */
-    protected $sklad;
+    protected $sklad,
+        $lastTimer = null;
     /**
     *@var Generator $faker
     */
@@ -37,9 +38,18 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
     protected function say($info){
         if ( is_array($info) || is_object($info) ){
-            fwrite(STDOUT, print_r($info, 1));
+            fwrite(STDOUT, print_r($info, 1) . PHP_EOL);
         } else if ( is_string($info) ){
-            fwrite(STDERR, $info);
+            fwrite(STDERR, $info . PHP_EOL);
         }
+    }
+
+    protected function timeStart(){
+        $this->lastTimer = microtime();
+    }
+
+    protected function timeEnd(){
+        $this->lastTimer = null;
+        return microtime() - $this->lastTimer;
     }
 }

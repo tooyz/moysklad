@@ -19,13 +19,20 @@ class EntityGetTest extends TestCase{
     }
 
     public function testGetProductList(){
+        $this->say("Start getting products");
+        $this->timeStart();
         $productList = Product::getList($this->sklad);
+        $this->say("Took " . $this->timeEnd() . " sec");
         $this->assertTrue(
             $productList[0] instanceof Product
         );
+
+        $this->say("Start getting assortment");
+        $this->timeStart();
         $assortmentList = Assortment::getList($this->sklad);
-        echo "Start transform, have " . $assortmentList->count() . " items\n";
-        $st = microtime();
+        $this->say("Took " . $this->timeEnd() . " sec");
+        $this->say("Start transform, have " . $assortmentList->count() . " items\n");
+        $this->timeStart();
         $assortmentList->transformItemsToMetaClass()
             ->each(function(AbstractEntity $e){
                 $this->assertTrue(
@@ -33,8 +40,7 @@ class EntityGetTest extends TestCase{
                     $e instanceof Service
                 );
             });
-        $et = microtime() - $st;
-        echo "Took " . $et . " sec.";
+        echo "Took " . $this->timeEnd() . " sec.";
         return $productList;
     }
 
@@ -44,7 +50,7 @@ class EntityGetTest extends TestCase{
     public function testProductRelations(EntityList $productList){
         $product = $productList[0];
         $this->assertTrue(
-            $product->group instanceof Group
+            $product->relations->group instanceof Group
         );
     }
 
