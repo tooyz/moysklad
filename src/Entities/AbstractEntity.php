@@ -8,6 +8,7 @@ use MoySklad\Components\FilterQuery;
 use MoySklad\Components\Specs\ConstructionSpecs;
 use MoySklad\Components\Specs\LinkingSpecs;
 use MoySklad\Components\Specs\QuerySpecs;
+use MoySklad\Exceptions\EntityHasNoIdException;
 use MoySklad\Lists\EntityList;
 use MoySklad\MoySklad;
 use MoySklad\Components\Fields\EntityFields;
@@ -78,6 +79,7 @@ abstract class AbstractEntity implements \JsonSerializable {
      * @return static
      */
     public function update(){
+        if ( empty($this->fields->id) ) throw new EntityHasNoIdException($this);
         $res = $this->skladInstance->getClient()->put(
             RequestUrlProvider::instance()->getUpdateUrl(static::$entityName, $this->id),
             $this->mergeFieldsWithLinks()

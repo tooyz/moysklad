@@ -11,6 +11,7 @@ use MoySklad\Entities\Country;
 use MoySklad\Entities\Employee;
 use MoySklad\Entities\Group;
 use MoySklad\Entities\Misc\State;
+use MoySklad\Entities\Misc\Webhook;
 use MoySklad\Entities\Orders\AbstractOrder;
 use MoySklad\Entities\Orders\CustomerOrder;
 use MoySklad\Entities\Orders\Positions\CustomerOrderPosition;
@@ -42,7 +43,8 @@ class EntityProvider extends AbstractSingleton{
         ContactPerson::class,
         State::class,
         CustomerOrderPosition::class,
-        Country::class
+        Country::class,
+        Webhook::class
     ];
     public $entityNames = [];
 

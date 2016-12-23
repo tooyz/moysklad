@@ -9,10 +9,11 @@ use MoySklad\Entities\Assortment;
 use MoySklad\Entities\Counterparty;
 use MoySklad\Entities\AbstractEntity;
 use MoySklad\Entities\Organization;
-use MoySklad\Interfaces\ICreatable;
+use MoySklad\Traits\DoesCreation;
 
-abstract class AbstractOrder extends AbstractEntity implements ICreatable
+ class AbstractOrder extends AbstractEntity
 {
+    use DoesCreation;
     public static $entityName = '_a_order';
 
     public function setCreate(Counterparty $counterparty = null, Organization $organization = null, $positions = [], CreationSpecs $specs = null){
@@ -34,11 +35,5 @@ abstract class AbstractOrder extends AbstractEntity implements ICreatable
             ]));
         }
         return $this;
-    }
-
-    public function doCreate()
-    {
-        $mr = new MassRequest($this->getSkladInstance(), $this);
-        return $mr->create()[0];
     }
 }

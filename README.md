@@ -1,4 +1,3 @@
 **WIP**
 
-Here lies api client for Moysklad service. You can find some use cases in tests folder, someday I'll add some examples.
-Not all entities are present ATM, and its far from finishing for now.
+Библиотека для сервиса "Мой склад" JSON API 1.1. Некоторые примеры можно найти в "tests". Все ещё далека от завершения.
