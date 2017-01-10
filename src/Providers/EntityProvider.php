@@ -5,6 +5,7 @@ namespace MoySklad\Providers;
 use MoySklad\Entities\AbstractEntity;
 use MoySklad\Entities\Account;
 use MoySklad\Entities\Assortment;
+use MoySklad\Entities\Consignment;
 use MoySklad\Entities\ContactPerson;
 use MoySklad\Entities\Counterparty;
 use MoySklad\Entities\Country;
@@ -46,7 +47,8 @@ class EntityProvider extends AbstractSingleton{
         CustomerOrderPosition::class,
         Country::class,
         Webhook::class,
-        ProductFolder::class
+        ProductFolder::class,
+        Consignment::class
     ];
     public $entityNames = [];
 
