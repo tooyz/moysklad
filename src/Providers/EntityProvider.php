@@ -5,7 +5,6 @@ namespace MoySklad\Providers;
 use MoySklad\Entities\AbstractEntity;
 use MoySklad\Entities\Account;
 use MoySklad\Entities\Assortment;
-use MoySklad\Entities\Consignment;
 use MoySklad\Entities\ContactPerson;
 use MoySklad\Entities\Counterparty;
 use MoySklad\Entities\Country;
@@ -20,10 +19,11 @@ use MoySklad\Entities\Orders\Positions\CustomerOrderPosition;
 use MoySklad\Entities\Orders\PurchaseOrder;
 use MoySklad\Entities\Organization;
 use MoySklad\Entities\Products\AbstractProduct;
+use MoySklad\Entities\Products\Consignment;
 use MoySklad\Entities\Products\Product;
 use MoySklad\Entities\Products\Service;
+use MoySklad\Entities\Products\Variant;
 use MoySklad\Entities\Uom;
-use MoySklad\Entities\Variant;
 use MoySklad\Utils\AbstractSingleton;
 
 class EntityProvider extends AbstractSingleton{
