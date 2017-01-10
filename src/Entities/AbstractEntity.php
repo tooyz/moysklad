@@ -140,7 +140,8 @@ abstract class AbstractEntity implements \JsonSerializable {
             });
         if ( $res->meta->size > $queryParams->limit + $queryParams->offset ){
             $newQueryParams = QuerySpecs::create([
-                "offset" => $queryParams->offset + QuerySpecs::MAX_LIST_LIMIT
+                "offset" => $queryParams->offset + QuerySpecs::MAX_LIST_LIMIT,
+                "limit" => $queryParams->limit
             ]);
             $resultingObjects = $resultingObjects->merge(self::recursiveRequest($method, $skladInstance, $newQueryParams, $methodArgs));
         }
