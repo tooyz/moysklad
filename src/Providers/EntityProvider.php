@@ -23,6 +23,7 @@ use MoySklad\Entities\Products\AbstractProduct;
 use MoySklad\Entities\Products\Product;
 use MoySklad\Entities\Products\Service;
 use MoySklad\Entities\Uom;
+use MoySklad\Entities\Variant;
 use MoySklad\Utils\AbstractSingleton;
 
 class EntityProvider extends AbstractSingleton{
@@ -48,7 +49,8 @@ class EntityProvider extends AbstractSingleton{
         Country::class,
         Webhook::class,
         ProductFolder::class,
-        Consignment::class
+        Consignment::class,
+        Variant::class
     ];
     public $entityNames = [];
 
