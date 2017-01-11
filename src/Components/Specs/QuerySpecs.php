@@ -15,4 +15,10 @@ class QuerySpecs extends AbstractSpecs {
             "maxResults" => 0
         ];
     }
+
+    public static function create($specs = [])
+    {
+        if ( $specs['limit'] > self::MAX_LIST_LIMIT ) $specs['limit'] = self::MAX_LIST_LIMIT;
+        return parent::create($specs);
+    }
 }
