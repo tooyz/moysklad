@@ -132,7 +132,9 @@ abstract class AbstractEntity implements \JsonSerializable {
      * @param array $methodArgs
      * @return EntityList
      */
-    protected static function recursiveRequest(callable $method, MoySklad $skladInstance, QuerySpecs $queryParams, $methodArgs = []){
+    protected static function recursiveRequest(
+        callable $method, MoySklad $skladInstance, QuerySpecs $queryParams, $methodArgs = [], $requestCounter = 1
+    ){
         $res = call_user_func_array($method, array_merge([$skladInstance, $queryParams], $methodArgs));
         $resultingObjects = (new EntityList($skladInstance, $res->rows))
             ->map(function($e) use($skladInstance){
@@ -144,8 +146,10 @@ abstract class AbstractEntity implements \JsonSerializable {
                 "limit" => $queryParams->limit,
                 "maxResults" => $queryParams->maxResults
             ]);
-            if ( $queryParams->maxResults === 0 || $queryParams->maxResults > $resultingObjects->count() ){
-                $resultingObjects = $resultingObjects->merge(self::recursiveRequest($method, $skladInstance, $newQueryParams, $methodArgs));
+            if ( $queryParams->maxResults === 0 || $queryParams->maxResults > $requestCounter * $queryParams->limit ){
+                $resultingObjects = $resultingObjects->merge(
+                    self::recursiveRequest($method, $skladInstance, $newQueryParams, $methodArgs, ++$requestCounter)
+                );
             }
         }
         return $resultingObjects;
