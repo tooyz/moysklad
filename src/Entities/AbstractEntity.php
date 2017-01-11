@@ -78,10 +78,14 @@ abstract class AbstractEntity implements \JsonSerializable {
     /**
      * @return static
      */
-    public function update(){
-        if ( empty($this->fields->id) ) throw new EntityHasNoIdException($this);
+    public function update($getIdFromMeta = false){
+        if ( empty($this->fields->id) ){
+            if ( !$getIdFromMeta || !$id = $this->getMeta()->getId()) throw new EntityHasNoIdException($this);
+        } else {
+            $id = $this->id;
+        }
         $res = $this->skladInstance->getClient()->put(
-            RequestUrlProvider::instance()->getUpdateUrl(static::$entityName, $this->id),
+            RequestUrlProvider::instance()->getUpdateUrl(static::$entityName, $id),
             $this->mergeFieldsWithLinks()
         );
         return new static($this->skladInstance, $res);

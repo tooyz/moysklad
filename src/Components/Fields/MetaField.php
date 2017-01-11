@@ -38,6 +38,7 @@ class MetaField extends AbstractFieldAccessor{
             $exp = explode("/", $this->href);
             return $exp[count($exp) - 1];
         }
+        return null;
     }
 
     public static function getClassFromPlainMeta($metaField){
