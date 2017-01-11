@@ -46,10 +46,11 @@ class MoySkladClient{
     }
 
     public function getLastRequest(){
-        return [
-            "req" => $this->lastRequest,
-            "res" => $this->lastResponse
-        ];
+        return RequestLog::getLast();
+    }
+
+    public function getRequestList(){
+        return RequestLog::getList();
     }
 
     private function makeRequest(
