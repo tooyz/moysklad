@@ -29,6 +29,7 @@ class Webhook extends AbstractEntity {
     {
         $this->fields->url = $url;
         $this->fields->action = $action;
-        $this->fields->entity = $entity;
+        $this->fields->entityType = $entity;
+        return $this;
     }
 }
