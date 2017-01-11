@@ -144,7 +144,7 @@ abstract class AbstractEntity implements \JsonSerializable {
                 "limit" => $queryParams->limit,
                 "maxResults" => $queryParams->maxResults
             ]);
-            if ( $queryParams->maxResults === 0 || $queryParams->maxResults > $newQueryParams->offset ){
+            if ( $queryParams->maxResults === 0 || $queryParams->maxResults > $resultingObjects->count() ){
                 $resultingObjects = $resultingObjects->merge(self::recursiveRequest($method, $skladInstance, $newQueryParams, $methodArgs));
             }
         }
