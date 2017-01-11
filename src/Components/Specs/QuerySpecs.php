@@ -11,7 +11,8 @@ class QuerySpecs extends AbstractSpecs {
     {
         return [
             "limit" => self::MAX_LIST_LIMIT,
-            "offset" => 0
+            "offset" => 0,
+            "maxResults" => 0
         ];
     }
 }
