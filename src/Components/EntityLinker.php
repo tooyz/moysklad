@@ -2,6 +2,7 @@
 
 namespace MoySklad\Components;
 
+use MoySklad\Components\Specs\ConstructionSpecs;
 use MoySklad\Components\Specs\CreationSpecs;
 use MoySklad\Components\Specs\LinkingSpecs;
 use MoySklad\Entities\Counterparty;
@@ -26,7 +27,7 @@ class EntityLinker{
                 }
             }
             $skladInstance = $entity->getSkladInstance();
-            $newEntity = new $cls($skladInstance, $tFields, CreationSpecs::create([
+            $newEntity = new $cls($skladInstance, $tFields, ConstructionSpecs::create([
                 "relations" => false
             ]));
         } else {
