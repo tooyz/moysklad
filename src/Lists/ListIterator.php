@@ -26,7 +26,7 @@ class ListIterator{
     }
 
     public function hasNext(){
-        return $this->cursor < $this->length - 1;
+        return $this->cursor < $this->length;
     }
 
     public function each(callable $cb){

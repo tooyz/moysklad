@@ -16,17 +16,17 @@ class MetaField extends AbstractFieldAccessor{
         } else {
             parent::__construct($fields);
         }
-        if ( self::$ep === null ){
-            self::$ep = EntityProvider::instance();
+        if ( static::$ep === null ){
+            static::$ep = EntityProvider::instance();
         }
     }
 
     public function getClass(){
         if ( empty($this->type) ) return null;
-        if ( !isset(self::$ep->entityNames[$this->type]) ){
+        if ( !isset(static::$ep->entityNames[$this->type]) ){
             throw new UnknownEntityException($this->type);
         }
-        return self::$ep->entityNames[$this->type];
+        return static::$ep->entityNames[$this->type];
     }
 
     public function getHref(){

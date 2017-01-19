@@ -105,11 +105,12 @@ class MoySkladClient{
                 $requestBody
             );
             if ( $res->getStatusCode() === self::HTTP_CODE_SUCCESS ){
+                $serializedRequest = (isset($requestBody['json'])?\json_decode(\json_encode($requestBody['json'])):$requestBody['query']);
                 $reqLog = [
                     "req" => [
                         "type" => $requestHttpMethod,
                         "method" => $apiMethod,
-                        "body" => $requestBody
+                        "body" => $serializedRequest
                     ]
                 ];
                 if ( $requestHttpMethod !== self::METHOD_DELETE ){

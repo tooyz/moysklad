@@ -5,6 +5,9 @@ namespace MoySklad\Traits;
 use MoySklad\Components\MassRequest;
 
 trait DoesCreation{
+    /**
+     * @return static
+     */
     public function doCreate()
     {
         $mr = new MassRequest($this->getSkladInstance(), $this);

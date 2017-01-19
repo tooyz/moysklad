@@ -16,8 +16,10 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     /**
     * @var MoySklad $sklad
     */
-    protected $sklad,
-        $lastTimer = null;
+    protected $sklad;
+    protected
+        $lastTimer = null,
+        $lastMethodName = null;
     /**
     *@var Generator $faker
     */
@@ -36,6 +38,15 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         ob_start();
     }
 
+    protected function methodStart($func){
+        $this->say("\033[44m ".date("H:i:s").' '.$func." started\033[0m");
+        $this->lastMethodName = $func;
+    }
+
+    protected function methodEnd(){
+        $this->say("\033[35m ".date("H:i:s").' '.$this->lastMethodName." ended\033[0m");
+    }
+
     protected function say($info){
         if ( is_array($info) || is_object($info) ){
             fwrite(STDOUT, print_r($info, 1) . PHP_EOL);
@@ -51,5 +62,9 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     protected function timeEnd(){
         $this->lastTimer = null;
         return microtime() - $this->lastTimer;
+    }
+
+    protected function makeName($baseName){
+        return $baseName . rand(1, 9999) . time();
     }
 }

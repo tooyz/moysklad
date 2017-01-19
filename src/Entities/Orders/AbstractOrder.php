@@ -19,23 +19,25 @@ use MoySklad\Traits\DoesCreation;
 
     public function setCreate(Counterparty $counterparty = null, Organization $organization = null, $positions = null, CreationSpecs $specs = null){
         if ( empty($specs) ) $specs = CreationSpecs::create();
-        $positions = new EntityList($this->skladInstance, $positions);
         $this->links->link( $counterparty, LinkingSpecs::create([
             'name' => 'agent',
         ]));
         $this->links->link( $organization );
-        $positions->each(function(AbstractEntity $position){
-            $position->assortment = [
-                'meta' => $position->getMeta()
-            ];
-            $this->links->link($position, LinkingSpecs::create([
-                'multiple' => true,
-                'name' => "positions",
-                'fields' => [
-                    "assortment", "quantity", "price"
-                ]
-            ]));
-        });
+        if ( $positions ){
+            $positions = new EntityList($this->skladInstance, $positions);
+            $positions->each(function(AbstractEntity $position){
+                $position->assortment = [
+                    'meta' => $position->getMeta()
+                ];
+                $this->links->link($position, LinkingSpecs::create([
+                    'multiple' => true,
+                    'name' => "positions",
+                    'fields' => [
+                        "accountId", "discount", "vat", "shipped", "reserve", "assortment", "quantity", "price"
+                    ]
+                ]));
+            });
+        }
         return $this;
     }
 }

@@ -43,6 +43,13 @@ class ListTest extends TestCase{
                 $row
             );
         }
+
+        $i = 0;
+        $el = new EntityList($this->sklad, [99, 11]);
+        $el->each(function($e)use(&$i){
+           $i++;
+        });
+        $this->assertEquals(2, $i);
     }
 
 }

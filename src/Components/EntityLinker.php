@@ -8,6 +8,7 @@ use MoySklad\Components\Specs\LinkingSpecs;
 use MoySklad\Entities\Counterparty;
 use MoySklad\Entities\AbstractEntity;
 
+//TODO: Стоит унаследовать от AbstractFieldAccessor
 class EntityLinker{
     private
         $buckets = [];
@@ -36,8 +37,8 @@ class EntityLinker{
         if ( $name === null ){
             $name = $cls::$entityName;
         }
-        if ( $multiple && empty($this->buckets[$name]) ) $this->buckets[$name] = [];
         if ( $multiple ){
+            if ( empty($this->buckets[$name]) ) $this->buckets[$name] = [];
             $this->buckets[$name][] = $newEntity;
         } else {
             $this->buckets[$name] = $newEntity;

@@ -9,6 +9,9 @@ use MoySklad\Providers\RequestUrlProvider;
 
 class MassRequest{
     private $skladInstance = null;
+    /**
+     * @var AbstractEntity[] $stack
+     */
     private $stack = [];
 
     public function __construct(MoySklad $sklad, $stack = [])
@@ -40,8 +43,12 @@ class MassRequest{
         $res = [];
         if ( is_array($reqResult) === false ) $reqResult = [$reqResult];
         foreach ($reqResult as $i=>$item){
+            /**
+             * @var AbstractEntity $newEntity
+             */
             $newEntity = new $className($this->skladInstance, $item);
             $newEntity->links->reattachLinks($this->stack[$i]->links);
+            $newEntity->fields->replace($this->stack[$i]->fields);
             $res[] = $newEntity;
         }
         return $res;

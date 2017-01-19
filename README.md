@@ -9,7 +9,7 @@
     2) Обновление сущностей<br />
     3) Удаление<br />
     4) Фильтрация<br />
-    5) Создание заказов, контрагентов<br />
+    5) Создание сущностей имеющих трейт DoesCreation
     6) Вебхуки<br />
 
 
@@ -17,4 +17,5 @@
     1) composer global require phpunit/phpunit<br />
     2) cd tests<br />
     3) composer update<br />
-    4) phpunit --configuration="./phpunit.xml" **или** phpunit --configuration="./phpunit.xml" Cases/<ИМЯ_КЛАССА><br />
+    4) Отредактировать Config.php <br />
+    5) phpunit --configuration="./phpunit.xml"
