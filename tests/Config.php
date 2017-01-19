@@ -6,7 +6,7 @@ abstract class Config{
     public static function getAuthData(){
         return (object)[
             "login" => "admin@tooy_m",
-            "password" => "zaika45"
+            "password" => "123234"
         ];
     }
 }

@@ -9,6 +9,7 @@ use MoySklad\Entities\Assortment;
 use MoySklad\Entities\Counterparty;
 use MoySklad\Entities\AbstractEntity;
 use MoySklad\Entities\Organization;
+use MoySklad\Lists\EntityList;
 use MoySklad\Traits\DoesCreation;
 
  class AbstractOrder extends AbstractEntity
@@ -16,13 +17,14 @@ use MoySklad\Traits\DoesCreation;
     use DoesCreation;
     public static $entityName = '_a_order';
 
-    public function setCreate(Counterparty $counterparty = null, Organization $organization = null, $positions = [], CreationSpecs $specs = null){
+    public function setCreate(Counterparty $counterparty = null, Organization $organization = null, $positions = null, CreationSpecs $specs = null){
         if ( empty($specs) ) $specs = CreationSpecs::create();
+        $positions = new EntityList($this->skladInstance, $positions);
         $this->links->link( $counterparty, LinkingSpecs::create([
             'name' => 'agent',
         ]));
         $this->links->link( $organization );
-        foreach ($positions as $position ){
+        $positions->each(function(AbstractEntity $position){
             $position->assortment = [
                 'meta' => $position->getMeta()
             ];
@@ -33,7 +35,7 @@ use MoySklad\Traits\DoesCreation;
                     "assortment", "quantity", "price"
                 ]
             ]));
-        }
+        });
         return $this;
     }
 }

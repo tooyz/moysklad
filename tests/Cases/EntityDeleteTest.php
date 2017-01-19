@@ -1,0 +1,30 @@
+<?php
+
+namespace Tests\Cases;
+
+use MoySklad\Components\Http\RequestLog;
+use MoySklad\Entities\Products\Product;
+use MoySklad\Exceptions\RequestFailedException;
+
+require_once "TestCase.php";
+
+class EntityDeleteTest extends TestCase{
+
+    public function setUp()
+    {
+        parent::setUp();
+    }
+
+    public function testProductDeletion(){
+        $product = (new Product($this->sklad, [
+            "name" => "TestProduct"
+        ]))->doCreate();
+        $product = Product::byId($this->sklad, $product->id);
+        $this->assertTrue(!empty($product->id));
+        $this->say("Created product with id: " . $product->id);
+        $this->assertTrue($product->delete() === true);
+        $this->say("Deleted");
+        $this->expectException(RequestFailedException::class);
+        $product = Product::byId($this->sklad, $product->id);
+    }
+}

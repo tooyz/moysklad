@@ -11,12 +11,16 @@ class RequestUrlProvider extends AbstractSingleton {
         return 'entity/' . $entityName;
     }
 
-    public function getByIdUrl($entityName, $id){
-        return 'entity/' . $entityName . '/' . $id;
-    }
-
     public function getUpdateUrl($entityName, $id){
         return $this->getByIdUrl($entityName, $id);
+    }
+
+    public function getDeleteUrl($entityName, $id){
+        return $this->getByIdUrl($entityName, $id);
+    }
+
+    public function getByIdUrl($entityName, $id){
+        return 'entity/' . $entityName . '/' . $id;
     }
 
     public function getListUrl($entityName){

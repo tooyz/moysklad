@@ -8,7 +8,14 @@ use MoySklad\Exceptions\RequestFailedException;
 use MoySklad\Exceptions\ResponseParseException;
 
 class MoySkladClient{
-    const PRE_REQUEST_SLEEP_TIME = 200;
+    const
+        METHOD_GET = "GET",
+        METHOD_POST = "POST",
+        METHOD_PUT = "PUT",
+        METHOD_DELETE = "DELETE",
+        HTTP_CODE_SUCCESS = 200;
+
+    private $preRequestSleepTime = 200;
 
     private
         $endpoint = "https://online.moysklad.ru/api/remap/1.1/",
@@ -23,7 +30,7 @@ class MoySkladClient{
 
     public function get($method, $payload = []){
         return $this->makeRequest(
-            'GET',
+            self::METHOD_GET,
             $method,
             $payload
         );
@@ -31,7 +38,7 @@ class MoySkladClient{
 
     public function post($method, $payload = []){
         return $this->makeRequest(
-            'POST',
+            self::METHOD_POST,
             $method,
             $payload
         );
@@ -39,7 +46,15 @@ class MoySkladClient{
 
     public function put($method, $payload = []){
         return $this->makeRequest(
-            'PUT',
+            self::METHOD_PUT,
+            $method,
+            $payload
+        );
+    }
+
+    public function delete($method, $payload = []){
+        return $this->makeRequest(
+            self::METHOD_DELETE,
             $method,
             $payload
         );
@@ -53,8 +68,12 @@ class MoySkladClient{
         return RequestLog::getList();
     }
 
+    public function setPreRequestTimeout($ms){
+        $this->preRequestSleepTime = $ms;
+    }
+
     private function makeRequest(
-        $requestType,
+        $requestHttpMethod,
         $apiMethod,
         $data = [],
         $options = []
@@ -65,33 +84,44 @@ class MoySkladClient{
                 "Authorization" => "Basic " . base64_encode($this->login . ':' . $this->password)
             ],
         ];
+        $jsonRequestsTypes = [
+            self::METHOD_POST,
+            self::METHOD_PUT,
+            self::METHOD_DELETE
+        ];
         $requestBody = [];
-        if ( $requestType === 'GET' ){
+        if ( $requestHttpMethod === self::METHOD_GET ){
             $requestBody['query'] = $data;
-        } else if ( $requestType === 'POST' ||  $requestType === 'PUT' ){
+        } else if ( in_array($requestHttpMethod, $jsonRequestsTypes) ){
             $requestBody['json'] = $data;
         }
 
         $client = new Client($requestOptions);
         try{
-            usleep(self::PRE_REQUEST_SLEEP_TIME);
+            usleep($this->preRequestSleepTime);
             $res = $client->request(
-                $requestType,
+                $requestHttpMethod,
                 $apiMethod,
                 $requestBody
             );
-            if ( is_null($result = \json_decode($res->getBody())) === false ){
-                RequestLog::add([
-                    "res" => $result,
+            if ( $res->getStatusCode() === self::HTTP_CODE_SUCCESS ){
+                $reqLog = [
                     "req" => [
-                        "type" => $requestType,
+                        "type" => $requestHttpMethod,
                         "method" => $apiMethod,
                         "body" => $requestBody
                     ]
-                ]);
-                return $result;
-            } else {
-                throw new ResponseParseException($res);
+                ];
+                if ( $requestHttpMethod !== self::METHOD_DELETE ){
+                    if ( is_null($result = \json_decode($res->getBody())) === false ){
+                        $reqLog['res'] = $result;
+                        RequestLog::add($reqLog);
+                        return $result;
+                    } else {
+                        throw new ResponseParseException($res);
+                    }
+                }
+                RequestLog::add($reqLog);
             }
         } catch (ClientException $e){
             $res = "REQUEST: " . $e->getRequest()->getBody() . "\n\n".

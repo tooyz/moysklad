@@ -13,6 +13,8 @@ use MoySklad\Entities\Folders\ProductFolder;
 use MoySklad\Entities\Group;
 use MoySklad\Entities\Misc\State;
 use MoySklad\Entities\Misc\Webhook;
+use MoySklad\Entities\Movements\AbstractMovement;
+use MoySklad\Entities\Movements\Enter;
 use MoySklad\Entities\Orders\AbstractOrder;
 use MoySklad\Entities\Orders\CustomerOrder;
 use MoySklad\Entities\Orders\Positions\CustomerOrderPosition;
@@ -50,7 +52,9 @@ class EntityProvider extends AbstractSingleton{
         Webhook::class,
         ProductFolder::class,
         Consignment::class,
-        Variant::class
+        Variant::class,
+        AbstractMovement::class,
+        Enter::class
     ];
     public $entityNames = [];
 

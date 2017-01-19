@@ -92,11 +92,28 @@ abstract class AbstractEntity implements \JsonSerializable {
     }
 
     /**
-     * @return AbstractEntity
+     * @return static
      */
     public function fresh(){
         $eId = $this->getMeta()->getId();
         return static::byId($this->skladInstance, $eId);
+    }
+
+    /**
+     * @param bool $getIdFromMeta
+     * @return bool
+     * @throws EntityHasNoIdException
+     */
+    public function delete($getIdFromMeta = false){
+        if ( empty($this->fields->id) ){
+            if ( !$getIdFromMeta || !$id = $this->getMeta()->getId()) throw new EntityHasNoIdException($this);
+        } else {
+            $id = $this->id;
+        }
+        $this->skladInstance->getClient()->delete(
+            RequestUrlProvider::instance()->getDeleteUrl(static::$entityName, $id)
+        );
+        return true;
     }
 
     /**

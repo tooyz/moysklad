@@ -14,7 +14,6 @@ class WebhookTest extends TestCase{
 
     public function testWebhookList(){
         $webhooks = Webhook::getList($this->sklad);
-        dd($webhooks);
     }
 
 }
