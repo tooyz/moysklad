@@ -4,16 +4,17 @@
 
 Библиотека для сервиса "Мой склад" JSON API 1.1. Некоторые примеры можно найти в "tests". Все ещё далека от завершения.
 
-**Что сейчас есть:**
-    1) Получение списков сущностей ( не все сущности присутствуют )
-    2) Обновление сущностей
-    3) Удаление
-    4) Фильтрация
-    5) Создание заказов, контрагентов
-    6) Вебхуки
+**Что сейчас есть:**<br />
+    1) Получение списков сущностей ( не все сущности присутствуют )<br />
+    2) Обновление сущностей<br />
+    3) Удаление<br />
+    4) Фильтрация<br />
+    5) Создание заказов, контрагентов<br />
+    6) Вебхуки<br />
 
-**Запуск тестов:**
-    1) composer global require phpunit/phpunit
-    2) cd tests
-    3) composer update
-    4) phpunit --configuration="./phpunit.xml" **или** phpunit --configuration="./phpunit.xml" Cases/<ИМЯ_КЛАССА>
+
+**Запуск тестов:**<br />
+    1) composer global require phpunit/phpunit<br />
+    2) cd tests<br />
+    3) composer update<br />
+    4) phpunit --configuration="./phpunit.xml" **или** phpunit --configuration="./phpunit.xml" Cases/<ИМЯ_КЛАССА><br />
