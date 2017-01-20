@@ -38,7 +38,8 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         ob_start();
     }
 
-    protected function methodStart($func){
+    protected function methodStart(){
+        $func = debug_backtrace()[1]['function'];
         $this->say("\033[44m ".date("H:i:s").' '.$func." started\033[0m");
         $this->lastMethodName = $func;
     }

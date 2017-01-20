@@ -16,9 +16,10 @@ class EntityDeleteTest extends TestCase{
     }
 
     public function testProductDeletion(){
+        $this->methodStart();
         $product = (new Product($this->sklad, [
             "name" => "TestProduct"
-        ]))->doCreate();
+        ]))->runCreate();
         $product = Product::byId($this->sklad, $product->id);
         $this->assertTrue(!empty($product->id));
         $this->say("Created product with id: " . $product->id);
@@ -26,5 +27,6 @@ class EntityDeleteTest extends TestCase{
         $this->say("Deleted");
         $this->expectException(RequestFailedException::class);
         $product = Product::byId($this->sklad, $product->id);
+        $this->methodEnd();
     }
 }

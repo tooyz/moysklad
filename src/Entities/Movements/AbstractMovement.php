@@ -15,7 +15,7 @@ class AbstractMovement extends AbstractEntity{
     use DoesCreation;
     public static $entityName = "a_movement";
 
-    public function setCreate(Organization $organization, Store $store, $positions = null, CreationSpecs $specs = null){
+    public function setupCreate(Organization $organization, Store $store, $positions = null, CreationSpecs $specs = null){
         if ( empty($specs) ) $specs = CreationSpecs::create();
         $this->links->link($organization);
         $this->links->link($store);
@@ -34,6 +34,7 @@ class AbstractMovement extends AbstractEntity{
                 ]));
             });
         }
+        $this->setupCreateWasCalled = true;
         return $this;
     }
 }

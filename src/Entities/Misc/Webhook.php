@@ -25,11 +25,12 @@ class Webhook extends AbstractEntity {
         return $this->update();
     }
 
-    public function setCreate($url, $action, $entity)
+    public function setupCreate($url, $action, $entity)
     {
         $this->fields->url = $url;
         $this->fields->action = $action;
         $this->fields->entityType = $entity;
+        $this->setupCreateWasCalled = true;
         return $this;
     }
 }

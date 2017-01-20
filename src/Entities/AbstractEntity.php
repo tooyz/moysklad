@@ -12,6 +12,7 @@ use MoySklad\Components\Specs\LinkingSpecs;
 use MoySklad\Components\Specs\QuerySpecs;
 use MoySklad\Exceptions\EntityHasNoIdException;
 use MoySklad\Lists\EntityList;
+use MoySklad\Lists\ListQuery;
 use MoySklad\MoySklad;
 use MoySklad\Components\Fields\EntityFields;
 use MoySklad\Components\EntityLinker;
@@ -135,63 +136,71 @@ abstract class AbstractEntity implements \JsonSerializable {
 
     /**
      * @param MoySklad $skladInstance
-     * @param array $queryParams
-     * @return array|EntityList
+     * @return ListQuery
      */
-    public static function getList(MoySklad &$skladInstance, QuerySpecs $querySpecs = null){
-        if ( !$querySpecs ) $querySpecs = QuerySpecs::create([]);
-        return self::recursiveRequest(function($skladInstance, $querySpecs){
-            return $skladInstance->getClient()->get(
-                RequestUrlProvider::instance()->getListUrl(static::$entityName),
-                $querySpecs->toArray()
-            );
-        }, $skladInstance, $querySpecs);
+    public static function listQuery(MoySklad &$skladInstance){
+        return new ListQuery($skladInstance, static::class);
     }
 
-
-    public static function filter(MoySklad &$skladInstance, FilterQuery $filterQuery, QuerySpecs $querySpecs = null){
-        if ( !$querySpecs ) $querySpecs = QuerySpecs::create([]);
-        return self::recursiveRequest(function($skladInstance, $querySpecs, $filterQuery){
-            return $skladInstance->getClient()->get(
-                RequestUrlProvider::instance()->getFilterUrl(static::$entityName),
-                array_merge($querySpecs->toArray(), [
-                    "filter" => $filterQuery->getRaw()
-                ])
-            );
-        }, $skladInstance, $querySpecs, [
-            $filterQuery
-        ]);
-    }
-
-    /**
-     * @param callable $method
-     * @param MoySklad $skladInstance
-     * @param QuerySpecs $queryParams
-     * @param array $methodArgs
-     * @return EntityList
-     */
-    protected static function recursiveRequest(
-        callable $method, MoySklad $skladInstance, QuerySpecs $queryParams, $methodArgs = [], $requestCounter = 1
-    ){
-        $res = call_user_func_array($method, array_merge([$skladInstance, $queryParams], $methodArgs));
-        $resultingObjects = (new EntityList($skladInstance, $res->rows))
-            ->map(function($e) use($skladInstance){
-                return new static($skladInstance, $e);
-            });
-        if ( $res->meta->size > $queryParams->limit + $queryParams->offset ){
-            $newQueryParams = QuerySpecs::create([
-                "offset" => $queryParams->offset + QuerySpecs::MAX_LIST_LIMIT,
-                "limit" => $queryParams->limit,
-                "maxResults" => $queryParams->maxResults
-            ]);
-            if ( $queryParams->maxResults === 0 || $queryParams->maxResults > $requestCounter * $queryParams->limit ){
-                $resultingObjects = $resultingObjects->merge(
-                    self::recursiveRequest($method, $skladInstance, $newQueryParams, $methodArgs, ++$requestCounter)
-                );
-            }
-        }
-        return $resultingObjects;
-    }
+//    /**
+//     * @param MoySklad $skladInstance
+//     * @param array $queryParams
+//     * @return array|EntityList
+//     */
+//    public static function getList(MoySklad &$skladInstance, QuerySpecs $querySpecs = null){
+//        if ( !$querySpecs ) $querySpecs = QuerySpecs::create([]);
+//        return self::recursiveRequest(function($skladInstance, $querySpecs){
+//            return $skladInstance->getClient()->get(
+//                RequestUrlProvider::instance()->getListUrl(static::$entityName),
+//                $querySpecs->toArray()
+//            );
+//        }, $skladInstance, $querySpecs);
+//    }
+//
+//
+//    public static function filter(MoySklad &$skladInstance, FilterQuery $filterQuery, QuerySpecs $querySpecs = null){
+//        if ( !$querySpecs ) $querySpecs = QuerySpecs::create([]);
+//        return self::recursiveRequest(function($skladInstance, $querySpecs, $filterQuery){
+//            return $skladInstance->getClient()->get(
+//                RequestUrlProvider::instance()->getFilterUrl(static::$entityName),
+//                array_merge($querySpecs->toArray(), [
+//                    "filter" => $filterQuery->getRaw()
+//                ])
+//            );
+//        }, $skladInstance, $querySpecs, [
+//            $filterQuery
+//        ]);
+//    }
+//
+//    /**
+//     * @param callable $method
+//     * @param MoySklad $skladInstance
+//     * @param QuerySpecs $queryParams
+//     * @param array $methodArgs
+//     * @return EntityList
+//     */
+//    protected static function recursiveRequest(
+//        callable $method, MoySklad $skladInstance, QuerySpecs $queryParams, $methodArgs = [], $requestCounter = 1
+//    ){
+//        $res = call_user_func_array($method, array_merge([$skladInstance, $queryParams], $methodArgs));
+//        $resultingObjects = (new EntityList($skladInstance, $res->rows))
+//            ->map(function($e) use($skladInstance){
+//                return new static($skladInstance, $e);
+//            });
+//        if ( $res->meta->size > $queryParams->limit + $queryParams->offset ){
+//            $newQueryParams = QuerySpecs::create([
+//                "offset" => $queryParams->offset + QuerySpecs::MAX_LIST_LIMIT,
+//                "limit" => $queryParams->limit,
+//                "maxResults" => $queryParams->maxResults
+//            ]);
+//            if ( $queryParams->maxResults === 0 || $queryParams->maxResults > $requestCounter * $queryParams->limit ){
+//                $resultingObjects = $resultingObjects->merge(
+//                    self::recursiveRequest($method, $skladInstance, $newQueryParams, $methodArgs, ++$requestCounter)
+//                );
+//            }
+//        }
+//        return $resultingObjects;
+//    }
 
     /**
      * @param MoySklad $skladInstance

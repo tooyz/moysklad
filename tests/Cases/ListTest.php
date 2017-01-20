@@ -16,6 +16,7 @@ class ListTest extends TestCase{
     }
 
     public function testListCreation(){
+        $this->methodStart();
         $arLen = 10000;
         $ar = array_map(function($e) use(&$i){
             $i++;
@@ -30,9 +31,11 @@ class ListTest extends TestCase{
             $arLen + 1,
             $el->count()
         );
+        $this->methodEnd();
     }
 
     public function testIterator(){
+        $this->methodStart();
         $ar = [1, 2, 3];
         $i = 0;
         $el = new EntityList($this->sklad, $ar);
@@ -50,6 +53,7 @@ class ListTest extends TestCase{
            $i++;
         });
         $this->assertEquals(2, $i);
+        $this->methodEnd();
     }
 
 }

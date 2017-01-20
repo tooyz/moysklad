@@ -2,6 +2,7 @@
 
 namespace Tests\Cases;
 
+use MoySklad\Components\Specs\QuerySpecs;
 use MoySklad\Entities\AbstractEntity;
 use MoySklad\Entities\Assortment;
 use MoySklad\Entities\Group;
@@ -19,9 +20,12 @@ class EntityGetTest extends TestCase{
     }
 
     public function testGetProductList(){
+        $this->methodStart();
         $this->say("Start getting products");
         $this->timeStart();
-        $productList = Product::getList($this->sklad);
+        $productList = Product::listQuery($this->sklad)->get(QuerySpecs::create([
+            'maxResults' => 100
+        ]));
         $this->say("Took " . $this->timeEnd() . " sec");
         $this->assertTrue(
             $productList[0] instanceof Product
@@ -29,7 +33,9 @@ class EntityGetTest extends TestCase{
 
         $this->say("Start getting assortment");
         $this->timeStart();
-        $assortmentList = Assortment::getList($this->sklad);
+        $assortmentList = Assortment::listQuery($this->sklad)->get(QuerySpecs::create([
+            'maxResults' => 100
+        ]));
         $this->say("Took " . $this->timeEnd() . " sec");
         $this->say("Start transform, have " . $assortmentList->count() . " items\n");
         $this->timeStart();
@@ -41,6 +47,7 @@ class EntityGetTest extends TestCase{
                 );
             });
         echo "Took " . $this->timeEnd() . " sec.";
+        $this->methodEnd();
         return $productList;
     }
 
@@ -48,16 +55,19 @@ class EntityGetTest extends TestCase{
      * @depends testGetProductList
      */
     public function testProductRelations(EntityList $productList){
+        $this->methodStart();
         $product = $productList[0];
         $this->assertTrue(
             $product->relations->group instanceof Group
         );
+        $this->methodEnd();
     }
 
     /**
      * @depends testGetProductList
      */
     public function testEntityRefresh(EntityList $productList){
+        $this->methodStart();
         /**
          * @var Product $product
          */
@@ -66,5 +76,6 @@ class EntityGetTest extends TestCase{
             $product->id,
             $product->fresh()->id
         );
+        $this->methodEnd();
     }
 }

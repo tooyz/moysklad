@@ -17,7 +17,7 @@ use MoySklad\Traits\DoesCreation;
     use DoesCreation;
     public static $entityName = '_a_order';
 
-    public function setCreate(Counterparty $counterparty = null, Organization $organization = null, $positions = null, CreationSpecs $specs = null){
+    public function setupCreate(Counterparty $counterparty = null, Organization $organization = null, $positions = null, CreationSpecs $specs = null){
         if ( empty($specs) ) $specs = CreationSpecs::create();
         $this->links->link( $counterparty, LinkingSpecs::create([
             'name' => 'agent',
@@ -38,6 +38,7 @@ use MoySklad\Traits\DoesCreation;
                 ]));
             });
         }
+        $this->setupCreateWasCalled = true;
         return $this;
     }
 }

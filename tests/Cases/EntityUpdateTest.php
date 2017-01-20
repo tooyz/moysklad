@@ -19,10 +19,11 @@ class EntityUpdateTest extends TestCase{
     }
 
     public function testSingleUpdate(){
+        $this->methodStart();
         /**
          * @var Product $pl
          */
-        $pl = Product::getList($this->sklad)[0];
+        $pl = Product::listQuery($this->sklad)->get()[0];
         $oldName = $pl->name;
         $newName = $this->faker->linuxProcessor;
         $pl->name = $newName;
@@ -31,5 +32,8 @@ class EntityUpdateTest extends TestCase{
             $oldName,
             $uProd->name
         );
+        $pl->name = $oldName;
+        $pl->update();
+        $this->methodEnd();
     }
 }

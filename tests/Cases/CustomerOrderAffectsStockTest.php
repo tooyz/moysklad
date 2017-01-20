@@ -23,32 +23,31 @@ class CustomerOrderAffectsStockTest extends TestCase{
     }
 
     public function testCustomerOrderAffectsStock(){
-        $this->methodStart(__FUNCTION__);
+        $this->methodStart();
 
         $testProductName = $this->makeName("TestProduct");
         $testCounterpartyName = $this->makeName('TestCounterparty');
         $testEnterName = $this->makeName("TestEnter");
         $testCustomerOrder = $this->makeName("TestCustomerOrder");
 
-        $org = Organization::getList($this->sklad)->get(0);
-        $store = Store::getList($this->sklad)->get(0);
+        $org = Organization::listQuery($this->sklad)->get()->get(0);
+        $store = Store::listQuery($this->sklad)->get()->get(0);
 
         $cp = (new Counterparty($this->sklad, [
             "name" => $testCounterpartyName
-        ]))->doCreate();
+        ]))->runCreate();
         $this->say("Cp id:" . $cp->id);
         $product = (new Product($this->sklad, [
             "name" => $testProductName,
             "quantity" => 25
-        ]))->doCreate();
+        ]))->runCreate();
         $this->say("Product id:" . $product->id);
         $enter = (new Enter($this->sklad, [
            "name" => $testEnterName
-        ]))->setCreate($org, $store, $product)->doCreate();
+        ]))->setupCreate($org, $store, $product)->runCreate();
         $this->say("Enter id:" . $enter->id );
 
-        $filteredProduct = Assortment::filter(
-            $this->sklad,
+        $filteredProduct = Assortment::listQuery($this->sklad)->filter(
             (new FilterQuery())->eq("name", $testProductName),
             QuerySpecs::create([
                 "maxResults" => 1
@@ -57,7 +56,7 @@ class CustomerOrderAffectsStockTest extends TestCase{
         $this->assertTrue($filteredProduct->id === $product->id);
 
         $co = (new CustomerOrder($this->sklad))
-            ->setCreate($cp, $org, $product)->doCreate();
+            ->setupCreate($cp, $org, $product)->runCreate();
 
         $this->say("Order id:" . $co->id );
 
@@ -66,6 +65,6 @@ class CustomerOrderAffectsStockTest extends TestCase{
         $cp->delete();
         $product->delete();
 
-        $this->methodEnd(__FUNCTION__);
+        $this->methodEnd();
     }
 }
