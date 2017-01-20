@@ -4,6 +4,7 @@ namespace Tests\Cases;
 
 use MoySklad\Components\Http\RequestLog;
 use MoySklad\Entities\Products\Product;
+use MoySklad\Exceptions\ApiResponseException;
 use MoySklad\Exceptions\RequestFailedException;
 
 require_once "TestCase.php";
@@ -25,7 +26,7 @@ class EntityDeleteTest extends TestCase{
         $this->say("Created product with id: " . $product->id);
         $this->assertTrue($product->delete() === true);
         $this->say("Deleted");
-        $this->expectException(RequestFailedException::class);
+        $this->expectException(ApiResponseException::class);
         $product = Product::byId($this->sklad, $product->id);
         $this->methodEnd();
     }

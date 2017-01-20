@@ -1,9 +1,9 @@
 <?php
 
-namespace MoySklad\Lists;
+namespace MoySklad\Components;
 
-use MoySklad\Components\FilterQuery;
 use MoySklad\Components\Specs\QuerySpecs;
+use MoySklad\Lists\EntityList;
 use MoySklad\MoySklad;
 use MoySklad\Providers\RequestUrlProvider;
 

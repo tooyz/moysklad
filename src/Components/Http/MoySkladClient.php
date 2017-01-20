@@ -4,6 +4,7 @@ namespace MoySklad\Components\Http;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use MoySklad\Exceptions\ApiResponseException;
 use MoySklad\Exceptions\RequestFailedException;
 use MoySklad\Exceptions\ResponseParseException;
 
@@ -125,10 +126,16 @@ class MoySkladClient{
                 RequestLog::add($reqLog);
             }
         } catch (ClientException $e){
-            $res = "REQUEST: " . $e->getRequest()->getBody() . "\n\n".
-                   "RESPONSE: ". $e->getResponse()->getBody() . "\n\n";
-            echo $res;
-            throw new RequestFailedException();
+            $req = $e->getRequest()->getBody()->getContents();
+            $res = $e->getResponse()->getBody()->getContents();
+            $except = new RequestFailedException($req, $res);
+            if ( $res = \json_decode($res) ){
+                if ( $res->errors ){
+                    $except = new ApiResponseException($req, $res);
+                }
+            }
+            print_r($except->getDump());
+            throw $except;
         }
     }
 }
