@@ -10,14 +10,20 @@ abstract class RequestLog{
 
     public static function add($row){
         self::$total++;
-        self::$history[microtime()] = $row;
+        self::$history[] = $row;
         if ( count(self::$history) > self::$storageSize ){
             array_shift(self::$history);
         }
     }
 
     public static function getLast(){
-        return array_values(self::$history)[count(self::$history) - 1];
+        return self::$history[count(self::$history) - 1];
+    }
+
+    public static function getRequestList(){
+        return array_map(function($row){
+            return $row['req'];
+        }, self::$history);
     }
 
     public static function getList(){

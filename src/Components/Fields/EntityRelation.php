@@ -27,4 +27,14 @@ class EntityRelation extends AbstractFieldAccessor {
         return new static($foundRelations);
     }
 
+    /**
+     * @param $entityClass
+     * @return static|null
+     */
+    public function find($entityClass){
+        foreach ($this->storage as $key=>$value){
+            if ( get_class($value) === $entityClass ) return $value;
+        }
+        return null;
+    }
 }

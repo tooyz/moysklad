@@ -12,7 +12,8 @@ class QuerySpecs extends AbstractSpecs {
         return [
             "limit" => self::MAX_LIST_LIMIT,
             "offset" => 0,
-            "maxResults" => 0
+            "maxResults" => 0,
+            "expand" => null
         ];
     }
 
@@ -20,5 +21,14 @@ class QuerySpecs extends AbstractSpecs {
     {
         if ( $specs['limit'] > self::MAX_LIST_LIMIT ) $specs['limit'] = self::MAX_LIST_LIMIT;
         return parent::create($specs);
+    }
+
+    public function toArray()
+    {
+        $res = parent::toArray();
+        if ( !empty($this->expand) ){
+            $res['expand'] = $this->expand->flatten();
+        }
+        return $res;
     }
 }

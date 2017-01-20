@@ -11,7 +11,7 @@ class EntityList implements \JsonSerializable, \ArrayAccess {
         $skladInstance,
         $items = [];
 
-    public function __construct(MoySklad $skladInstance, $items)
+    public function __construct(MoySklad $skladInstance, $items = [])
     {
         $this->skladInstance = $skladInstance;
         if ( $items instanceof EntityList ){

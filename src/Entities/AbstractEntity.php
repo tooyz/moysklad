@@ -2,6 +2,7 @@
 
 namespace MoySklad\Entities;
 
+use MoySklad\Components\Expand;
 use MoySklad\Components\Fields\AttributeCollection;
 use MoySklad\Components\Fields\EntityRelation;
 use MoySklad\Components\Fields\MetaField;
@@ -109,9 +110,9 @@ abstract class AbstractEntity implements \JsonSerializable {
     /**
      * @return static
      */
-    public function fresh(){
+    public function fresh(Expand $expand = null){
         $eId = $this->getMeta()->getId();
-        return static::byId($this->skladInstance, $eId);
+        return static::byId($this->skladInstance, $eId, $expand);
     }
 
     /**
@@ -144,9 +145,10 @@ abstract class AbstractEntity implements \JsonSerializable {
      * @param $id
      * @return AbstractEntity
      */
-    public static function byId(MoySklad &$skladInstance, $id){
+    public static function byId(MoySklad &$skladInstance, $id, Expand $expand = null){
         $res = $skladInstance->getClient()->get(
-          RequestUrlProvider::instance()->getByIdUrl(static::$entityName, $id)
+            RequestUrlProvider::instance()->getByIdUrl(static::$entityName, $id),
+            ($expand?['expand'=>$expand->flatten()]:[])
         );
         return new static($skladInstance, $res);
     }
