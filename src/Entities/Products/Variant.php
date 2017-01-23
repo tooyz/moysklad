@@ -5,8 +5,10 @@ use MoySklad\Components\Specs\CreationSpecs;
 use MoySklad\Components\Specs\LinkingSpecs;
 use MoySklad\Entities\Misc\Characteristics;
 use MoySklad\Lists\EntityList;
+use MoySklad\Traits\DoesCreation;
 
 class Variant extends AbstractProduct{
+    use DoesCreation;
     public static
         $entityName = 'variant';
 
