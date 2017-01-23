@@ -73,6 +73,16 @@ class MoySkladClient{
         $this->preRequestSleepTime = $ms;
     }
 
+    /**
+     * @param $requestHttpMethod
+     * @param $apiMethod
+     * @param array $data
+     * @param array $options
+     * @throws ApiResponseException
+     * @throws RequestFailedException
+     * @throws ResponseParseException
+     * @return \stdClass
+     */
     private function makeRequest(
         $requestHttpMethod,
         $apiMethod,
@@ -134,7 +144,6 @@ class MoySkladClient{
                     $except = new ApiResponseException($req, $res);
                 }
             }
-            print_r($except->getDump());
             throw $except;
         }
     }

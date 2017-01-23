@@ -5,7 +5,7 @@ namespace MoySklad\Exceptions;
 use \Exception;
 use MoySklad\Entities\AbstractEntity;
 
-class SetupCreateWasNotCalled extends Exception{
+class SetupCreateWasNotCalledException extends Exception{
     public function __construct($entity, $code = 0, Exception $previous = null)
     {
         parent::__construct(

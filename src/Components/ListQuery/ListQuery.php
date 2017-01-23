@@ -1,7 +1,10 @@
 <?php
 
-namespace MoySklad\Components;
+namespace MoySklad\Components\ListQuery;
 
+use MoySklad\Components\Expand;
+use MoySklad\Components\Fields\MetaField;
+use MoySklad\Components\FilterQuery;
 use MoySklad\Components\Specs\QuerySpecs;
 use MoySklad\Lists\EntityList;
 use MoySklad\MoySklad;
@@ -9,7 +12,7 @@ use MoySklad\Providers\RequestUrlProvider;
 
 class ListQuery{
 
-    private
+    protected
         $sklad,
         $entityClass,
         $entityName;
@@ -17,6 +20,7 @@ class ListQuery{
      * @var Expand $expand
      */
     private $expand;
+    private $customQueryUrl = null;
 
     public function __construct(MoySklad &$skladInstance, $entityClass)
     {
@@ -32,6 +36,10 @@ class ListQuery{
     public function withExpand(Expand $expand){
         $this->expand = $expand;
         return $this;
+    }
+
+    public function setCustomQueryUrl($customQueryUrl){
+        $this->customQueryUrl = $customQueryUrl;
     }
 
     protected function attachExpand(QuerySpecs &$querySpecs){
@@ -58,9 +66,7 @@ class ListQuery{
             $query = array_merge($querySpecs->toArray(), [
                 "search" => $searchString
             ]);
-            return $this->sklad->getClient()->get(
-                RequestUrlProvider::instance()->getListUrl($this->entityName), $query
-            );
+            return $this->sklad->getClient()->get($this->getQueryUrl(), $query);
         }, $querySpecs, [
             $searchString
         ]);
@@ -82,9 +88,7 @@ class ListQuery{
             } else {
                 $query = $querySpecs->toArray();
             }
-            return $this->sklad->getClient()->get(
-                RequestUrlProvider::instance()->getListUrl($this->entityName), $query
-            );
+            return $this->sklad->getClient()->get($this->getQueryUrl(), $query);
         }, $querySpecs, [
             $filterQuery
         ]);
@@ -100,11 +104,12 @@ class ListQuery{
         callable $method, QuerySpecs $queryParams, $methodArgs = [], $requestCounter = 1
     ){
         $res = call_user_func_array($method, array_merge([$queryParams], $methodArgs));
-        $resultingObjects = (new EntityList($this->sklad, $res->rows))
+        $resultingMeta = new MetaField($res->meta);
+        $resultingObjects = (new EntityList($this->sklad, $res->rows, $resultingMeta))
             ->map(function($e) {
                 return new $this->entityClass($this->sklad, $e);
             });
-        if ( $res->meta->size > $queryParams->limit + $queryParams->offset ){
+        if ( $resultingMeta->size > $queryParams->limit + $queryParams->offset ){
             $newQueryParams = $this->recreateQuerySpecs($queryParams);
             if ( $queryParams->maxResults === 0 || $queryParams->maxResults > $requestCounter * $queryParams->limit ){
                 $resultingObjects = $resultingObjects->merge(
@@ -122,5 +127,9 @@ class ListQuery{
               "maxResults" => $queryParams->maxResults,
               "expand" => $this->expand
           ]);
+    }
+
+    protected function getQueryUrl(){
+        return (!empty($this->customQueryUrl)?$this->customQueryUrl: RequestUrlProvider::instance()->getListUrl($this->entityName));
     }
 }

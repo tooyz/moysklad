@@ -3,7 +3,7 @@
 namespace MoySklad\Traits;
 
 use MoySklad\Components\MassRequest;
-use MoySklad\Exceptions\SetupCreateWasNotCalled;
+use MoySklad\Exceptions\SetupCreateWasNotCalledException;
 
 trait DoesCreation{
     private $setupCreateWasCalled = false;
@@ -22,7 +22,7 @@ trait DoesCreation{
         $r = new \ReflectionClass(static::class);
         if ( $r->hasMethod('setupCreate') ){
             if ( !$this->setupCreateWasCalled ){
-                throw new SetupCreateWasNotCalled($this);
+                throw new SetupCreateWasNotCalledException($this);
             }
         }
         $this->setupCreateWasCalled = false;

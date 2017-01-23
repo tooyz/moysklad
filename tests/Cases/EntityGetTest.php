@@ -29,6 +29,7 @@ class EntityGetTest extends TestCase{
         $productList = Product::listQuery($this->sklad)->get(QuerySpecs::create([
             'maxResults' => 25
         ]));
+       // dd($productList->meta);
         $this->say("Took " . $this->timeEnd() . " sec");
         $this->assertTrue(
             $productList[0] instanceof Product

@@ -10,7 +10,7 @@ use MoySklad\Components\Specs\ConstructionSpecs;
 use MoySklad\Components\Specs\LinkingSpecs;
 use MoySklad\Exceptions\EntityHasNoIdException;
 use MoySklad\Lists\EntityList;
-use MoySklad\Components\ListQuery;
+use MoySklad\Components\ListQuery\ListQuery;
 use MoySklad\MoySklad;
 use MoySklad\Components\Fields\EntityFields;
 use MoySklad\Components\EntityLinker;
@@ -50,7 +50,7 @@ abstract class AbstractEntity implements \JsonSerializable {
         $this->fields = new EntityFields($fields);
         $this->links = new EntityLinker();
         $this->skladInstance = $skladInstance;
-        $this->relations = new EntityRelation([]);
+        $this->relations = new EntityRelation([], static::class);
         $this->processConstructionSpecs($specs);
     }
 

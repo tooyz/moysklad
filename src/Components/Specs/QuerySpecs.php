@@ -20,7 +20,9 @@ class QuerySpecs extends AbstractSpecs {
     public static function create($specs = [])
     {
         if ( $specs['limit'] > self::MAX_LIST_LIMIT ) $specs['limit'] = self::MAX_LIST_LIMIT;
-        return parent::create($specs);
+        $res = parent::create($specs);
+        if ( $res->maxResults !== 0 && $res->maxResults < $res->limit ) $res->limit = $res->maxResults;
+        return $res;
     }
 
     public function toArray()

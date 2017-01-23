@@ -26,4 +26,8 @@ class RequestUrlProvider extends AbstractSingleton {
     public function getListUrl($entityName){
         return "entity/" . $entityName;
     }
+
+    public function relationListUrl($entityName, $entityId, $relatedEntityName){
+        return $this->getListUrl($entityName) . "/" . $entityId . "/" . $relatedEntityName;
+    }
 }

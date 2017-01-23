@@ -2,18 +2,23 @@
 
 namespace MoySklad\Lists;
 
+use MoySklad\Components\Fields\MetaField;
 use MoySklad\Components\MassRequest;
 use MoySklad\Entities\AbstractEntity;
 use MoySklad\MoySklad;
 
 class EntityList implements \JsonSerializable, \ArrayAccess {
-    private
+    protected
         $skladInstance,
         $items = [];
 
-    public function __construct(MoySklad $skladInstance, $items = [])
+    public function __construct(MoySklad $skladInstance, $items = [], MetaField $metaField = null)
     {
         $this->skladInstance = $skladInstance;
+        $this->replaceItems($items);
+    }
+
+    public function replaceItems($items){
         if ( $items instanceof EntityList ){
             $this->items = $items->toArray();
         } else if ( !is_array($items) ) {
@@ -72,6 +77,10 @@ class EntityList implements \JsonSerializable, \ArrayAccess {
         $this->items[] = $entity;
     }
 
+    /**
+     * @param $key
+     * @return AbstractEntity
+     */
     public function get($key){
         return $this->items[$key];
     }
