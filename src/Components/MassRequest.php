@@ -4,6 +4,7 @@ namespace MoySklad\Components;
 
 use MoySklad\Entities\AbstractEntity;
 use MoySklad\Exceptions\StackingRequestDifferentMethodException;
+use MoySklad\Lists\EntityList;
 use MoySklad\MoySklad;
 use MoySklad\Providers\RequestUrlProvider;
 
@@ -24,7 +25,10 @@ class MassRequest{
     }
 
     public function push(AbstractEntity $entity){
-        $this->stack[get_class($entity)][] = $entity;
+        if ( !empty($this->stack) && get_class($this->stack[0]) !== get_class($entity) ){
+            throw new \Exception("Mass request can hold entities of one type");
+        }
+        $this->stack[] = $entity;
     }
 
     public function create(){
@@ -51,6 +55,6 @@ class MassRequest{
             $newEntity->fields->replace($this->stack[$i]->fields);
             $res[] = $newEntity;
         }
-        return $res;
+        return new EntityList($this->skladInstance, $res);
     }
 }

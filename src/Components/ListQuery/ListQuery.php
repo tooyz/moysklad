@@ -21,6 +21,7 @@ class ListQuery{
      */
     private $expand;
     private $customQueryUrl = null;
+    protected static $entityListClass = EntityList::class;
 
     public function __construct(MoySklad &$skladInstance, $entityClass)
     {
@@ -105,7 +106,7 @@ class ListQuery{
     ){
         $res = call_user_func_array($method, array_merge([$queryParams], $methodArgs));
         $resultingMeta = new MetaField($res->meta);
-        $resultingObjects = (new EntityList($this->sklad, $res->rows, $resultingMeta))
+        $resultingObjects = (new static::$entityListClass($this->sklad, $res->rows, $resultingMeta))
             ->map(function($e) {
                 return new $this->entityClass($this->sklad, $e);
             });

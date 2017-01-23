@@ -49,6 +49,10 @@ class EntityList implements \JsonSerializable, \ArrayAccess {
         return new static($this->skladInstance, array_filter($this->items, $cb));
     }
 
+    public function reduce(callable $cb, $initial = null){
+        return array_reduce($this->items, $cb, $initial);
+    }
+
     public function transformItemsToClass($targetClass){
         $this->items = array_map(function(AbstractEntity $e) use($targetClass){
             return $e->transformToClass($targetClass);

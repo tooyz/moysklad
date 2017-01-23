@@ -26,15 +26,23 @@ class RelationEntityList extends EntityList{
     }
 
     public function listQuery(){
-        $eHref = explode('/', $this->meta->getHref());
-        $cntHref = count($eHref);
-        $entityClass = $eHref[$cntHref - 3];
-        $entityId = $eHref[$cntHref - 2];
-        $relationClass = $eHref[$cntHref - 1];
+        $relHref = $this->meta->parseRelationHref();
         $res = new RelationListQuery($this->skladInstance, $this->meta->getClass());
         $res->setCustomQueryUrl(
-            RequestUrlProvider::instance()->relationListUrl($entityClass, $entityId, $relationClass)
+            RequestUrlProvider::instance()->relationListUrl($relHref['entityClass'], $relHref['entityId'], $relHref['relationClass'])
         );
         return $res;
+    }
+
+    public function merge(EntityList $list){
+        return new static($this->skladInstance, array_merge($this->items, $list->toArray()), $this->meta);
+    }
+
+    public function map(callable $cb){
+        return new static($this->skladInstance, array_map($cb, $this->items), $this->meta);
+    }
+
+    public function filter(callable $cb){
+        return new static($this->skladInstance, array_filter($this->items, $cb), $this->meta);
     }
 }

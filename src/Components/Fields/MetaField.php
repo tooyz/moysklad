@@ -33,6 +33,15 @@ class MetaField extends AbstractFieldAccessor{
         return $this->href;
     }
 
+    public function parseRelationHref(){
+        $eHref = explode('/', $this->href);
+        $cntHref = count($eHref);
+        $entityClass = $eHref[$cntHref - 3];
+        $entityId = $eHref[$cntHref - 2];
+        $relationClass = $eHref[$cntHref - 1];
+        return compact('entityClass', 'entityId', 'relationClass');
+    }
+
     public function getId(){
         if ( !empty($this->href) ){
             $exp = explode("/", $this->href);

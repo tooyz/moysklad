@@ -3,8 +3,11 @@
 namespace MoySklad\Entities\Products;
 
 use MoySklad\Entities\AbstractEntity;
+use MoySklad\Traits\DoesCreation;
 
 class AbstractProduct extends AbstractEntity{
+    use DoesCreation;
+
     public static $entityName = '_a_product';
 
     /**

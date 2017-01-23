@@ -17,14 +17,13 @@ use MoySklad\Traits\DoesCreation;
     use DoesCreation;
     public static $entityName = '_a_order';
 
-    public function setupCreate(Counterparty $counterparty = null, Organization $organization = null, $positions = null, CreationSpecs $specs = null){
+    public function setupCreate(Counterparty $counterparty = null, Organization $organization = null, EntityList $positions = null, CreationSpecs $specs = null){
         if ( empty($specs) ) $specs = CreationSpecs::create();
         $this->links->link( $counterparty, LinkingSpecs::create([
             'name' => 'agent',
         ]));
         $this->links->link( $organization );
         if ( $positions ){
-            $positions = new EntityList($this->skladInstance, $positions);
             $positions->each(function(AbstractEntity $position){
                 $position->assortment = [
                     'meta' => $position->getMeta()

@@ -6,6 +6,7 @@ use MoySklad\Components\Expand;
 use MoySklad\Components\Fields\AttributeCollection;
 use MoySklad\Components\Fields\EntityRelation;
 use MoySklad\Components\Fields\MetaField;
+use MoySklad\Components\MassRequest;
 use MoySklad\Components\Specs\ConstructionSpecs;
 use MoySklad\Components\Specs\LinkingSpecs;
 use MoySklad\Exceptions\EntityHasNoIdException;
@@ -172,6 +173,14 @@ abstract class AbstractEntity implements \JsonSerializable {
             ]));
         }
         return $this;
+    }
+
+    public function loadRelation($relationName, $expand = null){
+        return $this->relations->loadSingleRelation($relationName, $expand);
+    }
+
+    public function relationListQuery($relationName){
+        return $this->relations->getListQuery($relationName);
     }
 
     public function getSkladInstance(){
