@@ -31,7 +31,7 @@ class RelationEntityList extends EntityList{
         $entityClass = $eHref[$cntHref - 3];
         $entityId = $eHref[$cntHref - 2];
         $relationClass = $eHref[$cntHref - 1];
-        $res = new RelationListQuery($this->skladInstance, $this->meta->getClass(), $this);
+        $res = new RelationListQuery($this->skladInstance, $this->meta->getClass());
         $res->setCustomQueryUrl(
             RequestUrlProvider::instance()->relationListUrl($entityClass, $entityId, $relationClass)
         );
