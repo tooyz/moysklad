@@ -8,6 +8,11 @@ use MoySklad\Lists\EntityList;
 use MoySklad\MoySklad;
 use MoySklad\Providers\RequestUrlProvider;
 
+/**
+ * Used for requesting with multiple entities
+ * Class MassRequest
+ * @package MoySklad\Components
+ */
 class MassRequest{
     private $skladInstance = null;
     /**
@@ -24,6 +29,11 @@ class MassRequest{
         }
     }
 
+    /**
+     * Add entity to internal array
+     * @param AbstractEntity $entity
+     * @throws \Exception
+     */
     public function push(AbstractEntity $entity){
         if ( !empty($this->stack) && get_class($this->stack[0]) !== get_class($entity) ){
             throw new \Exception("Mass request can hold entities of one type");
@@ -31,6 +41,10 @@ class MassRequest{
         $this->stack[] = $entity;
     }
 
+    /**
+     * Run creation for stored entities
+     * @return EntityList
+     */
     public function create(){
         $className = get_class($this->stack[0]);
         $url = RequestUrlProvider::instance()->getCreateUrl($className::$entityName);
@@ -43,6 +57,12 @@ class MassRequest{
         return $this->recreateEntityList($className, $res);
     }
 
+    /**
+     * Returns new EntityList after performing API operation
+     * @param $className
+     * @param $reqResult
+     * @return EntityList
+     */
     private function recreateEntityList($className, $reqResult){
         $res = [];
         if ( is_array($reqResult) === false ) $reqResult = [$reqResult];

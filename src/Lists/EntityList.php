@@ -7,6 +7,11 @@ use MoySklad\Components\MassRequest;
 use MoySklad\Entities\AbstractEntity;
 use MoySklad\MoySklad;
 
+/**
+ * List of entity objects
+ * Class EntityList
+ * @package MoySklad\Lists
+ */
 class EntityList implements \JsonSerializable, \ArrayAccess {
     protected
         $skladInstance,
@@ -18,6 +23,10 @@ class EntityList implements \JsonSerializable, \ArrayAccess {
         $this->replaceItems($items);
     }
 
+    /**
+     * Replace internal array
+     * @param $items
+     */
     public function replaceItems($items){
         if ( $items instanceof EntityList ){
             $this->items = $items->toArray();
@@ -29,6 +38,7 @@ class EntityList implements \JsonSerializable, \ArrayAccess {
     }
 
     /**
+     * Iterate every item
      * @param callable $cb
      * @return EntityList $this
      */
@@ -37,22 +47,48 @@ class EntityList implements \JsonSerializable, \ArrayAccess {
         return $this;
     }
 
+    /**
+     * @see array_merge
+     * @param EntityList $list
+     * @return static
+     */
     public function merge(EntityList $list){
         return new static($this->skladInstance, array_merge($this->items, $list->toArray()));
     }
 
+    /**
+     * @see array_map
+     * @param callable $cb
+     * @return static
+     */
     public function map(callable $cb){
         return new static($this->skladInstance, array_map($cb, $this->items));
     }
 
+    /**
+     * @see array_filter
+     * @param callable $cb
+     * @return static
+     */
     public function filter(callable $cb){
         return new static($this->skladInstance, array_filter($this->items, $cb));
     }
 
+    /**
+     * @see array_reduce
+     * @param callable $cb
+     * @param null $initial
+     * @return mixed
+     */
     public function reduce(callable $cb, $initial = null){
         return array_reduce($this->items, $cb, $initial);
     }
 
+    /**
+     * Transform stored items into target entity class
+     * @param $targetClass
+     * @return $this
+     */
     public function transformItemsToClass($targetClass){
         $this->items = array_map(function(AbstractEntity $e) use($targetClass){
             return $e->transformToClass($targetClass);
@@ -60,6 +96,10 @@ class EntityList implements \JsonSerializable, \ArrayAccess {
         return $this;
     }
 
+    /**
+     * Transform stored items into theirs entity class defined in meta
+     * @return $this
+     */
     public function transformItemsToMetaClass(){
         $this->items = array_map(function(AbstractEntity $e){
             return $e->transformToMetaClass();
@@ -67,21 +107,71 @@ class EntityList implements \JsonSerializable, \ArrayAccess {
         return $this;
     }
 
+    /**
+     * Runs batch creation with stored items
+     * @return $this
+     */
     public function massCreate(){
         $mr = new MassRequest($this->skladInstance, $this->items);
         $this->items = $mr->create()->toArray();
         return $this;
     }
 
+    /**
+     * Get iterator with stored items
+     * @return ListIterator
+     */
     public function getIterator(){
         return new ListIterator($this->items);
     }
 
+    /**
+     * Add item to list
+     * @param AbstractEntity $entity
+     */
     public function push(AbstractEntity $entity){
         $this->items[] = $entity;
     }
 
     /**
+     * @see array_shift
+     * @return mixed
+     */
+    public function shift(){
+        return array_shift($this->items);
+    }
+
+    /**
+     * @see array_unshift
+     * @param $var
+     * @param null $_
+     * @return int
+     */
+    public function unshift($var, $_ = null){
+        return array_unshift($this->items, $var, $_);
+    }
+
+    /**
+     * @see array_pop
+     * @return mixed
+     */
+    public function pop(){
+        return array_pop($this->items);
+    }
+
+    /**
+     * @see array_splice
+     * @param $offset
+     * @param null $length
+     * @param null $replacement
+     * @return array
+     */
+    public function splice($offset, $length = null, $replacement = null){
+        return array_splice($this->items, $offset, $length, $replacement);
+    }
+
+    /**
+     * Get object by offset
      * @param $key
      * @return AbstractEntity
      */
@@ -89,15 +179,29 @@ class EntityList implements \JsonSerializable, \ArrayAccess {
         return $this->items[$key];
     }
 
+    /**
+     * Store object by offset
+     * @param $key
+     * @param $value
+     * @return $this
+     */
     public function set($key, $value){
         $this->items[$key] = $value;
         return $this;
     }
 
+    /**
+     * Count stored objects
+     * @return int
+     */
     public function count(){
         return count($this->items);
     }
 
+    /**
+     * Get internal array
+     * @return array
+     */
     public function toArray(){
         return $this->items;
     }

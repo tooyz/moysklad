@@ -6,6 +6,7 @@ use MoySklad\Components\Specs\CreationSpecs;
 
 trait HasPlainCreation{
     /**
+     * Runs creation with current EntityFields
      * @param CreationSpecs|null $specs
      * @return static
      */

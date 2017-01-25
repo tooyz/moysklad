@@ -31,6 +31,7 @@ class ListQuery{
     }
 
     /**
+     * Add expand to query
      * @param Expand $expand
      * @return $this
      */
@@ -39,16 +40,26 @@ class ListQuery{
         return $this;
     }
 
+    /**
+     * Url that will be used instead of default list url
+     * @param $customQueryUrl
+     */
     public function setCustomQueryUrl($customQueryUrl){
         $this->customQueryUrl = $customQueryUrl;
     }
 
+    /**
+     * Attach added expand to specs
+     * @param QuerySpecs $querySpecs
+     * @return QuerySpecs
+     */
     protected function attachExpand(QuerySpecs &$querySpecs){
         $querySpecs->expand = $this->expand;
         return $querySpecs;
     }
 
     /**
+     * Get list of entities
      * @param array $queryParams
      * @return array|EntityList
      */
@@ -57,8 +68,10 @@ class ListQuery{
     }
 
     /**
-     * @param array $queryParams
-     * @return array|EntityList
+     * Search within list of entities
+     * @param string $searchString
+     * @param QuerySpecs|null $querySpecs
+     * @return EntityList
      */
     public function search($searchString = '', QuerySpecs $querySpecs = null){
         if ( !$querySpecs ) $querySpecs = QuerySpecs::create([]);
@@ -74,7 +87,8 @@ class ListQuery{
     }
 
     /**
-     * @param FilterQuery $filterQuery
+     * Filter within list of entities
+     * @param FilterQuery|null $filterQuery
      * @param QuerySpecs|null $querySpecs
      * @return EntityList
      */
@@ -96,10 +110,12 @@ class ListQuery{
     }
 
     /**
+     * Used for sending multiple list requests
      * @param callable $method
      * @param QuerySpecs $queryParams
      * @param array $methodArgs
-     * @return EntityList
+     * @param int $requestCounter
+     * @return mixed
      */
     protected function recursiveRequest(
         callable $method, QuerySpecs $queryParams, $methodArgs = [], $requestCounter = 1
@@ -121,6 +137,11 @@ class ListQuery{
         return $resultingObjects;
     }
 
+    /**
+     * Get previous QuerySpecs and increase offset
+     * @param QuerySpecs $queryParams
+     * @return static
+     */
     protected function recreateQuerySpecs(QuerySpecs &$queryParams){
           return QuerySpecs::create([
               "offset" => $queryParams->offset + QuerySpecs::MAX_LIST_LIMIT,
@@ -130,6 +151,10 @@ class ListQuery{
           ]);
     }
 
+    /**
+     * Get default list query url, or use custom one
+     * @return null|string
+     */
     protected function getQueryUrl(){
         return (!empty($this->customQueryUrl)?$this->customQueryUrl: RequestUrlProvider::instance()->getListUrl($this->entityName));
     }

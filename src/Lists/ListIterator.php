@@ -2,6 +2,11 @@
 
 namespace MoySklad\Lists;
 
+/**
+ * Iterator for EntityList
+ * Class ListIterator
+ * @package MoySklad\Lists
+ */
 class ListIterator{
     public $id;
     private
@@ -16,6 +21,10 @@ class ListIterator{
         $this->id = rand(1, 0xFFFFFFFF);
     }
 
+    /**
+     * Get next item
+     * @return null
+     */
     public function next(){
         if ( $this->hasNext() ){
             $i = $this->cursor;
@@ -25,10 +34,19 @@ class ListIterator{
         return null;
     }
 
+    /**
+     * Has next item
+     * @return bool
+     */
     public function hasNext(){
         return $this->cursor < $this->length;
     }
 
+    /**
+     * Run callback foreach item
+     * @param callable $cb
+     * @return $this
+     */
     public function each(callable $cb){
         while ( $item = $this->next() ){
             $cb($item, $this->cursor);

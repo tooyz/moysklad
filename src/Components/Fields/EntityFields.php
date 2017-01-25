@@ -4,6 +4,10 @@ namespace MoySklad\Components\Fields;
 
 class EntityFields extends AbstractFieldAccessor {
 
+    /**
+     * Replace fields. Creates MetaField and AttributeCollection within itself
+     * @param $fields
+     */
     public function replace($fields)
     {
         if ( $fields instanceof EntityFields ) $fields = $fields->getInternal();

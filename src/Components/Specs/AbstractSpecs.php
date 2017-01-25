@@ -4,6 +4,11 @@ namespace MoySklad\Components\Specs;
 
 use MoySklad\Exceptions\UnknownSpecException;
 
+/**
+ * Specs are used as parameters
+ * Class AbstractSpecs
+ * @package MoySklad\Components\Specs
+ */
 abstract class AbstractSpecs{
     protected static $cachedDefaultSpecs = null;
 
@@ -24,6 +29,11 @@ abstract class AbstractSpecs{
         }
     }
 
+    /**
+     * Should be used to construct specs. Returns cached copy if used with empty array
+     * @param array $specs
+     * @return static
+     */
     public static function create($specs = []){
         $cl = get_called_class();
         if ( empty($specs) && $cl::$cachedDefaultSpecs !== null){
@@ -32,10 +42,19 @@ abstract class AbstractSpecs{
         return new static($specs);
     }
 
+    /**
+     * Converts itself to array
+     * @return array
+     */
     public function toArray(){
         return (array)$this;
     }
 
+    /**
+     * Specs should be strict, so that's it
+     * @param $name
+     * @throws UnknownSpecException
+     */
     public function __get($name)
     {
         throw new UnknownSpecException($name);

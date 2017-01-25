@@ -9,6 +9,11 @@ use MoySklad\MoySklad;
 use MoySklad\Components\ListQuery\RelationListQuery;
 use MoySklad\Providers\RequestUrlProvider;
 
+/**
+ * EntityList with meta. Used for query
+ * Class RelationEntityList
+ * @package MoySklad\Lists
+ */
 class RelationEntityList extends EntityList{
     /**
      * @var null|MetaField
@@ -25,6 +30,12 @@ class RelationEntityList extends EntityList{
         $this->meta = $metaField;
     }
 
+    /**
+     * Get RelationListQuery object which van be used for getting, filtering and searching lists defined in meta
+     * @see ListQuery
+     * @return RelationListQuery
+     * @throws \MoySklad\Exceptions\UnknownEntityException
+     */
     public function listQuery(){
         $relHref = $this->meta->parseRelationHref();
         $res = new RelationListQuery($this->skladInstance, $this->meta->getClass());
@@ -34,14 +45,30 @@ class RelationEntityList extends EntityList{
         return $res;
     }
 
+    /**
+     * @see EntityList::merge()
+     * @param EntityList $list
+     * @return static
+     */
     public function merge(EntityList $list){
         return new static($this->skladInstance, array_merge($this->items, $list->toArray()), $this->meta);
     }
 
+    /**
+     * @see EntityList::map()
+     * @param callable $cb
+     * @return static
+     */
     public function map(callable $cb){
         return new static($this->skladInstance, array_map($cb, $this->items), $this->meta);
     }
 
+
+    /**
+     * @see EntityList::filter()
+     * @param callable $cb
+     * @return static
+     */
     public function filter(callable $cb){
         return new static($this->skladInstance, array_filter($this->items, $cb), $this->meta);
     }

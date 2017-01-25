@@ -10,8 +10,9 @@ use MoySklad\Components\MassRequest;
 use MoySklad\Components\Specs\ConstructionSpecs;
 use MoySklad\Components\Specs\CreationSpecs;
 use MoySklad\Components\Specs\LinkingSpecs;
+use MoySklad\Exceptions\ApiResponseException;
 use MoySklad\Exceptions\EntityHasNoIdException;
-use MoySklad\Lists\EntityList;
+use MoySklad\Exceptions\EntityHasNoMetaException;
 use MoySklad\Components\ListQuery\ListQuery;
 use MoySklad\MoySklad;
 use MoySklad\Components\Fields\EntityFields;
@@ -19,6 +20,11 @@ use MoySklad\Components\EntityLinker;
 use MoySklad\Providers\RequestUrlProvider;
 use MoySklad\Traits\HasPlainCreation;
 
+/**
+ * Root entity object
+ * Class AbstractEntity
+ * @package MoySklad\Entities
+ */
 abstract class AbstractEntity implements \JsonSerializable {
     use HasPlainCreation;
 
@@ -59,6 +65,9 @@ abstract class AbstractEntity implements \JsonSerializable {
         $this->processConstructionSpecs($specs);
     }
 
+    /**
+     * @param ConstructionSpecs $specs
+     */
     protected function processConstructionSpecs(ConstructionSpecs $specs){
         if ( $specs->relations ){
             $this->relations = EntityRelation::createRelations($this->skladInstance, $this);
@@ -69,6 +78,7 @@ abstract class AbstractEntity implements \JsonSerializable {
     }
 
     /**
+     * Returns new AbstractEntity inheritor with chosen class
      * @param $targetClass
      * @return mixed| AbstractEntity
      */
@@ -77,7 +87,9 @@ abstract class AbstractEntity implements \JsonSerializable {
     }
 
     /**
-     * @return $this|mixed|AbstractEntity
+     * Returns new AbstractEntity inheritor with class taken from meta
+     * @throws EntityHasNoMetaException
+     * @return $this
      */
     public function transformToMetaClass(){
         $eMeta = $this->getMeta();
@@ -85,11 +97,13 @@ abstract class AbstractEntity implements \JsonSerializable {
             return $this->transformToClass(
                 $eMeta->getClass()
             );
+        } else {
+            throw new EntityHasNoMetaException($this);
         }
-        return $this;
     }
 
     /**
+     * Returns meta object
      * @return \MoySklad\Components\Fields\MetaField|null
      */
     public function getMeta(){
@@ -97,7 +111,10 @@ abstract class AbstractEntity implements \JsonSerializable {
     }
 
     /**
+     * Update entity with current fields
+     * @param boolean $getIdFromMeta
      * @return static
+     * @throws EntityHasNoIdException
      */
     public function update($getIdFromMeta = false){
         if ( empty($this->fields->id) ){
@@ -113,17 +130,28 @@ abstract class AbstractEntity implements \JsonSerializable {
     }
 
     /**
-     * @return static
+     * Gets new entity with same id from server, expand may be used to load relations
+     * @param boolean $getIdFromMeta
+     * @param Expand|null $expand
+     * @return AbstractEntity
+     * @throws EntityHasNoMetaException
      */
-    public function fresh(Expand $expand = null){
-        $eId = $this->getMeta()->getId();
-        return static::byId($this->skladInstance, $eId, $expand);
+    public function fresh($getIdFromMeta = false, Expand $expand = null){
+        if ( empty($this->fields->id) ){
+            if ( !$getIdFromMeta || !$id = $this->getMeta()->getId()) throw new EntityHasNoIdException($this);
+        } else {
+            $id = $this->id;
+        }
+        return static::byId($this->skladInstance, $id, $expand);
     }
 
+
     /**
+     * Delete entity, throws exception if not found
      * @param bool $getIdFromMeta
      * @return bool
      * @throws EntityHasNoIdException
+     * @throws ApiResponseException
      */
     public function delete($getIdFromMeta = false){
         if ( empty($this->fields->id) ){
@@ -138,6 +166,7 @@ abstract class AbstractEntity implements \JsonSerializable {
     }
 
     /**
+     * Get ListQuery object which van be used for getting, filtering and searching lists
      * @param MoySklad $skladInstance
      * @return ListQuery
      */
@@ -146,6 +175,7 @@ abstract class AbstractEntity implements \JsonSerializable {
     }
 
     /**
+     * Instantly runs creation on single entity
      * @param CreationSpecs $creationSpecs
      * @return static
      */
@@ -157,10 +187,13 @@ abstract class AbstractEntity implements \JsonSerializable {
         return $this;
     }
 
+
     /**
+     * Get entity by id
      * @param MoySklad $skladInstance
      * @param $id
-     * @return AbstractEntity
+     * @param Expand|null $expand
+     * @return static
      */
     public static function byId(MoySklad &$skladInstance, $id, Expand $expand = null){
         $res = $skladInstance->getClient()->get(
@@ -170,6 +203,11 @@ abstract class AbstractEntity implements \JsonSerializable {
         return new static($skladInstance, $res);
     }
 
+    /**
+     * Puts links to fields before creation
+     * @internal
+     * @return array
+     */
     public function mergeFieldsWithLinks(){
         $res = [];
         $links = $this->links->getLinks();
@@ -182,6 +220,11 @@ abstract class AbstractEntity implements \JsonSerializable {
         return $res;
     }
 
+    /**
+     * Puts relations to links
+     * @internal
+     * @return $this
+     */
     public function copyRelationsToLinks(){
         foreach ($this->relations->getInternal() as $k=>$v){
             $this->links->link($v, LinkingSpecs::create([
@@ -191,14 +234,31 @@ abstract class AbstractEntity implements \JsonSerializable {
         return $this;
     }
 
+    /**
+     * Tries to load single relation defined on entity
+     * @param $relationName
+     * @param null $expand
+     * @return mixed
+     * @throws \MoySklad\Exceptions\Relations\RelationIsList
+     */
     public function loadRelation($relationName, $expand = null){
         return $this->relations->loadSingleRelation($relationName, $expand);
     }
 
+    /**
+     * Get RelationListQuery object which van be used for getting, filtering and searching lists of relations
+     * @param $relationName
+     * @return \MoySklad\Components\ListQuery\RelationListQuery
+     * @throws \MoySklad\Exceptions\Relations\RelationIsSingle
+     */
     public function relationListQuery($relationName){
         return $this->relations->getListQuery($relationName);
     }
 
+    /**
+     * Get MoySklad instance used for constructing entity
+     * @return MoySklad
+     */
     public function getSkladInstance(){
         return $this->skladInstance;
     }

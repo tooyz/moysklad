@@ -2,6 +2,11 @@
 
 namespace MoySklad\Components\Fields;
 
+/**
+ * Class for storing different fields
+ * Class AbstractFieldAccessor
+ * @package MoySklad\Components\Fields
+ */
 abstract class AbstractFieldAccessor implements \JsonSerializable {
     protected $storage;
 
