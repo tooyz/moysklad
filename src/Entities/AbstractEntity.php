@@ -8,6 +8,7 @@ use MoySklad\Components\Fields\EntityRelation;
 use MoySklad\Components\Fields\MetaField;
 use MoySklad\Components\MassRequest;
 use MoySklad\Components\Specs\ConstructionSpecs;
+use MoySklad\Components\Specs\CreationSpecs;
 use MoySklad\Components\Specs\LinkingSpecs;
 use MoySklad\Exceptions\EntityHasNoIdException;
 use MoySklad\Lists\EntityList;
@@ -16,8 +17,11 @@ use MoySklad\MoySklad;
 use MoySklad\Components\Fields\EntityFields;
 use MoySklad\Components\EntityLinker;
 use MoySklad\Providers\RequestUrlProvider;
+use MoySklad\Traits\HasPlainCreation;
 
 abstract class AbstractEntity implements \JsonSerializable {
+    use HasPlainCreation;
+
     public static $entityName = '_a_entity';
     /**
      * @var EntityFields $fields
@@ -139,6 +143,18 @@ abstract class AbstractEntity implements \JsonSerializable {
      */
     public static function listQuery(MoySklad &$skladInstance){
         return new ListQuery($skladInstance, static::class);
+    }
+
+    /**
+     * @param CreationSpecs $creationSpecs
+     * @return static
+     */
+    protected function runCreateIfNotBatch(CreationSpecs $creationSpecs){
+        if ( !$creationSpecs->batch ){
+            $mr = new MassRequest($this->getSkladInstance(), $this);
+            return $mr->create()[0];
+        }
+        return $this;
     }
 
     /**

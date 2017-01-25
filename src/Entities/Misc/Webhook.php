@@ -3,10 +3,8 @@
 namespace MoySklad\Entities\Misc;
 
 use MoySklad\Entities\AbstractEntity;
-use MoySklad\Traits\DoesCreation;
 
 class Webhook extends AbstractEntity {
-    use DoesCreation;
 
     const
         ACTION_CREATE = 'CREATE',
@@ -25,12 +23,11 @@ class Webhook extends AbstractEntity {
         return $this->update();
     }
 
-    public function setupCreate($url, $action, $entity)
+    public function create($url, $action, $entity)
     {
         $this->fields->url = $url;
         $this->fields->action = $action;
         $this->fields->entityType = $entity;
-        $this->setupCreateWasCalled = true;
         return $this;
     }
 }

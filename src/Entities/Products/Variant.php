@@ -5,10 +5,8 @@ use MoySklad\Components\Specs\CreationSpecs;
 use MoySklad\Components\Specs\LinkingSpecs;
 use MoySklad\Entities\Misc\Characteristics;
 use MoySklad\Lists\EntityList;
-use MoySklad\Traits\DoesCreation;
 
 class Variant extends AbstractProduct{
-    use DoesCreation;
     public static
         $entityName = 'variant';
 
@@ -16,7 +14,7 @@ class Variant extends AbstractProduct{
      * @param Product $product
      * @param EntityList $characteristics
      */
-    public function setupCreate(Product $product, EntityList $characteristics, CreationSpecs $specs = null){
+    public function create(Product $product, EntityList $characteristics, CreationSpecs $specs = null){
         if ( empty($specs) ) $specs = CreationSpecs::create();
         $this->links->link($product);
         $characteristics->each(function(Characteristics $ch){
@@ -24,5 +22,6 @@ class Variant extends AbstractProduct{
                 "multiple" => true
             ]));
         });
+        return $this->runCreateIfNotBatch($specs);
     }
 }

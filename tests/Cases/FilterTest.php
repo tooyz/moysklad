@@ -6,6 +6,7 @@ use MoySklad\Components\FilterQuery;
 use MoySklad\Components\Http\RequestLog;
 use MoySklad\Components\Specs\QuerySpecs;
 use MoySklad\Entities\Products\Product;
+use MoySklad\Entities\Products\Variant;
 use MoySklad\MoySklad;
 use Tests\Config;
 
@@ -24,7 +25,7 @@ class FilterTest extends TestCase{
         $product = (new Product($this->sklad, [
             'article' => $prodArticle,
             'name' => $prodArticle.'_name'
-        ]))->runCreate();
+        ]))->create();
 
         $pl = Product::listQuery($this->sklad)->get();
         $manFpl = $pl->filter(function(Product $e) use($prodArticle){

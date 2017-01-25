@@ -8,7 +8,7 @@ class CreationSpecs extends AbstractSpecs {
     public function getDefaults()
     {
         return [
-          "multiple" => false
+          "batch" => false
         ];
     }
 }

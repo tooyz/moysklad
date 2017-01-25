@@ -11,6 +11,7 @@ use MoySklad\Entities\Orders\CustomerOrder;
 use MoySklad\Entities\Organization;
 use MoySklad\Entities\Products\Product;
 use MoySklad\Entities\Store;
+use MoySklad\Lists\EntityList;
 use MoySklad\MoySklad;
 use Tests\Config;
 
@@ -35,16 +36,16 @@ class CustomerOrderAffectsStockTest extends TestCase{
 
         $cp = (new Counterparty($this->sklad, [
             "name" => $testCounterpartyName
-        ]))->runCreate();
+        ]))->create();
         $this->say("Cp id:" . $cp->id);
         $product = (new Product($this->sklad, [
             "name" => $testProductName,
             "quantity" => 25
-        ]))->runCreate();
+        ]))->create();
         $this->say("Product id:" . $product->id);
         $enter = (new Enter($this->sklad, [
            "name" => $testEnterName
-        ]))->setupCreate($org, $store, $product)->runCreate();
+        ]))->create($org, $store, $product);
         $this->say("Enter id:" . $enter->id );
 
         $filteredProduct = Assortment::listQuery($this->sklad)->filter(
@@ -56,7 +57,7 @@ class CustomerOrderAffectsStockTest extends TestCase{
         $this->assertTrue($filteredProduct->id === $product->id);
 
         $co = (new CustomerOrder($this->sklad))
-            ->setupCreate($cp, $org, $product)->runCreate();
+            ->create($cp, $org, new EntityList($this->sklad, $product));
 
         $this->say("Order id:" . $co->id );
 

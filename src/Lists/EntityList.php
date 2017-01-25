@@ -69,7 +69,7 @@ class EntityList implements \JsonSerializable, \ArrayAccess {
 
     public function massCreate(){
         $mr = new MassRequest($this->skladInstance, $this->items);
-        $this->items = $mr->create();
+        $this->items = $mr->create()->toArray();
         return $this;
     }
 
