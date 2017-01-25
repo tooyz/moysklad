@@ -20,6 +20,11 @@ class AuthTest extends TestCase{
             "context",
             $res
         );
+        $sklad1 = MoySklad::getInstance("kok", "pok");
+        $sklad2 = MoySklad::getInstance("kok", "pok");
+        $this->assertTrue($sklad1 === $sklad2);
+        $sklad3 = MoySklad::getInstance("t@pkek", "dogewow");
+        $this->assertFalse($sklad1->hashCode() === $sklad3->hashCode());
         $this->methodEnd();
     }
 }

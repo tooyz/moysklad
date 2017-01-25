@@ -1,6 +1,6 @@
 <?php
 
-namespace MoySklad\Providers;
+namespace MoySklad\Repositories;
 
 use MoySklad\Entities\AbstractEntity;
 use MoySklad\Entities\Account;
@@ -33,7 +33,7 @@ use MoySklad\Entities\Store;
 use MoySklad\Entities\Uom;
 use MoySklad\Utils\AbstractSingleton;
 
-class EntityProvider extends AbstractSingleton{
+class EntityRepository extends AbstractSingleton{
     protected static $instance = null;
     public $entities = [
         AbstractEntity::class,

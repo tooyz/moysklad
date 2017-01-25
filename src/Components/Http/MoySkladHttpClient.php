@@ -8,7 +8,7 @@ use MoySklad\Exceptions\ApiResponseException;
 use MoySklad\Exceptions\RequestFailedException;
 use MoySklad\Exceptions\ResponseParseException;
 
-class MoySkladClient{
+class MoySkladHttpClient{
     const
         METHOD_GET = "GET",
         METHOD_POST = "POST",

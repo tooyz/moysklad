@@ -6,7 +6,8 @@ use MoySklad\Entities\AbstractEntity;
 use MoySklad\Exceptions\StackingRequestDifferentMethodException;
 use MoySklad\Lists\EntityList;
 use MoySklad\MoySklad;
-use MoySklad\Providers\RequestUrlProvider;
+use MoySklad\Repositories\RequestUrlRepository;
+use MoySklad\Traits\AccessesSkladInstance;
 
 /**
  * Used for requesting with multiple entities
@@ -14,6 +15,8 @@ use MoySklad\Providers\RequestUrlProvider;
  * @package MoySklad\Components
  */
 class MassRequest{
+    use AccessesSkladInstance;
+
     private $skladInstance = null;
     /**
      * @var AbstractEntity[] $stack
@@ -22,7 +25,7 @@ class MassRequest{
 
     public function __construct(MoySklad $sklad, $stack = [])
     {
-        $this->skladInstance = $sklad;
+        $this->skladHashCode = $sklad->hashCode();
         if ( !is_array($stack) ) $stack = [$stack];
         foreach ($stack as $row){
             $this->stack[] = $row;
@@ -47,8 +50,8 @@ class MassRequest{
      */
     public function create(){
         $className = get_class($this->stack[0]);
-        $url = RequestUrlProvider::instance()->getCreateUrl($className::$entityName);
-        $res = $this->skladInstance->getClient()->post(
+        $url = RequestUrlRepository::instance()->getCreateUrl($className::$entityName);
+        $res = $this->getSkladInstance()->getClient()->post(
             $url,
             array_map(function( AbstractEntity $e){
                 return $e->mergeFieldsWithLinks();
@@ -70,11 +73,11 @@ class MassRequest{
             /**
              * @var AbstractEntity $newEntity
              */
-            $newEntity = new $className($this->skladInstance, $item);
+            $newEntity = new $className($this->getSkladInstance(), $item);
             $newEntity->links->reattachLinks($this->stack[$i]->links);
             $newEntity->fields->replace($this->stack[$i]->fields);
             $res[] = $newEntity;
         }
-        return new EntityList($this->skladInstance, $res);
+        return new EntityList($this->getSkladInstance(), $res);
     }
 }

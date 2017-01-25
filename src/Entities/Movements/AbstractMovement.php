@@ -18,7 +18,7 @@ class AbstractMovement extends AbstractEntity{
         $this->links->link($organization);
         $this->links->link($store);
         if ( $positions ){
-            $positions = new EntityList($this->skladInstance, $positions);
+            $positions = new EntityList($this->getSkladInstance(), $positions);
             $positions->each(function(AbstractProduct $position){
                 $position->assortment = [
                     'meta' => $position->getMeta()

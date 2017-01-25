@@ -3,7 +3,7 @@
 namespace MoySklad\Components\Fields;
 
 use MoySklad\Exceptions\UnknownEntityException;
-use MoySklad\Providers\EntityProvider;
+use MoySklad\Repositories\EntityRepository;
 
 class MetaField extends AbstractFieldAccessor{
 
@@ -17,7 +17,7 @@ class MetaField extends AbstractFieldAccessor{
             parent::__construct($fields);
         }
         if ( static::$ep === null ){
-            static::$ep = EntityProvider::instance();
+            static::$ep = EntityRepository::instance();
         }
     }
 

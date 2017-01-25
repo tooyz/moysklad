@@ -1,10 +1,10 @@
 <?php
 
-namespace MoySklad\Providers;
+namespace MoySklad\Repositories;
 
 use MoySklad\Utils\AbstractSingleton;
 
-class RequestUrlProvider extends AbstractSingleton {
+class RequestUrlRepository extends AbstractSingleton {
     protected static $instance = null;
 
     public function getCreateUrl($entityName){

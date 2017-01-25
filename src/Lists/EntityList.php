@@ -6,6 +6,7 @@ use MoySklad\Components\Fields\MetaField;
 use MoySklad\Components\MassRequest;
 use MoySklad\Entities\AbstractEntity;
 use MoySklad\MoySklad;
+use MoySklad\Traits\AccessesSkladInstance;
 
 /**
  * List of entity objects
@@ -13,13 +14,14 @@ use MoySklad\MoySklad;
  * @package MoySklad\Lists
  */
 class EntityList implements \JsonSerializable, \ArrayAccess {
+    use AccessesSkladInstance;
+    
     protected
-        $skladInstance,
         $items = [];
 
     public function __construct(MoySklad $skladInstance, $items = [], MetaField $metaField = null)
     {
-        $this->skladInstance = $skladInstance;
+        $this->skladHashCode = $skladInstance->hashCode();
         $this->replaceItems($items);
     }
 
@@ -53,7 +55,7 @@ class EntityList implements \JsonSerializable, \ArrayAccess {
      * @return static
      */
     public function merge(EntityList $list){
-        return new static($this->skladInstance, array_merge($this->items, $list->toArray()));
+        return new static($this->getSkladInstance(), array_merge($this->items, $list->toArray()));
     }
 
     /**
@@ -62,7 +64,7 @@ class EntityList implements \JsonSerializable, \ArrayAccess {
      * @return static
      */
     public function map(callable $cb){
-        return new static($this->skladInstance, array_map($cb, $this->items));
+        return new static($this->getSkladInstance(), array_map($cb, $this->items));
     }
 
     /**
@@ -71,7 +73,7 @@ class EntityList implements \JsonSerializable, \ArrayAccess {
      * @return static
      */
     public function filter(callable $cb){
-        return new static($this->skladInstance, array_filter($this->items, $cb));
+        return new static($this->getSkladInstance(), array_filter($this->items, $cb));
     }
 
     /**
@@ -112,7 +114,7 @@ class EntityList implements \JsonSerializable, \ArrayAccess {
      * @return $this
      */
     public function massCreate(){
-        $mr = new MassRequest($this->skladInstance, $this->items);
+        $mr = new MassRequest($this->getSkladInstance(), $this->items);
         $this->items = $mr->create()->toArray();
         return $this;
     }

@@ -8,12 +8,13 @@ use MoySklad\Components\FilterQuery;
 use MoySklad\Components\Specs\QuerySpecs;
 use MoySklad\Lists\EntityList;
 use MoySklad\MoySklad;
-use MoySklad\Providers\RequestUrlProvider;
+use MoySklad\Repositories\RequestUrlRepository;
+use MoySklad\Traits\AccessesSkladInstance;
 
 class ListQuery{
-
+    use AccessesSkladInstance;
+    
     protected
-        $sklad,
         $entityClass,
         $entityName;
     /**
@@ -25,7 +26,7 @@ class ListQuery{
 
     public function __construct(MoySklad &$skladInstance, $entityClass)
     {
-        $this->sklad = $skladInstance;
+        $this->skladHashCode = $skladInstance->hashCode();
         $this->entityClass = $entityClass;
         $this->entityName = $entityClass::$entityName;
     }
@@ -80,7 +81,7 @@ class ListQuery{
             $query = array_merge($querySpecs->toArray(), [
                 "search" => $searchString
             ]);
-            return $this->sklad->getClient()->get($this->getQueryUrl(), $query);
+            return $this->getSkladInstance()->getClient()->get($this->getQueryUrl(), $query);
         }, $querySpecs, [
             $searchString
         ]);
@@ -103,7 +104,7 @@ class ListQuery{
             } else {
                 $query = $querySpecs->toArray();
             }
-            return $this->sklad->getClient()->get($this->getQueryUrl(), $query);
+            return $this->getSkladInstance()->getClient()->get($this->getQueryUrl(), $query);
         }, $querySpecs, [
             $filterQuery
         ]);
@@ -122,9 +123,9 @@ class ListQuery{
     ){
         $res = call_user_func_array($method, array_merge([$queryParams], $methodArgs));
         $resultingMeta = new MetaField($res->meta);
-        $resultingObjects = (new static::$entityListClass($this->sklad, $res->rows, $resultingMeta))
+        $resultingObjects = (new static::$entityListClass($this->getSkladInstance(), $res->rows, $resultingMeta))
             ->map(function($e) {
-                return new $this->entityClass($this->sklad, $e);
+                return new $this->entityClass($this->getSkladInstance(), $e);
             });
         if ( $resultingMeta->size > $queryParams->limit + $queryParams->offset ){
             $newQueryParams = $this->recreateQuerySpecs($queryParams);
@@ -156,6 +157,6 @@ class ListQuery{
      * @return null|string
      */
     protected function getQueryUrl(){
-        return (!empty($this->customQueryUrl)?$this->customQueryUrl: RequestUrlProvider::instance()->getListUrl($this->entityName));
+        return (!empty($this->customQueryUrl)?$this->customQueryUrl: RequestUrlRepository::instance()->getListUrl($this->entityName));
     }
 }

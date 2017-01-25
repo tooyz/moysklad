@@ -29,7 +29,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     {
         ob_end_flush();
         $auth = Config::getAuthData();
-        $this->sklad = new MoySklad($auth->login, $auth->password);
+        $this->sklad = MoySklad::getInstance($auth->login, $auth->password);
         $this->faker = Faker::create('ru_RU');
     }
 

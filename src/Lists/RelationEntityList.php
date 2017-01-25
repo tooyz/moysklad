@@ -7,7 +7,7 @@ use MoySklad\Components\Fields\MetaField;
 use MoySklad\Components\ListQuery;
 use MoySklad\MoySklad;
 use MoySklad\Components\ListQuery\RelationListQuery;
-use MoySklad\Providers\RequestUrlProvider;
+use MoySklad\Repositories\RequestUrlRepository;
 
 /**
  * EntityList with meta. Used for query
@@ -38,9 +38,9 @@ class RelationEntityList extends EntityList{
      */
     public function listQuery(){
         $relHref = $this->meta->parseRelationHref();
-        $res = new RelationListQuery($this->skladInstance, $this->meta->getClass());
+        $res = new RelationListQuery($this->getSkladInstance(), $this->meta->getClass());
         $res->setCustomQueryUrl(
-            RequestUrlProvider::instance()->relationListUrl($relHref['entityClass'], $relHref['entityId'], $relHref['relationClass'])
+            RequestUrlRepository::instance()->relationListUrl($relHref['entityClass'], $relHref['entityId'], $relHref['relationClass'])
         );
         return $res;
     }
@@ -51,7 +51,7 @@ class RelationEntityList extends EntityList{
      * @return static
      */
     public function merge(EntityList $list){
-        return new static($this->skladInstance, array_merge($this->items, $list->toArray()), $this->meta);
+        return new static($this->getSkladInstance(), array_merge($this->items, $list->toArray()), $this->meta);
     }
 
     /**
@@ -60,7 +60,7 @@ class RelationEntityList extends EntityList{
      * @return static
      */
     public function map(callable $cb){
-        return new static($this->skladInstance, array_map($cb, $this->items), $this->meta);
+        return new static($this->getSkladInstance(), array_map($cb, $this->items), $this->meta);
     }
 
 
@@ -70,6 +70,6 @@ class RelationEntityList extends EntityList{
      * @return static
      */
     public function filter(callable $cb){
-        return new static($this->skladInstance, array_filter($this->items, $cb), $this->meta);
+        return new static($this->getSkladInstance(), array_filter($this->items, $cb), $this->meta);
     }
 }

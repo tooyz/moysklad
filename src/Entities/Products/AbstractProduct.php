@@ -3,6 +3,7 @@
 namespace MoySklad\Entities\Products;
 
 use MoySklad\Entities\AbstractEntity;
+use MoySklad\Traits\HasPlainCreation;
 
 class AbstractProduct extends AbstractEntity{
 

@@ -17,7 +17,8 @@ use MoySklad\Components\ListQuery\ListQuery;
 use MoySklad\MoySklad;
 use MoySklad\Components\Fields\EntityFields;
 use MoySklad\Components\EntityLinker;
-use MoySklad\Providers\RequestUrlProvider;
+use MoySklad\Repositories\RequestUrlRepository;
+use MoySklad\Traits\AccessesSkladInstance;
 use MoySklad\Traits\HasPlainCreation;
 
 /**
@@ -26,7 +27,7 @@ use MoySklad\Traits\HasPlainCreation;
  * @package MoySklad\Entities
  */
 abstract class AbstractEntity implements \JsonSerializable {
-    use HasPlainCreation;
+    use AccessesSkladInstance;
 
     public static $entityName = '_a_entity';
     /**
@@ -49,10 +50,6 @@ abstract class AbstractEntity implements \JsonSerializable {
      * @var AttributeCollection $attributes
      */
     public $attributes;
-    /**
-     * @var MoySklad $skladInstance
-     */
-    protected $skladInstance;
 
     public function __construct(MoySklad &$skladInstance, $fields = [], ConstructionSpecs $specs = null)
     {
@@ -60,7 +57,7 @@ abstract class AbstractEntity implements \JsonSerializable {
         if ( is_array($fields) === false && is_object($fields) === false) $fields = [$fields];
         $this->fields = new EntityFields($fields);
         $this->links = new EntityLinker();
-        $this->skladInstance = $skladInstance;
+        $this->skladHashCode = $skladInstance->hashCode();
         $this->relations = new EntityRelation([], static::class);
         $this->processConstructionSpecs($specs);
     }
@@ -70,7 +67,7 @@ abstract class AbstractEntity implements \JsonSerializable {
      */
     protected function processConstructionSpecs(ConstructionSpecs $specs){
         if ( $specs->relations ){
-            $this->relations = EntityRelation::createRelations($this->skladInstance, $this);
+            $this->relations = EntityRelation::createRelations($this->getSkladInstance(), $this);
             foreach ( $this->relations->getInternal() as $k=>$v ){
                 $this->fields->deleteKey($k);
             }
@@ -83,7 +80,7 @@ abstract class AbstractEntity implements \JsonSerializable {
      * @return mixed| AbstractEntity
      */
     public function transformToClass($targetClass){
-        return new $targetClass($this->skladInstance, $this->fields->getInternal());
+        return new $targetClass($this->getSkladInstance(), $this->fields->getInternal());
     }
 
     /**
@@ -122,11 +119,11 @@ abstract class AbstractEntity implements \JsonSerializable {
         } else {
             $id = $this->id;
         }
-        $res = $this->skladInstance->getClient()->put(
-            RequestUrlProvider::instance()->getUpdateUrl(static::$entityName, $id),
+        $res = $this->getSkladInstance()->getClient()->put(
+            RequestUrlRepository::instance()->getUpdateUrl(static::$entityName, $id),
             $this->mergeFieldsWithLinks()
         );
-        return new static($this->skladInstance, $res);
+        return new static($this->getSkladInstance(), $res);
     }
 
     /**
@@ -142,7 +139,7 @@ abstract class AbstractEntity implements \JsonSerializable {
         } else {
             $id = $this->id;
         }
-        return static::byId($this->skladInstance, $id, $expand);
+        return static::byId($this->getSkladInstance(), $id, $expand);
     }
 
 
@@ -159,8 +156,8 @@ abstract class AbstractEntity implements \JsonSerializable {
         } else {
             $id = $this->id;
         }
-        $this->skladInstance->getClient()->delete(
-            RequestUrlProvider::instance()->getDeleteUrl(static::$entityName, $id)
+        $this->getSkladInstance()->getClient()->delete(
+            RequestUrlRepository::instance()->getDeleteUrl(static::$entityName, $id)
         );
         return true;
     }
@@ -197,7 +194,7 @@ abstract class AbstractEntity implements \JsonSerializable {
      */
     public static function byId(MoySklad &$skladInstance, $id, Expand $expand = null){
         $res = $skladInstance->getClient()->get(
-            RequestUrlProvider::instance()->getByIdUrl(static::$entityName, $id),
+            RequestUrlRepository::instance()->getByIdUrl(static::$entityName, $id),
             ($expand?['expand'=>$expand->flatten()]:[])
         );
         return new static($skladInstance, $res);
@@ -254,18 +251,12 @@ abstract class AbstractEntity implements \JsonSerializable {
     public function relationListQuery($relationName){
         return $this->relations->getListQuery($relationName);
     }
-
-    /**
-     * Get MoySklad instance used for constructing entity
-     * @return MoySklad
-     */
-    public function getSkladInstance(){
-        return $this->skladInstance;
-    }
     
     function jsonSerialize()
     {
-        return $this->fields;
+        $res = $this->fields->getInternal();
+        $res->relations = $this->relations;
+        return $res;
     }
 
     function __get($name)
