@@ -3,7 +3,5 @@
 namespace MoySklad\Entities;
 
 class Cashier extends AbstractEntity{
-
-    public static
-        $entityName = 'cashier';
+    public static $entityName = 'cashier';
 }

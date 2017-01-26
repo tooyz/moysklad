@@ -4,10 +4,30 @@ namespace MoySklad\Components\MutationBuilders;
 
 use MoySklad\Components\Specs\CreationSpecs;
 use MoySklad\Entities\AbstractEntity;
+use MoySklad\Exceptions\EntityHasNoIdException;
+use MoySklad\Repositories\RequestUrlRepository;
 
-class CreationBuilder extends AbstractMutationBuilder {
-    function run()
+class UpdateBuilder extends AbstractMutationBuilder {
+    /**
+     * Update entity with current fields
+     * @param boolean $getIdFromMeta
+     * @return static
+     * @throws EntityHasNoIdException
+     */
+    function execute()
     {
-        // TODO: Implement run() method.
+        $entity = &$this->e;
+        $entityClass = get_class($entity);
+        if ( empty($entity->fields->id) ){
+            if ( !$id = $entity->getMeta()->getId()) throw new EntityHasNoIdException($entity);
+        } else {
+            $id = $entity->id;
+        }
+        $res = $entity->getSkladInstance()->getClient()->put(
+            RequestUrlRepository::instance()->getUpdateUrl($entityClass::$entityName, $id),
+            $entity->mergeFieldsWithLinks()
+        );
+        return new $entityClass($entity->getSkladInstance(), $res);
+
     }
 }

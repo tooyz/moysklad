@@ -6,7 +6,8 @@ use MoySklad\Components\Expand;
 use MoySklad\Components\Fields\AttributeCollection;
 use MoySklad\Components\Fields\EntityRelation;
 use MoySklad\Components\Fields\MetaField;
-use MoySklad\Components\MassRequest;
+use MoySklad\Components\MutationBuilders\CreationBuilder;
+use MoySklad\Components\MutationBuilders\UpdateBuilder;
 use MoySklad\Components\Specs\ConstructionSpecs;
 use MoySklad\Components\Specs\CreationSpecs;
 use MoySklad\Components\Specs\LinkingSpecs;
@@ -19,7 +20,6 @@ use MoySklad\Components\EntityLinker;
 use MoySklad\Repositories\RequestUrlRepository;
 use MoySklad\Traits\AccessesSkladInstance;
 use MoySklad\Traits\Deletes;
-use MoySklad\Traits\Updates;
 
 /**
  * Root entity object
@@ -27,9 +27,16 @@ use MoySklad\Traits\Updates;
  * @package MoySklad\Entities
  */
 abstract class AbstractEntity implements \JsonSerializable {
-    use AccessesSkladInstance, Updates, Deletes;
+    use AccessesSkladInstance, Deletes;
 
+    /**
+     * @var string
+     */
     public static $entityName = '_a_entity';
+    /**
+     * @var array
+     */
+    protected static $requiredForCreation = [];
     /**
      * @var EntityFields $fields
      */
@@ -132,19 +139,17 @@ abstract class AbstractEntity implements \JsonSerializable {
         return new ListQuery($skladInstance, static::class);
     }
 
-    /**
-     * Instantly runs creation on single entity
-     * @param CreationSpecs $creationSpecs
-     * @return static
-     */
-    protected function runCreateIfNotBatch(CreationSpecs $creationSpecs){
-        if ( !$creationSpecs->batch ){
-            $mr = new MassRequest($this->getSkladInstance(), $this);
-            return $mr->create()[0];
-        }
-        return $this;
+    public function creator(CreationSpecs $specs = null){
+        return new CreationBuilder($this, $specs);
     }
 
+    public function updater(){
+        return new UpdateBuilder($this);
+    }
+
+    public static function getFieldsRequiredForCreation(){
+        return static::$requiredForCreation;
+    }
 
     /**
      * Get entity by id
