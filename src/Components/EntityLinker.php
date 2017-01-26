@@ -18,13 +18,24 @@ class EntityLinker{
         $name = $specs->name;
         $multiple = $specs->multiple;
         $selectedFields = $specs->fields;
+        $excludedFields = $specs->excludedFields;
+
+        if ( $selectedFields && $excludedFields ){
+            throw new \Exception('Can\'t use "fields" param with "excludedFields"');
+        }
 
         $cls = get_class($entity);
-        if ( $selectedFields ){
+        if ( $selectedFields || $excludedFields ){
             $tFields = [];
             foreach ($entity->fields->getInternal() as $k=> $v){
-                if ( in_array($k, $selectedFields) ){
-                    $tFields[$k] = $v;
+                if ( $selectedFields ){
+                    if ( in_array($k, $selectedFields) ){
+                        $tFields[$k] = $v;
+                    }
+                } else {
+                    if ( !in_array($k, $excludedFields) ){
+                        $tFields[$k] = $v;
+                    }
                 }
             }
             $skladInstance = $entity->getSkladInstance();

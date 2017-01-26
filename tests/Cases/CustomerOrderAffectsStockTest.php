@@ -6,8 +6,8 @@ use MoySklad\Components\FilterQuery;
 use MoySklad\Components\Specs\QuerySpecs;
 use MoySklad\Entities\Assortment;
 use MoySklad\Entities\Counterparty;
-use MoySklad\Entities\Movements\Enter;
-use MoySklad\Entities\Orders\CustomerOrder;
+use MoySklad\Entities\Documents\Movements\Enter;
+use MoySklad\Entities\Documents\Orders\CustomerOrder;
 use MoySklad\Entities\Organization;
 use MoySklad\Entities\Products\Product;
 use MoySklad\Entities\Store;
@@ -45,7 +45,7 @@ class CustomerOrderAffectsStockTest extends TestCase{
         $this->say("Product id:" . $product->id);
         $enter = (new Enter($this->sklad, [
            "name" => $testEnterName
-        ]))->create($org, $store, $product);
+        ]))->create($org, $store, new EntityList($this->sklad, $product));
         $this->say("Enter id:" . $enter->id );
 
         $filteredProduct = Assortment::listQuery($this->sklad)->filter(

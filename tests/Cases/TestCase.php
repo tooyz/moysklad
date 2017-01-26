@@ -11,6 +11,8 @@ require_once "vendor/autoload.php";
 require_once "../vendor/autoload.php";
 require_once "includes.php";
 
+define("PHPUNIT", 1);
+
 abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
     /**

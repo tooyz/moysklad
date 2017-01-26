@@ -5,30 +5,43 @@ namespace MoySklad\Repositories;
 use MoySklad\Entities\AbstractEntity;
 use MoySklad\Entities\Account;
 use MoySklad\Entities\Assortment;
+use MoySklad\Entities\Cashier;
 use MoySklad\Entities\ContactPerson;
+use MoySklad\Entities\Contract;
 use MoySklad\Entities\Counterparty;
 use MoySklad\Entities\Country;
+use MoySklad\Entities\Currency;
+use MoySklad\Entities\Discount;
+use MoySklad\Entities\Documents\AbstractDocument;
+use MoySklad\Entities\Documents\Movements\Base\AbstractMovement;
+use MoySklad\Entities\Documents\Movements\Demand;
+use MoySklad\Entities\Documents\Movements\Enter;
+use MoySklad\Entities\Documents\Movements\Loss;
+use MoySklad\Entities\Documents\Movements\Supply;
+use MoySklad\Entities\Documents\Orders\AbstractOrder;
+use MoySklad\Entities\Documents\Orders\CustomerOrder;
+use MoySklad\Entities\Documents\Orders\PurchaseOrder;
+use MoySklad\Entities\Documents\Positions\AbstractPosition;
+use MoySklad\Entities\Documents\Positions\CustomerOrderPosition;
+use MoySklad\Entities\Documents\Positions\EnterPosition;
 use MoySklad\Entities\Employee;
+use MoySklad\Entities\ExpenseItem;
 use MoySklad\Entities\Folders\ProductFolder;
 use MoySklad\Entities\Group;
 use MoySklad\Entities\Misc\Attribute;
+use MoySklad\Entities\Misc\Characteristics;
 use MoySklad\Entities\Misc\CompanySettings;
+use MoySklad\Entities\Misc\CustomEntity;
 use MoySklad\Entities\Misc\State;
 use MoySklad\Entities\Misc\Webhook;
-use MoySklad\Entities\Movements\AbstractMovement;
-use MoySklad\Entities\Movements\Enter;
-use MoySklad\Entities\Orders\AbstractOrder;
-use MoySklad\Entities\Orders\CustomerOrder;
-use MoySklad\Entities\Orders\PurchaseOrder;
 use MoySklad\Entities\Organization;
-use MoySklad\Entities\Positions\AbstractPosition;
-use MoySklad\Entities\Positions\CustomerOrderPosition;
-use MoySklad\Entities\Positions\EnterPosition;
 use MoySklad\Entities\Products\AbstractProduct;
 use MoySklad\Entities\Products\Consignment;
 use MoySklad\Entities\Products\Product;
 use MoySklad\Entities\Products\Service;
 use MoySklad\Entities\Products\Variant;
+use MoySklad\Entities\Project;
+use MoySklad\Entities\RetailStore;
 use MoySklad\Entities\Store;
 use MoySklad\Entities\Uom;
 use MoySklad\Utils\AbstractSingleton;
@@ -37,6 +50,7 @@ class EntityRepository extends AbstractSingleton{
     protected static $instance = null;
     public $entities = [
         AbstractEntity::class,
+        AbstractDocument::class,
         AbstractOrder::class,
         CustomerOrder::class,
         PurchaseOrder::class,
@@ -53,6 +67,7 @@ class EntityRepository extends AbstractSingleton{
         ContactPerson::class,
         State::class,
         AbstractPosition::class,
+        EnterPosition::class,
         CustomerOrderPosition::class,
         Country::class,
         Webhook::class,
@@ -63,8 +78,19 @@ class EntityRepository extends AbstractSingleton{
         Enter::class,
         Attribute::class,
         Store::class,
-        EnterPosition::class,
-        CompanySettings::class
+        Characteristics::class,
+        CompanySettings::class,
+        CustomEntity::class,
+        Cashier::class,
+        Contract::class,
+        Discount::class,
+        ExpenseItem::class,
+        Project::class,
+        RetailStore::class,
+        Currency::class,
+        Loss::class,
+        Demand::class,
+        Supply::class
     ];
     public $entityNames = [];
 

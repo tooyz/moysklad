@@ -1,6 +1,6 @@
 <?php
 
-namespace MoySklad\Entities\Orders;
+namespace MoySklad\Entities\Documents\Orders;
 
 use MoySklad\Components\MassRequest;
 use MoySklad\Components\Specs\CreationSpecs;
@@ -8,11 +8,13 @@ use MoySklad\Components\Specs\LinkingSpecs;
 use MoySklad\Entities\Assortment;
 use MoySklad\Entities\Counterparty;
 use MoySklad\Entities\AbstractEntity;
+use MoySklad\Entities\Documents\AbstractDocument;
 use MoySklad\Entities\Organization;
 use MoySklad\Lists\EntityList;
+use MoySklad\Traits\LinksPositionsForCreation;
 
- class AbstractOrder extends AbstractEntity
-{
+class AbstractOrder extends AbstractDocument{
+    use LinksPositionsForCreation;
     public static $entityName = '_a_order';
 
     public function create(Counterparty $counterparty = null, Organization $organization = null, EntityList $positions = null, CreationSpecs $specs = null){
@@ -21,20 +23,7 @@ use MoySklad\Lists\EntityList;
             'name' => 'agent',
         ]));
         $this->links->link( $organization );
-        if ( $positions ){
-            $positions->each(function(AbstractEntity $position){
-                $position->assortment = [
-                    'meta' => $position->getMeta()
-                ];
-                $this->links->link($position, LinkingSpecs::create([
-                    'multiple' => true,
-                    'name' => "positions",
-                    'fields' => [
-                        "accountId", "discount", "vat", "shipped", "reserve", "assortment", "quantity", "price"
-                    ]
-                ]));
-            });
-        }
+        $this->linkPositionsForCreation($positions);
         return $this->runCreateIfNotBatch($specs);
     }
 }

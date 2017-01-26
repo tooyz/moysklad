@@ -3,10 +3,10 @@
 namespace MoySklad\Entities;
 
 use MoySklad\MoySklad;
-use MoySklad\Traits\HasPlainCreation;
+use MoySklad\Traits\CreatesSimply;
 
 class Assortment extends AbstractEntity{
-    use HasPlainCreation;
+    use CreatesSimply;
 
     public static $entityName = 'assortment';
 

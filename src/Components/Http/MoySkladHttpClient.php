@@ -107,6 +107,15 @@ class MoySkladHttpClient{
             $requestBody['json'] = $data;
         }
 
+        $serializedRequest = (isset($requestBody['json'])?\json_decode(\json_encode($requestBody['json'])):$requestBody['query']);
+        $reqLog = [
+            "req" => [
+                "type" => $requestHttpMethod,
+                "method" => $apiMethod,
+                "body" => $serializedRequest
+            ]
+        ];
+
         $client = new Client($requestOptions);
         try{
             usleep($this->preRequestSleepTime);
@@ -116,14 +125,6 @@ class MoySkladHttpClient{
                 $requestBody
             );
             if ( $res->getStatusCode() === self::HTTP_CODE_SUCCESS ){
-                $serializedRequest = (isset($requestBody['json'])?\json_decode(\json_encode($requestBody['json'])):$requestBody['query']);
-                $reqLog = [
-                    "req" => [
-                        "type" => $requestHttpMethod,
-                        "method" => $apiMethod,
-                        "body" => $serializedRequest
-                    ]
-                ];
                 if ( $requestHttpMethod !== self::METHOD_DELETE ){
                     if ( is_null($result = \json_decode($res->getBody())) === false ){
                         $reqLog['res'] = $result;
@@ -136,13 +137,16 @@ class MoySkladHttpClient{
                 RequestLog::add($reqLog);
             }
         } catch (ClientException $e){
-            $req = $e->getRequest()->getBody()->getContents();
+            $req = $reqLog['req'];
             $res = $e->getResponse()->getBody()->getContents();
             $except = new RequestFailedException($req, $res);
             if ( $res = \json_decode($res) ){
                 if ( $res->errors ){
                     $except = new ApiResponseException($req, $res);
                 }
+            }
+            if ( defined('PHPUNIT') ){
+                print_r($except->getDump());
             }
             throw $except;
         }

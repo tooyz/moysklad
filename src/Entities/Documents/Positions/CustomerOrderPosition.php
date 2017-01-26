@@ -1,6 +1,6 @@
 <?php
 
-namespace MoySklad\Entities\Positions;
+namespace MoySklad\Entities\Documents\Positions;
 
 class CustomerOrderPosition extends AbstractPosition  {
     public static $entityName = 'customerorderposition';

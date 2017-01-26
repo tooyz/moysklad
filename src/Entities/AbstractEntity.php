@@ -10,7 +10,6 @@ use MoySklad\Components\MassRequest;
 use MoySklad\Components\Specs\ConstructionSpecs;
 use MoySklad\Components\Specs\CreationSpecs;
 use MoySklad\Components\Specs\LinkingSpecs;
-use MoySklad\Exceptions\ApiResponseException;
 use MoySklad\Exceptions\EntityHasNoIdException;
 use MoySklad\Exceptions\EntityHasNoMetaException;
 use MoySklad\Components\ListQuery\ListQuery;
@@ -19,7 +18,8 @@ use MoySklad\Components\Fields\EntityFields;
 use MoySklad\Components\EntityLinker;
 use MoySklad\Repositories\RequestUrlRepository;
 use MoySklad\Traits\AccessesSkladInstance;
-use MoySklad\Traits\HasPlainCreation;
+use MoySklad\Traits\Deletes;
+use MoySklad\Traits\Updates;
 
 /**
  * Root entity object
@@ -27,7 +27,7 @@ use MoySklad\Traits\HasPlainCreation;
  * @package MoySklad\Entities
  */
 abstract class AbstractEntity implements \JsonSerializable {
-    use AccessesSkladInstance;
+    use AccessesSkladInstance, Updates, Deletes;
 
     public static $entityName = '_a_entity';
     /**
@@ -108,25 +108,6 @@ abstract class AbstractEntity implements \JsonSerializable {
     }
 
     /**
-     * Update entity with current fields
-     * @param boolean $getIdFromMeta
-     * @return static
-     * @throws EntityHasNoIdException
-     */
-    public function update($getIdFromMeta = false){
-        if ( empty($this->fields->id) ){
-            if ( !$getIdFromMeta || !$id = $this->getMeta()->getId()) throw new EntityHasNoIdException($this);
-        } else {
-            $id = $this->id;
-        }
-        $res = $this->getSkladInstance()->getClient()->put(
-            RequestUrlRepository::instance()->getUpdateUrl(static::$entityName, $id),
-            $this->mergeFieldsWithLinks()
-        );
-        return new static($this->getSkladInstance(), $res);
-    }
-
-    /**
      * Gets new entity with same id from server, expand may be used to load relations
      * @param boolean $getIdFromMeta
      * @param Expand|null $expand
@@ -140,26 +121,6 @@ abstract class AbstractEntity implements \JsonSerializable {
             $id = $this->id;
         }
         return static::byId($this->getSkladInstance(), $id, $expand);
-    }
-
-
-    /**
-     * Delete entity, throws exception if not found
-     * @param bool $getIdFromMeta
-     * @return bool
-     * @throws EntityHasNoIdException
-     * @throws ApiResponseException
-     */
-    public function delete($getIdFromMeta = false){
-        if ( empty($this->fields->id) ){
-            if ( !$getIdFromMeta || !$id = $this->getMeta()->getId()) throw new EntityHasNoIdException($this);
-        } else {
-            $id = $this->id;
-        }
-        $this->getSkladInstance()->getClient()->delete(
-            RequestUrlRepository::instance()->getDeleteUrl(static::$entityName, $id)
-        );
-        return true;
     }
 
     /**
@@ -250,6 +211,17 @@ abstract class AbstractEntity implements \JsonSerializable {
      */
     public function relationListQuery($relationName){
         return $this->relations->getListQuery($relationName);
+    }
+
+    /**
+     * Get entity metadata information
+     * @param MoySklad $sklad
+     * @return \stdClass
+     */
+    public static function getMetaData(MoySklad $sklad){
+        return $sklad->getClient()->get(
+            RequestUrlRepository::instance()->getMetadataUrl(static::$entityName)
+        );
     }
     
     function jsonSerialize()

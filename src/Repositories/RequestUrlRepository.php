@@ -27,7 +27,19 @@ class RequestUrlRepository extends AbstractSingleton {
         return "entity/" . $entityName;
     }
 
-    public function relationListUrl($entityName, $entityId, $relatedEntityName){
+    public function getRelationListUrl($entityName, $entityId, $relatedEntityName){
         return $this->getListUrl($entityName) . "/" . $entityId . "/" . $relatedEntityName;
+    }
+
+    public function getReportUrl($period){
+        return 'report/dashboard/' . $period;
+    }
+
+    public function getMetadataUrl($entityName){
+        return 'entity/' . $entityName . '/metadata';
+    }
+
+    public function getMetadataAttributeUrl($entityName, $fieldId){
+        return 'entity/' . $entityName . '/metadata/attributes/' . $fieldId;
     }
 }

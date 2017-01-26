@@ -2,10 +2,10 @@
 
 namespace MoySklad\Entities;
 
-use MoySklad\Traits\HasPlainCreation;
+use MoySklad\Traits\CreatesSimply;
 
 class Account extends AbstractEntity{
-    use HasPlainCreation;
+    use CreatesSimply;
 
     public static
         $entityName = 'account';

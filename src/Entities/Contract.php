@@ -2,12 +2,11 @@
 
 namespace MoySklad\Entities;
 
-
 use MoySklad\Traits\CreatesSimply;
 
-class Currency extends AbstractEntity{
+class Contract extends AbstractEntity{
     use CreatesSimply;
 
     public static
-        $entityName = 'currency';
+        $entityName = 'contract';
 }

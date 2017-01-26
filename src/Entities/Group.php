@@ -2,10 +2,10 @@
 
 namespace MoySklad\Entities;
 
-use MoySklad\Traits\HasPlainCreation;
+use MoySklad\Traits\CreatesSimply;
 
 class Group extends AbstractEntity{
-    use HasPlainCreation;
+    use CreatesSimply;
 
     public static
         $entityName = 'group';

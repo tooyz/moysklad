@@ -40,7 +40,7 @@ class RelationEntityList extends EntityList{
         $relHref = $this->meta->parseRelationHref();
         $res = new RelationListQuery($this->getSkladInstance(), $this->meta->getClass());
         $res->setCustomQueryUrl(
-            RequestUrlRepository::instance()->relationListUrl($relHref['entityClass'], $relHref['entityId'], $relHref['relationClass'])
+            RequestUrlRepository::instance()->getRelationListUrl($relHref['entityClass'], $relHref['entityId'], $relHref['relationClass'])
         );
         return $res;
     }
