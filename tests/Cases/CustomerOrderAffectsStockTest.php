@@ -36,28 +36,37 @@ class CustomerOrderAffectsStockTest extends TestCase{
 
         $cp = (new Counterparty($this->sklad, [
             "name" => $testCounterpartyName
-        ]))->create();
+        ]))->buildCreation()->execute();
         $this->say("Cp id:" . $cp->id);
         $product = (new Product($this->sklad, [
             "name" => $testProductName,
             "quantity" => 25
-        ]))->create();
+        ]))->buildCreation()->execute();
         $this->say("Product id:" . $product->id);
         $enter = (new Enter($this->sklad, [
            "name" => $testEnterName
-        ]))->create($org, $store, new EntityList($this->sklad, $product));
+        ]))->buildCreation()->
+            addOrganization($org)->
+            addStore($store)->
+            addPositionList(new EntityList($this->sklad, $product))->
+            execute();
         $this->say("Enter id:" . $enter->id );
 
-        $filteredProduct = Assortment::listQuery($this->sklad)->filter(
-            (new FilterQuery())->eq("name", $testProductName),
-            QuerySpecs::create([
-                "maxResults" => 1
-            ])
+        $filteredProduct = Assortment::listQuery($this->sklad,QuerySpecs::create([
+            "maxResults" => 1
+        ]))->filter(
+            (new FilterQuery())->eq("name", $testProductName)
         )->transformItemsToMetaClass()[0];
         $this->assertTrue($filteredProduct->id === $product->id);
 
-        $co = (new CustomerOrder($this->sklad))
-            ->create($cp, $org, new EntityList($this->sklad, $product));
+        $co = (new CustomerOrder($this->sklad, [
+            "name" => "TestOrder"
+        ]))
+            ->buildCreation()
+            ->addCounterparty($cp)
+            ->addOrganization($org)
+            ->addPositionList(new EntityList($this->sklad, $product))
+            ->execute();
 
         $this->say("Order id:" . $co->id );
 

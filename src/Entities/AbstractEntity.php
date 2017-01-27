@@ -4,6 +4,7 @@ namespace MoySklad\Entities;
 
 use MoySklad\Components\Expand;
 use MoySklad\Components\Fields\AttributeCollection;
+use MoySklad\Components\Fields\EntityLinker;
 use MoySklad\Components\Fields\EntityRelation;
 use MoySklad\Components\Fields\MetaField;
 use MoySklad\Components\MutationBuilders\CreationBuilder;
@@ -11,12 +12,12 @@ use MoySklad\Components\MutationBuilders\UpdateBuilder;
 use MoySklad\Components\Specs\ConstructionSpecs;
 use MoySklad\Components\Specs\CreationSpecs;
 use MoySklad\Components\Specs\LinkingSpecs;
+use MoySklad\Components\Specs\QuerySpecs;
 use MoySklad\Exceptions\EntityHasNoIdException;
 use MoySklad\Exceptions\EntityHasNoMetaException;
 use MoySklad\Components\ListQuery\ListQuery;
 use MoySklad\MoySklad;
 use MoySklad\Components\Fields\EntityFields;
-use MoySklad\Components\EntityLinker;
 use MoySklad\Repositories\RequestUrlRepository;
 use MoySklad\Traits\AccessesSkladInstance;
 use MoySklad\Traits\Deletes;
@@ -33,10 +34,6 @@ abstract class AbstractEntity implements \JsonSerializable {
      * @var string
      */
     public static $entityName = '_a_entity';
-    /**
-     * @var array
-     */
-    protected static $requiredForCreation = [];
     /**
      * @var EntityFields $fields
      */
@@ -63,7 +60,7 @@ abstract class AbstractEntity implements \JsonSerializable {
         if ( !$specs ) $specs = ConstructionSpecs::create();
         if ( is_array($fields) === false && is_object($fields) === false) $fields = [$fields];
         $this->fields = new EntityFields($fields);
-        $this->links = new EntityLinker();
+        $this->links = new EntityLinker([]);
         $this->skladHashCode = $skladInstance->hashCode();
         $this->relations = new EntityRelation([], static::class);
         $this->processConstructionSpecs($specs);
@@ -135,20 +132,20 @@ abstract class AbstractEntity implements \JsonSerializable {
      * @param MoySklad $skladInstance
      * @return ListQuery
      */
-    public static function listQuery(MoySklad &$skladInstance){
-        return new ListQuery($skladInstance, static::class);
+    public static function listQuery(MoySklad &$skladInstance, QuerySpecs $querySpecs = null){
+        return new ListQuery($skladInstance, static::class, $querySpecs);
     }
 
-    public function creator(CreationSpecs $specs = null){
+    public function buildCreation(CreationSpecs $specs = null){
         return new CreationBuilder($this, $specs);
     }
 
-    public function updater(){
+    public function buildUpdate(){
         return new UpdateBuilder($this);
     }
 
     public static function getFieldsRequiredForCreation(){
-        return static::$requiredForCreation;
+        return [];
     }
 
     /**

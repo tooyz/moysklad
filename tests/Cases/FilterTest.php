@@ -25,7 +25,7 @@ class FilterTest extends TestCase{
         $product = (new Product($this->sklad, [
             'article' => $prodArticle,
             'name' => $prodArticle.'_name'
-        ]))->create();
+        ]))->buildCreation()->execute();
 
         $pl = Product::listQuery($this->sklad)->get();
         $manFpl = $pl->filter(function(Product $e) use($prodArticle){

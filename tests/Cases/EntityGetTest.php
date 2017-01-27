@@ -26,9 +26,9 @@ class EntityGetTest extends TestCase{
         $this->methodStart();
         $this->say("Start getting products");
         $this->timeStart();
-        $productList = Product::listQuery($this->sklad)->get(QuerySpecs::create([
+        $productList = Product::listQuery($this->sklad, QuerySpecs::create([
             'maxResults' => 25
-        ]));
+        ]))->get();
        // dd($productList->meta);
         $this->say("Took " . $this->timeEnd() . " sec");
         $this->assertTrue(
@@ -37,9 +37,9 @@ class EntityGetTest extends TestCase{
 
         $this->say("Start getting assortment");
         $this->timeStart();
-        $assortmentList = Assortment::listQuery($this->sklad)->get(QuerySpecs::create([
+        $assortmentList = Assortment::listQuery($this->sklad, QuerySpecs::create([
             'maxResults' => 25
-        ]));
+        ]))->get();
         $this->say("Took " . $this->timeEnd() . " sec");
         $this->say("Start transform, have " . $assortmentList->count() . " items\n");
         $this->timeStart();
@@ -85,9 +85,9 @@ class EntityGetTest extends TestCase{
 
     public function testGetProductListWithExpand(){
         $this->methodStart();
-        $products = Product::listQuery($this->sklad)->withExpand(Expand::create(['owner']))->get(QuerySpecs::create([
+        $products = Product::listQuery($this->sklad, QuerySpecs::create([
             'maxResults' => 5
-        ]))->each(function(Product $p){
+        ]))->withExpand(Expand::create(['owner']))->get()->each(function(Product $p){
            $this->assertNotNull(
                $p->relations->find(Employee::class)->id
            );
@@ -97,7 +97,7 @@ class EntityGetTest extends TestCase{
 
     public function testGetProductWithExpand(){
         $this->methodStart();
-        $someProduct = Product::listQuery($this->sklad)->get(QuerySpecs::create(['maxResults' => 1]))->get(0);
+        $someProduct = Product::listQuery($this->sklad, QuerySpecs::create(['maxResults' => 1]))->get()->get(0);
         $sameProduct = Product::byId($this->sklad, $someProduct->id, Expand::create(['owner']));
         $this->assertNotNull(
             $sameProduct->relations->find(Employee::class)->id

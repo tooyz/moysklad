@@ -20,7 +20,7 @@ class EntityDeleteTest extends TestCase{
         $this->methodStart();
         $product = (new Product($this->sklad, [
             "name" => "TestProduct"
-        ]))->create();
+        ]))->buildCreation()->execute();
         $product = Product::byId($this->sklad, $product->id);
         $this->assertTrue(!empty($product->id));
         $this->say("Created product with id: " . $product->id);

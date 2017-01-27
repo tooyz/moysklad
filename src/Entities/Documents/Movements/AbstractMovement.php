@@ -1,6 +1,6 @@
 <?php
 
-namespace MoySklad\Entities\Documents\Movements\Base;
+namespace MoySklad\Entities\Documents\Movements;
 
 use MoySklad\Entities\Documents\AbstractDocument;
 

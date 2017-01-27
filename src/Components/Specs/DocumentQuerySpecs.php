@@ -4,7 +4,7 @@ namespace MoySklad\Components\Specs;
 
 
 class DocumentQuerySpecs extends QuerySpecs {
-
+    protected static $cachedDefaultSpecs = null;
     public function getDefaults(){
         $res = parent::getDefaults();
         $res->{'state.name'} = null;

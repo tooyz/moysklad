@@ -231,8 +231,9 @@ abstract class AbstractMutationBuilder{
         return $this;
     }
 
-    protected function simpleLink(AbstractEntity $linkedEntity, LinkingSpecs $specs, LinkingSpecs $defaultSpecs = null){
+    protected function simpleLink(AbstractEntity $linkedEntity, LinkingSpecs $specs = null, LinkingSpecs $defaultSpecs = null){
         if ( $defaultSpecs && !$specs ) $specs = $defaultSpecs;
+        if ( !$specs ) $specs = LinkingSpecs::create([]);
         $this->e->links->link($linkedEntity, $specs);
         return $this;
     }

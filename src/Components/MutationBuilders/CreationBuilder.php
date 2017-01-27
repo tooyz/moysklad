@@ -23,10 +23,12 @@ class CreationBuilder extends AbstractMutationBuilder {
     {
         $eClass = get_class($this->e);
         $requiredFields = $eClass::getFieldsRequiredForCreation();
-        $mr = new MassRequest($this->e->getSkladInstance(), $this->e);
         foreach ( $requiredFields as $requiredField ){
-            if ( !isset($this->e->{$requiredField}) ) throw new IncompleteCreationFieldsException($this->e);
+            if (
+                !isset($this->e->links->{$requiredField}) && !isset($this->e->{$requiredField})
+            ) throw new IncompleteCreationFieldsException($this->e);
         }
+        $mr = new MassRequest($this->e->getSkladInstance(), $this->e);
         return $mr->create()[0];
     }
 }

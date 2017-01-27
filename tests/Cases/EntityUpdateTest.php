@@ -27,13 +27,13 @@ class EntityUpdateTest extends TestCase{
         $oldName = $pl->name;
         $newName = $this->faker->linuxProcessor;
         $pl->name = $newName;
-        $uProd = $pl->update();
+        $uProd = $pl->buildUpdate()->execute();
         $this->assertNotEquals(
             $oldName,
             $uProd->name
         );
         $pl->name = $oldName;
-        $pl->update();
+        $pl->buildUpdate()->execute();
         $this->methodEnd();
     }
 }

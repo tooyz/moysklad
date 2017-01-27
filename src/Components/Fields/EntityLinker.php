@@ -1,17 +1,15 @@
 <?php
 
-namespace MoySklad\Components;
+namespace MoySklad\Components\Fields;
 
+use MoySklad\Components\Fields\AbstractFieldAccessor;
 use MoySklad\Components\Specs\ConstructionSpecs;
 use MoySklad\Components\Specs\CreationSpecs;
 use MoySklad\Components\Specs\LinkingSpecs;
 use MoySklad\Entities\Counterparty;
 use MoySklad\Entities\AbstractEntity;
 
-//TODO: Стоит унаследовать от AbstractFieldAccessor
-class EntityLinker{
-    private
-        $buckets = [];
+class EntityLinker extends AbstractFieldAccessor{
 
     public function link(AbstractEntity $entity, LinkingSpecs $specs = null ){
         if ( !$specs ) $specs = LinkingSpecs::create();
@@ -49,10 +47,10 @@ class EntityLinker{
             $name = $cls::$entityName;
         }
         if ( $multiple ){
-            if ( empty($this->buckets[$name]) ) $this->buckets[$name] = [];
-            $this->buckets[$name][] = $newEntity;
+            if ( empty($this->storage->{$name}) ) $this->storage->{$name} = [];
+            $this->storage->{$name}[] = $newEntity;
         } else {
-            $this->buckets[$name] = $newEntity;
+            $this->storage->{$name} = $newEntity;
         }
     }
 
@@ -63,10 +61,10 @@ class EntityLinker{
     }
 
     public function getLinks(){
-        return $this->buckets;
+        return $this->storage;
     }
 
     public function reattachLinks(EntityLinker $otherLinker){
-        $this->buckets = $otherLinker->getLinks();
+        $this->storage = $otherLinker->getLinks();
     }
 }

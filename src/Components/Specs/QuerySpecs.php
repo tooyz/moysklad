@@ -38,17 +38,16 @@ class QuerySpecs extends AbstractSpecs {
     {
         if ( $specs['limit'] > self::MAX_LIST_LIMIT ) $specs['limit'] = self::MAX_LIST_LIMIT;
         $res = parent::create($specs);
-        if ( $res->maxResults !== 0 && $res->maxResults < $res->limit ) $res->limit = $res->maxResults;
-        else unset($res->maxResults);
+        if ( $res->maxResults !== 0 && $res->maxResults < $res->limit ) {
+            $res->limit = $res->maxResults;
+        }
         try{
             if ( $res->updatedFrom !== null ) $res->updatedFrom->format();
             if ( $res->updatedBy !== null ) $res->updatedBy->format();
         } catch ( \Exception $e ){
             throw new \Exception('"updatedFrom" and "updatedTo" specs should be instances of "'.CommonDate::class.'" class');
         }
-        foreach ( $res as $k=>$v ){
-            if ( $v === null ) unset($res->{$k});
-        }
+
         return $res;
     }
 
@@ -61,6 +60,9 @@ class QuerySpecs extends AbstractSpecs {
         $res = parent::toArray();
         if ( !empty($this->expand) ){
             $res['expand'] = $this->expand->flatten();
+        }
+        foreach ( $res as $k=>$v ){
+            if ( $v === null ) unset($res->{$k});
         }
         return $res;
     }

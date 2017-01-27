@@ -13,7 +13,7 @@ use MoySklad\Entities\Country;
 use MoySklad\Entities\Currency;
 use MoySklad\Entities\Discount;
 use MoySklad\Entities\Documents\AbstractDocument;
-use MoySklad\Entities\Documents\Movements\Base\AbstractMovement;
+use MoySklad\Entities\Documents\Movements\AbstractMovement;
 use MoySklad\Entities\Documents\Movements\Demand;
 use MoySklad\Entities\Documents\Movements\Enter;
 use MoySklad\Entities\Documents\Movements\Loss;

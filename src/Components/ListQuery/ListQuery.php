@@ -16,7 +16,8 @@ class ListQuery{
     
     protected
         $entityClass,
-        $entityName;
+        $entityName,
+        $querySpecs;
     /**
      * @var Expand $expand
      */
@@ -24,11 +25,13 @@ class ListQuery{
     private $customQueryUrl = null;
     protected static $entityListClass = EntityList::class;
 
-    public function __construct(MoySklad &$skladInstance, $entityClass)
+    public function __construct(MoySklad &$skladInstance, $entityClass, QuerySpecs $querySpecs = null)
     {
         $this->skladHashCode = $skladInstance->hashCode();
         $this->entityClass = $entityClass;
         $this->entityName = $entityClass::$entityName;
+        if ( !$querySpecs ) $querySpecs = QuerySpecs::create([]);
+        $this->querySpecs = $querySpecs;
     }
 
     /**
@@ -64,8 +67,8 @@ class ListQuery{
      * @param array $queryParams
      * @return array|EntityList
      */
-    public function get(QuerySpecs $querySpecs = null){
-        return $this->filter(null, $querySpecs);
+    public function get(){
+        return $this->filter(null);
     }
 
     /**
@@ -74,15 +77,14 @@ class ListQuery{
      * @param QuerySpecs|null $querySpecs
      * @return EntityList
      */
-    public function search($searchString = '', QuerySpecs $querySpecs = null){
-        if ( !$querySpecs ) $querySpecs = QuerySpecs::create([]);
-        $this->attachExpand($querySpecs);
+    public function search($searchString = ''){
+        $this->attachExpand($this->querySpecs);
         return static::recursiveRequest(function(QuerySpecs $querySpecs, $searchString){
             $query = array_merge($querySpecs->toArray(), [
                 "search" => $searchString
             ]);
             return $this->getSkladInstance()->getClient()->get($this->getQueryUrl(), $query);
-        }, $querySpecs, [
+        }, $this->querySpecs, [
             $searchString
         ]);
     }
@@ -93,9 +95,8 @@ class ListQuery{
      * @param QuerySpecs|null $querySpecs
      * @return EntityList
      */
-    public function filter( FilterQuery $filterQuery = null, QuerySpecs $querySpecs = null ){
-        if ( !$querySpecs ) $querySpecs = QuerySpecs::create([]);
-        $this->attachExpand($querySpecs);
+    public function filter( FilterQuery $filterQuery = null ){
+        $this->attachExpand($this->querySpecs);
         return static::recursiveRequest(function(QuerySpecs $querySpecs, FilterQuery $filterQuery = null){
             if ( $filterQuery ){
                 $query = array_merge($querySpecs->toArray(), [
@@ -105,7 +106,7 @@ class ListQuery{
                 $query = $querySpecs->toArray();
             }
             return $this->getSkladInstance()->getClient()->get($this->getQueryUrl(), $query);
-        }, $querySpecs, [
+        }, $this->querySpecs, [
             $filterQuery
         ]);
     }
@@ -141,7 +142,7 @@ class ListQuery{
     /**
      * Get previous QuerySpecs and increase offset
      * @param QuerySpecs $queryParams
-     * @return static
+     * @return QuerySpecs
      */
     protected function recreateQuerySpecs(QuerySpecs &$queryParams){
           return QuerySpecs::create([

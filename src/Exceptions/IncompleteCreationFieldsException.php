@@ -12,7 +12,7 @@ class IncompleteCreationFieldsException extends Exception{
         $requiredFields = $c::getFieldsRequiredForCreation();
         $failedFields = [];
         foreach ( $requiredFields as $requiredField ){
-            if ( !isset($entity->{$requiredField}) ){
+            if ( !isset($entity->links->{$requiredField}) && !isset($entity->{$requiredField}) ){
                 $failedFields[] = $requiredField;
             }
         }
