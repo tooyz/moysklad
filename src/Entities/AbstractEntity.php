@@ -55,7 +55,7 @@ abstract class AbstractEntity implements \JsonSerializable {
      */
     public $attributes;
 
-    public function __construct(MoySklad &$skladInstance, $fields = [], ConstructionSpecs $specs = null)
+    public function __construct(MoySklad $skladInstance, $fields = [], ConstructionSpecs $specs = null)
     {
         if ( !$specs ) $specs = ConstructionSpecs::create();
         if ( is_array($fields) === false && is_object($fields) === false) $fields = [$fields];
