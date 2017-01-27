@@ -19,6 +19,10 @@ class CreationBuilder extends AbstractMutationBuilder {
         $this->specs = $specs;
     }
 
+    /**
+     * @return AbstractEntity
+     * @throws IncompleteCreationFieldsException
+     */
     public function execute()
     {
         $eClass = get_class($this->e);

@@ -4,9 +4,8 @@ namespace MoySklad\Lists;
 
 
 use MoySklad\Components\Fields\MetaField;
-use MoySklad\Components\ListQuery;
+use MoySklad\Components\Query\RelationQuery;
 use MoySklad\MoySklad;
-use MoySklad\Components\ListQuery\RelationListQuery;
 use MoySklad\Repositories\RequestUrlRepository;
 
 /**
@@ -33,12 +32,12 @@ class RelationEntityList extends EntityList{
     /**
      * Get RelationListQuery object which van be used for getting, filtering and searching lists defined in meta
      * @see ListQuery
-     * @return RelationListQuery
+     * @return RelationQuery
      * @throws \MoySklad\Exceptions\UnknownEntityException
      */
-    public function listQuery(){
+    public function query(){
         $relHref = $this->meta->parseRelationHref();
-        $res = new RelationListQuery($this->getSkladInstance(), $this->meta->getClass());
+        $res = new RelationQuery($this->getSkladInstance(), $this->meta->getClass());
         $res->setCustomQueryUrl(
             RequestUrlRepository::instance()->getRelationListUrl($relHref['entityClass'], $relHref['entityId'], $relHref['relationClass'])
         );

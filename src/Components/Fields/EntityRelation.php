@@ -14,10 +14,10 @@ use MoySklad\MoySklad;
 class EntityRelation extends AbstractFieldAccessor {
     private $relatedByClass = null;
 
-    public function __construct($fields, $relatedBy)
+    public function __construct($fields, $relatedByClass)
     {
         parent::__construct($fields);
-        $this->relatedByClass = $relatedBy;
+        $this->relatedByClass = $relatedByClass;
     }
 
     public static function createRelations(MoySklad $sklad, AbstractEntity &$entity){
@@ -45,7 +45,7 @@ class EntityRelation extends AbstractFieldAccessor {
     }
 
 
-    public function loadSingleRelation($relationName, Expand $expand = null){
+    public function fresh($relationName, Expand $expand = null){
         $this->checkRelationExists($relationName);
         /**
          * @var AbstractEntity $rel
@@ -53,17 +53,18 @@ class EntityRelation extends AbstractFieldAccessor {
         $rel = $this->storage->{$relationName};
         if ( $rel instanceof RelationEntityList ) throw new RelationIsList($relationName, $this->relatedByClass);
         $c = get_class($rel);
-        return $c::byId($rel->getSkladInstance(), $rel->fields->meta->getId(), $expand);
+        $queriedEntity = $c::query($rel->getSkladInstance())->byId($rel->fields->meta->getId(), $expand);
+        return $rel->replaceFields($queriedEntity);
     }
 
-    public function getListQuery($relationName){
+    public function listQuery($relationName){
         $this->checkRelationExists($relationName);
         /**
          * @var RelationEntityList $rel
          */
         $rel = $this->storage->{$relationName};
         if ( $rel instanceof AbstractEntity ) throw new RelationIsSingle($relationName, $this->relatedByClass);
-        return $rel->listQuery();
+        return $rel->query();
     }
 
     /**

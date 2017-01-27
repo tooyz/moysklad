@@ -18,6 +18,7 @@ abstract class AbstractFieldAccessor implements \JsonSerializable {
 
     public function replace($fields){
         $this->storage = new \stdClass();
+        if ( $fields instanceof static ) $fields = $fields->getInternal();
         foreach ( $fields as $fieldName => $field ){
             $this->storage->{$fieldName} = $field;
         }

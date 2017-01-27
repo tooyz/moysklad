@@ -12,7 +12,7 @@ class EntityFields extends AbstractFieldAccessor {
     {
         if ( $fields instanceof EntityFields ) $fields = $fields->getInternal();
         foreach ( $fields as $fieldName => $field ){
-            if ( $fieldName === 'meta' ){
+            if ( $fieldName === 'meta'){
                 $this->storage->meta = new MetaField($field);
             }
             else if ( $fieldName === 'attributes' ){

@@ -31,8 +31,8 @@ class CustomerOrderAffectsStockTest extends TestCase{
         $testEnterName = $this->makeName("TestEnter");
         $testCustomerOrder = $this->makeName("TestCustomerOrder");
 
-        $org = Organization::listQuery($this->sklad)->get()->get(0);
-        $store = Store::listQuery($this->sklad)->get()->get(0);
+        $org = Organization::query($this->sklad)->getList()->get(0);
+        $store = Store::query($this->sklad)->getList()->get(0);
 
         $cp = (new Counterparty($this->sklad, [
             "name" => $testCounterpartyName
@@ -52,7 +52,7 @@ class CustomerOrderAffectsStockTest extends TestCase{
             execute();
         $this->say("Enter id:" . $enter->id );
 
-        $filteredProduct = Assortment::listQuery($this->sklad,QuerySpecs::create([
+        $filteredProduct = Assortment::query($this->sklad,QuerySpecs::create([
             "maxResults" => 1
         ]))->filter(
             (new FilterQuery())->eq("name", $testProductName)

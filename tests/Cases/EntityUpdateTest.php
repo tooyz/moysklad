@@ -23,7 +23,7 @@ class EntityUpdateTest extends TestCase{
         /**
          * @var Product $pl
          */
-        $pl = Product::listQuery($this->sklad)->get()[0];
+        $pl = Product::query($this->sklad)->getList()[0];
         $oldName = $pl->name;
         $newName = $this->faker->linuxProcessor;
         $pl->name = $newName;

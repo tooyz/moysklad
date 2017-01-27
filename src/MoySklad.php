@@ -37,12 +37,7 @@ class MoySklad{
      * @return string
      */
     private static function makeHash($login, $password){
-        $lp = $login.$password;
-        $i = 0;
-        $str = (string)array_reduce(str_split($lp), function($a, $x) use (&$i){
-            return $a += (ord($x) | (++$i * $i));
-        }, 0);
-        return str_pad($str, 8, '0');
+        return crc32($login.$password);
     }
 
     /**

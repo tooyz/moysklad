@@ -27,13 +27,13 @@ class FilterTest extends TestCase{
             'name' => $prodArticle.'_name'
         ]))->buildCreation()->execute();
 
-        $pl = Product::listQuery($this->sklad)->get();
+        $pl = Product::query($this->sklad)->getList();
         $manFpl = $pl->filter(function(Product $e) use($prodArticle){
                return $e->article == $prodArticle;
             });
         echo "Initial product list length: ".$pl->count().",Manually filtered " . $manFpl->count() . " products with article $prodArticle";
 
-        $autoFpl = Product::listQuery($this->sklad)->filter(
+        $autoFpl = Product::query($this->sklad)->filter(
             (new FilterQuery())
             ->eq("article", $prodArticle)
         );

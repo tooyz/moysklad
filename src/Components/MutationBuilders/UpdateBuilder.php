@@ -11,7 +11,7 @@ class UpdateBuilder extends AbstractMutationBuilder {
     /**
      * Update entity with current fields
      * @param boolean $getIdFromMeta
-     * @return static
+     * @return AbstractEntity
      * @throws EntityHasNoIdException
      */
     function execute()
