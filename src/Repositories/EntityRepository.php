@@ -13,6 +13,9 @@ use MoySklad\Entities\Country;
 use MoySklad\Entities\Currency;
 use MoySklad\Entities\Discount;
 use MoySklad\Entities\Documents\AbstractDocument;
+use MoySklad\Entities\Documents\Cash\AbstractCash;
+use MoySklad\Entities\Documents\Cash\CashIn;
+use MoySklad\Entities\Documents\Cash\CashOut;
 use MoySklad\Entities\Documents\Movements\AbstractMovement;
 use MoySklad\Entities\Documents\Movements\Demand;
 use MoySklad\Entities\Documents\Movements\Enter;
@@ -24,6 +27,15 @@ use MoySklad\Entities\Documents\Orders\PurchaseOrder;
 use MoySklad\Entities\Documents\Positions\AbstractPosition;
 use MoySklad\Entities\Documents\Positions\CustomerOrderPosition;
 use MoySklad\Entities\Documents\Positions\EnterPosition;
+use MoySklad\Entities\Documents\Retail\AbstractRetail;
+use MoySklad\Entities\Documents\Retail\RetailDemand;
+use MoySklad\Entities\Documents\Retail\RetailSalesReturn;
+use MoySklad\Entities\Documents\RetailDrawer\AbstractRetailDrawer;
+use MoySklad\Entities\Documents\RetailDrawer\RetailDrawerCashIn;
+use MoySklad\Entities\Documents\RetailDrawer\RetailDrawerCashOut;
+use MoySklad\Entities\Documents\Returns\AbstractReturn;
+use MoySklad\Entities\Documents\Returns\PurchaseReturn;
+use MoySklad\Entities\Documents\Returns\SalesReturn;
 use MoySklad\Entities\Employee;
 use MoySklad\Entities\ExpenseItem;
 use MoySklad\Entities\Folders\ProductFolder;
@@ -90,7 +102,19 @@ class EntityRepository extends AbstractSingleton{
         Currency::class,
         Loss::class,
         Demand::class,
-        Supply::class
+        Supply::class,
+        AbstractCash::class,
+        CashIn::class,
+        CashOut::class,
+        AbstractRetail::class,
+        RetailSalesReturn::class,
+        RetailDemand::class,
+        AbstractRetailDrawer::class,
+        RetailDrawerCashIn::class,
+        RetailDrawerCashOut::class,
+        AbstractReturn::class,
+        PurchaseReturn::class,
+        SalesReturn::class
     ];
     public $entityNames = [];
 

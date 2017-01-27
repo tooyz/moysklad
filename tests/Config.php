@@ -5,8 +5,8 @@ namespace Tests;
 abstract class Config{
     public static function getAuthData(){
         return (object)[
-            "login" => "",
-            "password" => ""
+            "login" => "admin@tooy_m",
+            "password" => "123234"
         ];
     }
 }

@@ -2,6 +2,6 @@
 
 namespace MoySklad\Entities\Documents\Payments;
 
-class PaymentIn extends AbstractPayment{
+class PaymentIn extends AbstractCash{
     public static $entityName = 'paymentin';
 }

@@ -13,6 +13,8 @@ use MoySklad\Entities\Counterparty;
 use MoySklad\Entities\Country;
 use MoySklad\Entities\Currency;
 use MoySklad\Entities\Discount;
+use MoySklad\Entities\Documents\Cash\CashIn;
+use MoySklad\Entities\Documents\Cash\CashOut;
 use MoySklad\Entities\Documents\Invoices\InvoiceIn;
 use MoySklad\Entities\Documents\Invoices\InvoiceOut;
 use MoySklad\Entities\Documents\Movements\Demand;
@@ -26,6 +28,12 @@ use MoySklad\Entities\Documents\Payments\PaymentOut;
 use MoySklad\Entities\Documents\Positions\CustomerOrderPosition;
 use MoySklad\Entities\Documents\Positions\EnterPosition;
 use MoySklad\Entities\Documents\Positions\RetailShift;
+use MoySklad\Entities\Documents\Retail\RetailDemand;
+use MoySklad\Entities\Documents\Retail\RetailSalesReturn;
+use MoySklad\Entities\Documents\RetailDrawer\RetailDrawerCashIn;
+use MoySklad\Entities\Documents\RetailDrawer\RetailDrawerCashOut;
+use MoySklad\Entities\Documents\Returns\PurchaseReturn;
+use MoySklad\Entities\Documents\Returns\SalesReturn;
 use MoySklad\Entities\Employee;
 use MoySklad\Entities\ExpenseItem;
 use MoySklad\Entities\Folders\ProductFolder;
@@ -213,6 +221,38 @@ abstract class AbstractMutationBuilder{
 
     public function addVariant(Variant $variant, LinkingSpecs $specs = null){
         return $this->simpleLink($variant, $specs);
+    }
+
+    public function addCashIn(CashIn $cashIn, LinkingSpecs $specs = null){
+        return $this->simpleLink($cashIn, $specs);
+    }
+
+    public function addCashOut(CashOut $cashOut, LinkingSpecs $specs = null){
+        return $this->simpleLink($cashOut, $specs);
+    }
+
+    public function addRetailDemand(RetailDemand $demand, LinkingSpecs $specs = null){
+        return $this->simpleLink($demand, $specs);
+    }
+
+    public function addRetailSalesReturn(RetailSalesReturn $retailSalesReturn, LinkingSpecs $specs = null){
+        return $this->simpleLink($retailSalesReturn, $specs);
+    }
+
+    public function addRetailDrawerCashIn(RetailDrawerCashIn $cashIn, LinkingSpecs $specs = null){
+        return $this->simpleLink($cashIn, $specs);
+    }
+
+    public function addRetailDrawerCashOut(RetailDrawerCashOut $cashOut, LinkingSpecs $specs = null){
+        return $this->simpleLink($cashOut, $specs);
+    }
+
+    public function addSalesReturn(SalesReturn $return, LinkingSpecs $specs = null){
+        return $this->simpleLink($return, $specs);
+    }
+
+    public function addPurchaseReturn(PurchaseReturn $return, LinkingSpecs $specs = null){
+        return $this->simpleLink($return, $specs);
     }
 
     public function addPositionList(EntityList $positions){
