@@ -9,6 +9,6 @@ class AbstractOrder extends AbstractDocument{
     public static $entityName = '_a_order';
     public static function getFieldsRequiredForCreation()
     {
-        return [Organization::$entityName, 'agent', 'name'];
+        return [Organization::$entityName, 'agent'];
     }
 }
