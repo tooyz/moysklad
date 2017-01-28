@@ -1,0 +1,23 @@
+{
+  "name": "tests",
+  "version": "1.0.0",
+  "description": "tests for tooyz/moysklad",
+  "scripts": {
+    "test": "phpunit --configuration=\"./phpunit.xml\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tooyz/moysklad.git"
+  },
+  "keywords": [
+    "php",
+    "moysklad",
+    "api"
+  ],
+  "author": "tooyz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tooyz/moysklad/issues"
+  },
+  "homepage": "https://github.com/tooyz/moysklad#readme"
+}
