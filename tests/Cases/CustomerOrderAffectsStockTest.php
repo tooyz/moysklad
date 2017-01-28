@@ -3,7 +3,7 @@
 namespace Tests\Cases;
 
 use MoySklad\Components\FilterQuery;
-use MoySklad\Components\Specs\QuerySpecs;
+use MoySklad\Components\Specs\QuerySpecs\QuerySpecs;
 use MoySklad\Entities\Assortment;
 use MoySklad\Entities\Counterparty;
 use MoySklad\Entities\Documents\Movements\Enter;

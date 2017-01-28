@@ -13,7 +13,7 @@ use MoySklad\Components\Query\EntityQuery;
 use MoySklad\Components\Specs\ConstructionSpecs;
 use MoySklad\Components\Specs\CreationSpecs;
 use MoySklad\Components\Specs\LinkingSpecs;
-use MoySklad\Components\Specs\QuerySpecs;
+use MoySklad\Components\Specs\QuerySpecs\QuerySpecs;
 use MoySklad\Exceptions\EntityHasNoIdException;
 use MoySklad\Exceptions\EntityHasNoMetaException;
 use MoySklad\MoySklad;

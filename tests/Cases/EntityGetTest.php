@@ -4,7 +4,7 @@ namespace Tests\Cases;
 
 use MoySklad\Components\Expand;
 use MoySklad\Components\Http\RequestLog;
-use MoySklad\Components\Specs\QuerySpecs;
+use MoySklad\Components\Specs\QuerySpecs\QuerySpecs;
 use MoySklad\Entities\AbstractEntity;
 use MoySklad\Entities\Assortment;
 use MoySklad\Entities\Employee;
