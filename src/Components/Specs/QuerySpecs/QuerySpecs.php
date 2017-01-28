@@ -1,7 +1,8 @@
 <?php
 
-namespace MoySklad\Components\Specs;
+namespace MoySklad\Components\Specs\QuerySpecs;
 
+use MoySklad\Components\Specs\AbstractSpecs;
 use MoySklad\Utils\CommonDate;
 
 class QuerySpecs extends AbstractSpecs {

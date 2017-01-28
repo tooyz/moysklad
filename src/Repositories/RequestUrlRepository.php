@@ -2,6 +2,7 @@
 
 namespace MoySklad\Repositories;
 
+use MoySklad\Entities\Reports\AbstractReport;
 use MoySklad\Utils\AbstractSingleton;
 
 class RequestUrlRepository extends AbstractSingleton {
@@ -31,8 +32,12 @@ class RequestUrlRepository extends AbstractSingleton {
         return $this->getListUrl($entityName) . "/" . $entityId . "/" . $relatedEntityName;
     }
 
-    public function getReportUrl($period){
-        return 'report/dashboard/' . $period;
+    public function getReportUrl($reportName){
+        return AbstractReport::$entityName . '/'.$reportName;
+    }
+
+    public function getReportWithParamUrl($reportName, $param){
+        return AbstractReport::$entityName . '/'.$reportName.'/' . $param;
     }
 
     public function getMetadataUrl($entityName){
