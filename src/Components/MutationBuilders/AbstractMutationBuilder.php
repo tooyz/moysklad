@@ -15,6 +15,9 @@ use MoySklad\Entities\Currency;
 use MoySklad\Entities\Discount;
 use MoySklad\Entities\Documents\Cash\CashIn;
 use MoySklad\Entities\Documents\Cash\CashOut;
+use MoySklad\Entities\Documents\Factures\FactureIn;
+use MoySklad\Entities\Documents\Factures\FactureOut;
+use MoySklad\Entities\Documents\Inventory;
 use MoySklad\Entities\Documents\Invoices\InvoiceIn;
 use MoySklad\Entities\Documents\Invoices\InvoiceOut;
 use MoySklad\Entities\Documents\Movements\Demand;
@@ -28,6 +31,10 @@ use MoySklad\Entities\Documents\Payments\PaymentOut;
 use MoySklad\Entities\Documents\Positions\CustomerOrderPosition;
 use MoySklad\Entities\Documents\Positions\EnterPosition;
 use MoySklad\Entities\Documents\Positions\RetailShift;
+use MoySklad\Entities\Documents\PriceList;
+use MoySklad\Entities\Documents\Processings\Processing;
+use MoySklad\Entities\Documents\Processings\ProcessingOrder;
+use MoySklad\Entities\Documents\Processings\ProcessingPlan;
 use MoySklad\Entities\Documents\Retail\RetailDemand;
 use MoySklad\Entities\Documents\Retail\RetailSalesReturn;
 use MoySklad\Entities\Documents\RetailDrawer\RetailDrawerCashIn;
@@ -253,6 +260,34 @@ abstract class AbstractMutationBuilder{
 
     public function addPurchaseReturn(PurchaseReturn $return, LinkingSpecs $specs = null){
         return $this->simpleLink($return, $specs);
+    }
+
+    public function addFactureIn(FactureIn $factureIn, LinkingSpecs $specs = null){
+        return $this->simpleLink($factureIn, $specs);
+    }
+
+    public function addFactureOut(FactureOut $factureOut, LinkingSpecs $specs = null){
+        return $this->simpleLink($factureOut, $specs);
+    }
+
+    public function addInventory(Inventory $inventory, LinkingSpecs $specs = null){
+        return $this->simpleLink($inventory, $specs);
+    }
+
+    public function addProcessing(Processing $processing, LinkingSpecs $specs = null){
+        return $this->simpleLink($processing, $specs);
+    }
+
+    public function addProcessingPlan(ProcessingPlan $plan, LinkingSpecs $specs = null){
+        return $this->simpleLink($plan, $specs);
+    }
+
+    public function addProcessingOrder(ProcessingOrder $order, LinkingSpecs $specs = null){
+        return $this->simpleLink($order, $specs);
+    }
+
+    public function addPriceList(PriceList $list, LinkingSpecs $specs = null){
+        return $this->simpleLink($list, $specs);
     }
 
     public function addPositionList(EntityList $positions){

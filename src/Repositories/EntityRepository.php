@@ -16,6 +16,13 @@ use MoySklad\Entities\Documents\AbstractDocument;
 use MoySklad\Entities\Documents\Cash\AbstractCash;
 use MoySklad\Entities\Documents\Cash\CashIn;
 use MoySklad\Entities\Documents\Cash\CashOut;
+use MoySklad\Entities\Documents\CommissionReports\AbstractCommissionReport;
+use MoySklad\Entities\Documents\CommissionReports\CommissionReportIn;
+use MoySklad\Entities\Documents\CommissionReports\CommissionReportOut;
+use MoySklad\Entities\Documents\Factures\AbstractFacture;
+use MoySklad\Entities\Documents\Factures\FactureIn;
+use MoySklad\Entities\Documents\Factures\FactureOut;
+use MoySklad\Entities\Documents\Inventory;
 use MoySklad\Entities\Documents\Movements\AbstractMovement;
 use MoySklad\Entities\Documents\Movements\Demand;
 use MoySklad\Entities\Documents\Movements\Enter;
@@ -27,12 +34,18 @@ use MoySklad\Entities\Documents\Orders\PurchaseOrder;
 use MoySklad\Entities\Documents\Positions\AbstractPosition;
 use MoySklad\Entities\Documents\Positions\CustomerOrderPosition;
 use MoySklad\Entities\Documents\Positions\EnterPosition;
+use MoySklad\Entities\Documents\PriceList;
+use MoySklad\Entities\Documents\Processings\AbstractProcessing;
+use MoySklad\Entities\Documents\Processings\Processing;
+use MoySklad\Entities\Documents\Processings\ProcessingOrder;
+use MoySklad\Entities\Documents\Processings\ProcessingPlan;
 use MoySklad\Entities\Documents\Retail\AbstractRetail;
 use MoySklad\Entities\Documents\Retail\RetailDemand;
 use MoySklad\Entities\Documents\Retail\RetailSalesReturn;
 use MoySklad\Entities\Documents\RetailDrawer\AbstractRetailDrawer;
 use MoySklad\Entities\Documents\RetailDrawer\RetailDrawerCashIn;
 use MoySklad\Entities\Documents\RetailDrawer\RetailDrawerCashOut;
+use MoySklad\Entities\Documents\RetailShift;
 use MoySklad\Entities\Documents\Returns\AbstractReturn;
 use MoySklad\Entities\Documents\Returns\PurchaseReturn;
 use MoySklad\Entities\Documents\Returns\SalesReturn;
@@ -114,7 +127,20 @@ class EntityRepository extends AbstractSingleton{
         RetailDrawerCashOut::class,
         AbstractReturn::class,
         PurchaseReturn::class,
-        SalesReturn::class
+        SalesReturn::class,
+        AbstractFacture::class,
+        FactureIn::class,
+        FactureOut::class,
+        Inventory::class,
+        RetailShift::class,
+        AbstractCommissionReport::class,
+        CommissionReportIn::class,
+        CommissionReportOut::class,
+        AbstractProcessing::class,
+        Processing::class,
+        ProcessingOrder::class,
+        ProcessingPlan::class,
+        PriceList::class
     ];
     public $entityNames = [];
 

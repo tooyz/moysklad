@@ -12,7 +12,7 @@ use MoySklad\MoySklad;
 use MoySklad\Repositories\RequestUrlRepository;
 use MoySklad\Traits\AccessesSkladInstance;
 
-class Query{
+abstract class AbstractQuery{
     use AccessesSkladInstance;
     
     protected
@@ -24,7 +24,7 @@ class Query{
      */
     private $expand;
     private $customQueryUrl = null;
-    protected static $entityListClass = EntityList::class;
+    protected static $entityListClass;
 
     public function __construct(MoySklad &$skladInstance, $entityClass, QuerySpecs $querySpecs = null)
     {
@@ -61,21 +61,6 @@ class Query{
     protected function attachExpand(QuerySpecs &$querySpecs){
         $querySpecs->expand = $this->expand;
         return $querySpecs;
-    }
-
-    /**
-     * Get entity by id
-     * @param MoySklad $skladInstance
-     * @param $id
-     * @param Expand|null $expand
-     * @return AbstractEntity
-     */
-    public function byId($id, Expand $expand = null){
-        $res = $this->getSkladInstance()->getClient()->get(
-            RequestUrlRepository::instance()->getByIdUrl($this->entityName, $id),
-            ($expand?['expand'=>$expand->flatten()]:[])
-        );
-        return new $this->entityClass($this->getSkladInstance(), $res);
     }
 
     /**

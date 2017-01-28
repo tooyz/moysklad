@@ -9,13 +9,13 @@ use MoySklad\Components\Fields\EntityRelation;
 use MoySklad\Components\Fields\MetaField;
 use MoySklad\Components\MutationBuilders\CreationBuilder;
 use MoySklad\Components\MutationBuilders\UpdateBuilder;
+use MoySklad\Components\Query\EntityQuery;
 use MoySklad\Components\Specs\ConstructionSpecs;
 use MoySklad\Components\Specs\CreationSpecs;
 use MoySklad\Components\Specs\LinkingSpecs;
 use MoySklad\Components\Specs\QuerySpecs;
 use MoySklad\Exceptions\EntityHasNoIdException;
 use MoySklad\Exceptions\EntityHasNoMetaException;
-use MoySklad\Components\Query\Query;
 use MoySklad\MoySklad;
 use MoySklad\Components\Fields\EntityFields;
 use MoySklad\Repositories\RequestUrlRepository;
@@ -137,10 +137,10 @@ abstract class AbstractEntity implements \JsonSerializable {
     /**
      * Get ListQuery object which van be used for getting, filtering and searching lists
      * @param MoySklad $skladInstance
-     * @return Query
+     * @return EntityQuery
      */
     public static function query(MoySklad &$skladInstance, QuerySpecs $querySpecs = null){
-        return new Query($skladInstance, static::class, $querySpecs);
+        return new EntityQuery($skladInstance, static::class, $querySpecs);
     }
 
     public function buildCreation(CreationSpecs $specs = null){
