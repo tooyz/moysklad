@@ -16,11 +16,10 @@
     6) Поиск<br />
     7) Получение связанных сущностей<br />
     8) Вебхуки<br />
-
-
+    
 **Запуск тестов:**<br />
     1) composer global require phpunit/phpunit<br />
     2) cd tests<br />
     3) composer update<br />
     4) Отредактировать Config.php <br />
-    5) phpunit --configuration="./phpunit.xml"
+    5) phpunit --configuration="./phpunit.xml" <ИЛИ> npm run test
