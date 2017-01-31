@@ -151,8 +151,12 @@ abstract class AbstractEntity implements \JsonSerializable {
         return new UpdateBuilder($this);
     }
 
-    public static function getFieldsRequiredForCreation(){
-        return [];
+    public function create(CreationSpecs $specs = null){
+        return $this->buildCreation($specs)->execute();
+    }
+
+    public function update(){
+        return $this->buildUpdate()->execute();
     }
 
     /**
@@ -216,6 +220,10 @@ abstract class AbstractEntity implements \JsonSerializable {
         return $sklad->getClient()->get(
             RequestUrlRepository::instance()->getMetadataUrl(static::$entityName)
         );
+    }
+
+    public static function getFieldsRequiredForCreation(){
+        return [];
     }
     
     function jsonSerialize()
