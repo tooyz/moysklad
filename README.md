@@ -24,50 +24,42 @@
     4) Отредактировать Config.php <br />
     5) phpunit --configuration="./phpunit.xml" <ИЛИ> npm run test
     
-#Общая информация
 
-**Класс MoySklad**
+#Класс MoySklad
 
 Используется для авторизации, явно передается параметром в большинство компонентов т.к. возможно использование нескольких аккаунтов моегосклада одновременно.
 
-$sklad = oySklad::getInstance($login, $password);
+$sklad = MoySklad::getInstance($login, $password);
 
-**Сущности**
+#Получение сущностей
 
-Основные сущности моегосклада.
-
-$product = new Product($sklad, [
-    "name" => "Продукт"
-]);
-
-**Получение сущностей**
-
-Получение всех сущностей:
+**Получение всех сущностей:**
 $list = Product::query($sklad)->getList();
 
-Можно добавить параметры запроса. Описание параметров в описании класса QuerySpecs.
+**Можно добавить параметры запроса. Описание параметров в описании класса QuerySpecs.**
 
 $list = Product::query($sklad, QuerySpecs::create([
     "offset" => 15, 
     "maxResults" => 50,
 ]))->getList();
 
-Фильтрация. Описание методов FilterQuery в комментариях.
+**Фильтрация. Описание методов FilterQuery в комментариях.**
+
 $filteredList = Product::query($sklad)->filter(
     (new FilterQuery())
         ->eq("article", 12345)
 );
 
-Поиск по строке
+**Поиск по строке**
 $searchedList = Product::query($sklad)->search("название продукта");
 
-Функции выше возвращают объект EntityList.
+**Функции выше возвращают объект EntityList.**
 
-Получение по id.
+**Получение по id.**
 
 $product = Product::query($sklad)->byId("12345-654321-123456-54321");
 
-**Создание сущности**
+#Создание сущности
 
 $product = (new Product($sklad, [
                        "name" => "TestProduct"
@@ -75,12 +67,13 @@ $product = (new Product($sklad, [
                    ->buildCreation()
                    ->execute();
                    
-Некоторым сущностям нужно указать связи при создании. Например для customerorder нужно указание counterparty и organization, и опционально массив позиций
+**Некоторым сущностям нужно указать связи при создании. Например для customerorder нужно указание counterparty и organization,
+ и опционально массив позиций**
 
 $order = (new CustomerOrder($this->sklad))->buildCreation()
-                     ->addCounterparty($counterparty)
-                     ->addOrganization($organization)
-                     ->addPositionList($positions)
-                     ->execute();
+    ->addCounterparty($counterparty)
+    ->addOrganization($organization)
+    ->addPositionList($positions)
+    ->execute();
 
 #To be continued
