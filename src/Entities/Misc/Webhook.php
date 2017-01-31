@@ -13,6 +13,11 @@ class Webhook extends AbstractEntity {
 
     public static $entityName = 'webhook';
 
+    public static function getFieldsRequiredForCreation()
+    {
+        return ['url', 'action', 'entityType'];
+    }
+
     public function disable(){
         $this->fields->enabled = false;
         return $this->update();
