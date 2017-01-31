@@ -34,6 +34,7 @@ $sklad = MoySklad::getInstance($login, $password);
 #Получение сущностей
 
 **Получение всех сущностей:**
+
 $list = Product::query($sklad)->getList();
 
 **Можно добавить параметры запроса. Описание параметров в описании класса QuerySpecs.**
@@ -51,6 +52,7 @@ $filteredList = Product::query($sklad)->filter(
 );
 
 **Поиск по строке**
+
 $searchedList = Product::query($sklad)->search("название продукта");
 
 **Функции выше возвращают объект EntityList.**
