@@ -12,7 +12,6 @@ class AttributeCollection extends AbstractFieldAccessor{
 
     public function __construct($fields)
     {
-        $this->storage->attrs = [];
         if ( $fields instanceof static ) {
             parent::__construct($fields->getInternal());
         } else {
