@@ -16,6 +16,12 @@ class Expand{
         $this->params = $params;
     }
 
+    /**
+     * Create an instance of expand
+     * @param $params
+     * @return static
+     * @throws \Exception
+     */
     public static function create($params){
         if ( !is_array($params) ) throw new \Exception('Expand params must be an array');
         return new static($params);

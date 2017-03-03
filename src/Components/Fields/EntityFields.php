@@ -2,6 +2,10 @@
 
 namespace MoySklad\Components\Fields;
 
+/**
+ * Class EntityFields
+ * @package MoySklad\Components\Fields
+ */
 class EntityFields extends AbstractFieldAccessor {
 
     /**

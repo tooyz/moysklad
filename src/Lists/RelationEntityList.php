@@ -2,7 +2,6 @@
 
 namespace MoySklad\Lists;
 
-
 use MoySklad\Components\Fields\MetaField;
 use MoySklad\Components\Query\RelationQuery;
 use MoySklad\MoySklad;

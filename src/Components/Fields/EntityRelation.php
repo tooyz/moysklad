@@ -20,6 +20,11 @@ class EntityRelation extends AbstractFieldAccessor {
         $this->relatedByClass = $relatedByClass;
     }
 
+    /**
+     * @param MoySklad $sklad
+     * @param AbstractEntity $entity
+     * @return static
+     */
     public static function createRelations(MoySklad $sklad, AbstractEntity &$entity){
         $internalFields = $entity->fields->getInternal();
         $foundRelations = [];

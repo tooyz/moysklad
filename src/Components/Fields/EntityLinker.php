@@ -9,8 +9,19 @@ use MoySklad\Components\Specs\LinkingSpecs;
 use MoySklad\Entities\Counterparty;
 use MoySklad\Entities\AbstractEntity;
 
+/**
+ * Class EntityLinker
+ * @package MoySklad\Components\Fields
+ */
 class EntityLinker extends AbstractFieldAccessor{
 
+    /**
+     * Link an entity to another. Link is a temporary storage before creating or updating entity.
+     * Links will be sent along with the entity they're linked to, while relations will not.
+     * @param AbstractEntity $entity
+     * @param LinkingSpecs|null $specs
+     * @throws \Exception
+     */
     public function link(AbstractEntity $entity, LinkingSpecs $specs = null ){
         if ( !$specs ) $specs = LinkingSpecs::create();
         $name = $specs->name;
@@ -54,17 +65,19 @@ class EntityLinker extends AbstractFieldAccessor{
         }
     }
 
-    public function linkMany($entities){
-        foreach ($entities as $entity){
-
-        }
-    }
-
+    /**
+     * @return \stdClass
+     */
     public function getLinks(){
         return $this->storage;
     }
 
+    /**
+     * @param EntityLinker $otherLinker
+     * @return $this
+     */
     public function reattachLinks(EntityLinker $otherLinker){
         $this->storage = $otherLinker->getLinks();
+        return $this;
     }
 }

@@ -10,6 +10,11 @@ use MoySklad\Repositories\RequestUrlRepository;
 class AbstractDocument extends AbstractEntity{
     public static $entityName = 'a_document';
 
+    /**
+     * @param MoySklad $sklad
+     * @param Attribute $attribute
+     * @return \stdClass
+     */
     public static function getAttributeMetaData(MoySklad $sklad, Attribute $attribute){
         return $sklad->getClient()->get(
             RequestUrlRepository::instance()->getMetadataAttributeUrl(static::$entityName, $attribute->id)

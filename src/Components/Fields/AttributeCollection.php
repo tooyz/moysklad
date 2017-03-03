@@ -6,6 +6,11 @@ use MoySklad\Entities\Misc\Attribute;
 use MoySklad\Exceptions\UnknownEntityException;
 use MoySklad\Repositories\EntityRepository;
 
+/**
+ * "attributes" field of entity
+ * Class AttributeCollection
+ * @package MoySklad\Components\Fields
+ */
 class AttributeCollection extends AbstractFieldAccessor{
 
     private static $ep = null;
@@ -22,10 +27,17 @@ class AttributeCollection extends AbstractFieldAccessor{
         }
     }
 
+    /**
+     * Append an attribute
+     * @param Attribute $attribute
+     */
     function add(Attribute $attribute){
         $this->storage->attrs[] = $attribute;
     }
 
+    /**
+     * @return mixed
+     */
     function getList(){
         return $this->storage->attrs;
     }

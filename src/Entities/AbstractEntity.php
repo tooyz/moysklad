@@ -128,6 +128,11 @@ abstract class AbstractEntity implements \JsonSerializable {
         return $this;
     }
 
+    /**
+     * Copy fields and relations from other entity
+     * @param AbstractEntity $entity
+     * @return $this
+     */
     public function replaceFields(AbstractEntity $entity){
         $this->fields = new EntityFields($entity->fields);
         $this->relations = new EntityRelation($entity->relations, get_class($this));
@@ -143,10 +148,19 @@ abstract class AbstractEntity implements \JsonSerializable {
         return new EntityQuery($skladInstance, static::class, $querySpecs);
     }
 
+    /**
+     * Get a CreationBuilder
+     * @param CreationSpecs|null $specs
+     * @return CreationBuilder
+     */
     public function buildCreation(CreationSpecs $specs = null){
         return new CreationBuilder($this, $specs);
     }
 
+    /**
+     * Get an UpdateBuilder
+     * @return UpdateBuilder
+     */
     public function buildUpdate(){
         return new UpdateBuilder($this);
     }
@@ -222,6 +236,9 @@ abstract class AbstractEntity implements \JsonSerializable {
         );
     }
 
+    /**
+     * @return array
+     */
     public static function getFieldsRequiredForCreation(){
         return [];
     }

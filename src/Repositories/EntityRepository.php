@@ -71,6 +71,11 @@ use MoySklad\Entities\Store;
 use MoySklad\Entities\Uom;
 use MoySklad\Utils\AbstractSingleton;
 
+/**
+ * Map of entity name => representing class
+ * Class EntityRepository
+ * @package MoySklad\Repositories
+ */
 class EntityRepository extends AbstractSingleton{
     protected static $instance = null;
     public $entities = [

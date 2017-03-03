@@ -5,6 +5,11 @@ namespace MoySklad\Components\Fields;
 use MoySklad\Exceptions\UnknownEntityException;
 use MoySklad\Repositories\EntityRepository;
 
+/**
+ * "meta" field of entity
+ * Class MetaField
+ * @package MoySklad\Components\Fields
+ */
 class MetaField extends AbstractFieldAccessor{
 
     private static $ep = null;
@@ -21,6 +26,11 @@ class MetaField extends AbstractFieldAccessor{
         }
     }
 
+    /**
+     * Try to get class from type field
+     * @return null
+     * @throws UnknownEntityException
+     */
     public function getClass(){
         if ( empty($this->type) ) return null;
         if ( !isset(static::$ep->entityNames[$this->type]) ){
@@ -29,10 +39,17 @@ class MetaField extends AbstractFieldAccessor{
         return static::$ep->entityNames[$this->type];
     }
 
+    /**
+     * @return string
+     */
     public function getHref(){
         return $this->href;
     }
 
+    /**
+     * Get relation link in meta
+     * @return array
+     */
     public function parseRelationHref(){
         $eHref = explode('/', $this->href);
         $cntHref = count($eHref);
@@ -42,6 +59,10 @@ class MetaField extends AbstractFieldAccessor{
         return compact('entityClass', 'entityId', 'relationClass');
     }
 
+    /**
+     * Try to get entity id in meta
+     * @return null
+     */
     public function getId(){
         if ( !empty($this->href) ){
             $exp = explode("/", $this->href);
@@ -50,8 +71,13 @@ class MetaField extends AbstractFieldAccessor{
         return null;
     }
 
+    /**
+     * Returns class from stdClass/array meta object
+     * @param $metaField
+     * @return string
+     * @throws UnknownEntityException
+     */
     public static function getClassFromPlainMeta($metaField){
-        $meta = new static($metaField);
-        return $meta->getClass();
+        return (new static($metaField))->getClass();
     }
 }

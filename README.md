@@ -132,13 +132,13 @@ $order = (new CustomerOrder($this->sklad))->buildCreation()
 
 **Например получение assortment и превращение элементов в нужный тип**
 
-`$differentProductsAndStuff = Assortment::query($sklad)->getList()->transformItemsToMetaClass()`
+`$differentProductsAndStuff = Assortment::query($sklad)->getList()->transformItemsToMetaClass();`
 
 **Или массовое создание сущностей**
 
 ```
-$neko = (new Product(), ["name" => "Кот"]);
-$doge = (new Product(), ["name" => "Пёс"]);
+$neko = new Product($sklad, ["name" => "Кот"]);
+$doge = new Product($sklad, ["name" => "Пёс"]);
 $el = new EntityList($sklad, [$neko, $doge])->each(function($e) use($vasyan){
     $e->buildCreation()->addEmployee($vasyan);
 })->massCreate();

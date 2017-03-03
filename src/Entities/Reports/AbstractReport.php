@@ -12,6 +12,12 @@ abstract class AbstractReport extends AbstractEntity {
     public static $entityName = 'report';
     public static $reportName = 'a_report';
 
+    /**
+     * @param MoySklad $sklad
+     * @param null $param
+     * @param QuerySpecs|null $specs
+     * @return \stdClass
+     */
     protected static function queryWithParam(MoySklad $sklad, $param = null, QuerySpecs $specs = null){
         if ( !$specs ) $specs = EmptySpecs::create();
         if ( $param === null ){

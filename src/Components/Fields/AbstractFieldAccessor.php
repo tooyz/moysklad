@@ -16,6 +16,10 @@ abstract class AbstractFieldAccessor implements \JsonSerializable {
         $this->replace($fields);
     }
 
+    /**
+     * Replace fields with new
+     * @param $fields
+     */
     public function replace($fields){
         $this->storage = new \stdClass();
         if ( $fields instanceof static ) $fields = $fields->getInternal();
@@ -24,6 +28,9 @@ abstract class AbstractFieldAccessor implements \JsonSerializable {
         }
     }
 
+    /**
+     * @return \stdClass
+     */
     public function getInternal(){
         return $this->storage;
     }
