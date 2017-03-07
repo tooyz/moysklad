@@ -6,7 +6,7 @@ use MoySklad\Components\Specs\EmptySpecs;
 use MoySklad\Components\Specs\QuerySpecs\QuerySpecs;
 use MoySklad\Entities\AbstractEntity;
 use MoySklad\MoySklad;
-use MoySklad\Repositories\RequestUrlRepository;
+use MoySklad\Repositories\ApiUrlRepository;
 
 abstract class AbstractReport extends AbstractEntity {
     public static $entityName = 'report';
@@ -21,9 +21,9 @@ abstract class AbstractReport extends AbstractEntity {
     protected static function queryWithParam(MoySklad $sklad, $param = null, QuerySpecs $specs = null){
         if ( !$specs ) $specs = EmptySpecs::create();
         if ( $param === null ){
-            $url = RequestUrlRepository::instance()->getReportUrl(static::$reportName);
+            $url = ApiUrlRepository::instance()->getReportUrl(static::$reportName);
         } else {
-            $url = RequestUrlRepository::instance()->getReportWithParamUrl(static::$reportName, $param);
+            $url = ApiUrlRepository::instance()->getReportWithParamUrl(static::$reportName, $param);
         }
         return $sklad->getClient()->get($url, $specs->toArray());
     }

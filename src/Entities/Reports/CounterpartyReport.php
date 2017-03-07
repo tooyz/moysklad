@@ -7,7 +7,7 @@ use MoySklad\Components\Specs\QuerySpecs\Reports\StockReportQuerySpecs;
 use MoySklad\Entities\Counterparty;
 use MoySklad\Entities\Documents\AbstractDocument;
 use MoySklad\MoySklad;
-use MoySklad\Repositories\RequestUrlRepository;
+use MoySklad\Repositories\ApiUrlRepository;
 
 class StockReport extends AbstractReport  {
     public static $reportName = 'counterparty';

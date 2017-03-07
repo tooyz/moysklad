@@ -3,7 +3,7 @@
 namespace MoySklad\Entities\Reports;
 
 use MoySklad\MoySklad;
-use MoySklad\Repositories\RequestUrlRepository;
+use MoySklad\Repositories\ApiUrlRepository;
 
 class DashboardReport extends AbstractReport  {
     public static $reportName = 'dashboard';

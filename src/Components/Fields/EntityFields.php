@@ -16,14 +16,19 @@ class EntityFields extends AbstractFieldAccessor {
     {
         if ( $fields instanceof EntityFields ) $fields = $fields->getInternal();
         foreach ( $fields as $fieldName => $field ){
-            if ( $fieldName === 'meta'){
-                $this->storage->meta = new MetaField($field);
-            }
-            else if ( $fieldName === 'attributes' ){
-                $this->storage->attributes = new AttributeCollection($field);
-            }
-            else {
-                $this->storage->{$fieldName} = $field;
+            switch ( $fieldName ){
+                case "meta":
+                    $this->storage->meta = new MetaField($field);
+                    break;
+                case "attributes":
+                    $this->storage->attributes = new AttributeCollection($field);
+                    break;
+                case "image":
+                    $this->storage->image = new ImageField($field);
+                    break;
+                default:
+                    $this->storage->{$fieldName} = $field;
+                    break;
             }
         }
     }

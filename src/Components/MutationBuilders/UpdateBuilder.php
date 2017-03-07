@@ -5,7 +5,7 @@ namespace MoySklad\Components\MutationBuilders;
 use MoySklad\Components\Specs\CreationSpecs;
 use MoySklad\Entities\AbstractEntity;
 use MoySklad\Exceptions\EntityHasNoIdException;
-use MoySklad\Repositories\RequestUrlRepository;
+use MoySklad\Repositories\ApiUrlRepository;
 
 class UpdateBuilder extends AbstractMutationBuilder {
     /**
@@ -24,7 +24,7 @@ class UpdateBuilder extends AbstractMutationBuilder {
             $id = $entity->id;
         }
         $res = $entity->getSkladInstance()->getClient()->put(
-            RequestUrlRepository::instance()->getUpdateUrl($entityClass::$entityName, $id),
+            ApiUrlRepository::instance()->getUpdateUrl($entityClass::$entityName, $id),
             $entity->mergeFieldsWithLinks()
         );
         return new $entityClass($entity->getSkladInstance(), $res);

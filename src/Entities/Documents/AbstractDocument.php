@@ -5,7 +5,7 @@ namespace MoySklad\Entities\Documents;
 use MoySklad\Entities\AbstractEntity;
 use MoySklad\Entities\Misc\Attribute;
 use MoySklad\MoySklad;
-use MoySklad\Repositories\RequestUrlRepository;
+use MoySklad\Repositories\ApiUrlRepository;
 
 class AbstractDocument extends AbstractEntity{
     public static $entityName = 'a_document';
@@ -17,7 +17,7 @@ class AbstractDocument extends AbstractEntity{
      */
     public static function getAttributeMetaData(MoySklad $sklad, Attribute $attribute){
         return $sklad->getClient()->get(
-            RequestUrlRepository::instance()->getMetadataAttributeUrl(static::$entityName, $attribute->id)
+            ApiUrlRepository::instance()->getMetadataAttributeUrl(static::$entityName, $attribute->id)
         );
     }
 }

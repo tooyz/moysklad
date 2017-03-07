@@ -18,7 +18,7 @@ use MoySklad\Exceptions\EntityHasNoIdException;
 use MoySklad\Exceptions\EntityHasNoMetaException;
 use MoySklad\MoySklad;
 use MoySklad\Components\Fields\EntityFields;
-use MoySklad\Repositories\RequestUrlRepository;
+use MoySklad\Repositories\ApiUrlRepository;
 use MoySklad\Traits\AccessesSkladInstance;
 use MoySklad\Traits\Deletes;
 
@@ -165,10 +165,21 @@ abstract class AbstractEntity implements \JsonSerializable {
         return new UpdateBuilder($this);
     }
 
+    /**
+     * Create with existing fields
+     * @param CreationSpecs|null $specs
+     * @return AbstractEntity
+     * @throws \MoySklad\Exceptions\IncompleteCreationFieldsException
+     */
     public function create(CreationSpecs $specs = null){
         return $this->buildCreation($specs)->execute();
     }
 
+    /**
+     * Update with existing fields
+     * @return AbstractEntity
+     * @throws EntityHasNoIdException
+     */
     public function update(){
         return $this->buildUpdate()->execute();
     }
@@ -232,7 +243,7 @@ abstract class AbstractEntity implements \JsonSerializable {
      */
     public static function getMetaData(MoySklad $sklad){
         return $sklad->getClient()->get(
-            RequestUrlRepository::instance()->getMetadataUrl(static::$entityName)
+            ApiUrlRepository::instance()->getMetadataUrl(static::$entityName)
         );
     }
 

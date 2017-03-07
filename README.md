@@ -46,6 +46,19 @@ $product->fresh(Expand::create(['country']));
 `$product->transformToClass(Counterparty::class);`
 
 **Или не сделать. Большая часть логики делегирована другим классам.**
+**Можно прицепить картинки.**
+```
+$product->attachImage(ImageField::createFromUrl(
+    "http://url.ru/img.jpg"
+));
+```
+или
+```
+$product->attachImage(ImageField::createFromPath(
+    "images/123.jpg",
+    "renamed_image.jpg"
+));
+```
 
 #Получение сущностей
 

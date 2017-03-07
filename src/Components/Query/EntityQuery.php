@@ -9,7 +9,7 @@ use MoySklad\Components\Specs\QuerySpecs;
 use MoySklad\Entities\AbstractEntity;
 use MoySklad\Lists\EntityList;
 use MoySklad\MoySklad;
-use MoySklad\Repositories\RequestUrlRepository;
+use MoySklad\Repositories\ApiUrlRepository;
 use MoySklad\Traits\AccessesSkladInstance;
 
 class EntityQuery extends AbstractQuery {
@@ -23,7 +23,7 @@ class EntityQuery extends AbstractQuery {
      */
     public function byId($id, Expand $expand = null){
         $res = $this->getSkladInstance()->getClient()->get(
-            RequestUrlRepository::instance()->getByIdUrl($this->entityName, $id),
+            ApiUrlRepository::instance()->getByIdUrl($this->entityName, $id),
             ($expand?['expand'=>$expand->flatten()]:[])
         );
         return new $this->entityClass($this->getSkladInstance(), $res);

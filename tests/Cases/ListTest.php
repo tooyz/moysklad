@@ -37,16 +37,13 @@ class ListTest extends TestCase{
     public function testIterator(){
         $this->methodStart();
         $ar = [1, 2, 3];
-        $i = 0;
         $el = new EntityList($this->sklad, $ar);
-        $it = $el->getIterator();
-        while ( $row = $it->next() ){
+        foreach ( $el as $idx => $item ){
             $this->assertEquals(
-                $ar[$i++],
-                $row
+                $ar[$idx],
+                $item
             );
         }
-
         $i = 0;
         $el = new EntityList($this->sklad, [99, 11]);
         $el->each(function($e)use(&$i){
@@ -55,5 +52,4 @@ class ListTest extends TestCase{
         $this->assertEquals(2, $i);
         $this->methodEnd();
     }
-
 }

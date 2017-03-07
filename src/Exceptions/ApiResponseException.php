@@ -2,8 +2,11 @@
 
 namespace MoySklad\Exceptions;
 
-use \Exception;
-
+/**
+ * Request did not fail, but response contained "errors" field
+ * Class ApiResponseException
+ * @package MoySklad\Exceptions
+ */
 class ApiResponseException extends RequestFailedException{
     protected
         $code,

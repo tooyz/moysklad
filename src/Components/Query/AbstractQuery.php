@@ -8,7 +8,7 @@ use MoySklad\Components\FilterQuery;
 use MoySklad\Components\Specs\QuerySpecs\QuerySpecs;
 use MoySklad\Lists\EntityList;
 use MoySklad\MoySklad;
-use MoySklad\Repositories\RequestUrlRepository;
+use MoySklad\Repositories\ApiUrlRepository;
 use MoySklad\Traits\AccessesSkladInstance;
 
 abstract class AbstractQuery{
@@ -158,6 +158,6 @@ abstract class AbstractQuery{
      * @return null|string
      */
     protected function getQueryUrl(){
-        return (!empty($this->customQueryUrl)?$this->customQueryUrl: RequestUrlRepository::instance()->getListUrl($this->entityName));
+        return (!empty($this->customQueryUrl)?$this->customQueryUrl: ApiUrlRepository::instance()->getListUrl($this->entityName));
     }
 }

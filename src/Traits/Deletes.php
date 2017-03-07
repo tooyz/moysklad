@@ -6,7 +6,7 @@ use MoySklad\Components\Specs\CreationSpecs;
 use MoySklad\Entities\AbstractEntity;
 use MoySklad\Exceptions\ApiResponseException;
 use MoySklad\Exceptions\EntityHasNoIdException;
-use MoySklad\Repositories\RequestUrlRepository;
+use MoySklad\Repositories\ApiUrlRepository;
 
 trait Deletes{
 
@@ -28,7 +28,7 @@ trait Deletes{
             $id = $this->id;
         }
         $this->getSkladInstance()->getClient()->delete(
-            RequestUrlRepository::instance()->getDeleteUrl(static::$entityName, $id)
+            ApiUrlRepository::instance()->getDeleteUrl(static::$entityName, $id)
         );
         return true;
     }
