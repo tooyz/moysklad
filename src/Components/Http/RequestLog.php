@@ -16,6 +16,10 @@ abstract class RequestLog{
         }
     }
 
+    public static function replaceLast($row){
+        self::$history[count(self::$history) - 1] = $row;
+    }
+
     public static function getLast(){
         return self::$history[count(self::$history) - 1];
     }

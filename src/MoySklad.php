@@ -2,9 +2,6 @@
 
 namespace MoySklad;
 
-use MoySklad\Entities\AbstractEntity;
-use MoySklad\Entities\Product;
-use MoySklad\Exceptions\UnknownEntityException;
 use MoySklad\Components\Http\MoySkladHttpClient;
 
 class MoySklad{
@@ -24,9 +21,9 @@ class MoySklad{
      */
     private static $repository = [];
 
-    private function __construct($login, $password, $hashCode)
+    private function __construct($login, $password, $posToken, $hashCode)
     {
-        $this->client = new MoySkladHttpClient($login, $password);
+        $this->client = new MoySkladHttpClient($login, $password, $posToken);
         $this->hashCode = $hashCode;
     }
 
@@ -46,10 +43,10 @@ class MoySklad{
      * @param $password
      * @return MoySklad
      */
-    public static function getInstance($login, $password){
+    public static function getInstance($login, $password, $posToken = null){
         $hash = self::makeHash($login, $password);
         if ( empty(self::$repository[$hash]) ){
-            self::$repository[$hash] = new self($login, $password, $hash);
+            self::$repository[$hash] = new self($login, $password, $posToken, $hash);
         }
         return self::$repository[$hash];
     }
@@ -76,5 +73,9 @@ class MoySklad{
      */
     public function getClient(){
         return $this->client;
+    }
+
+    public function setPosToken($posToken){
+        $this->client->setPosToken($posToken);
     }
 }

@@ -24,7 +24,8 @@ class EntityQuery extends AbstractQuery {
     public function byId($id, Expand $expand = null){
         $res = $this->getSkladInstance()->getClient()->get(
             ApiUrlRepository::instance()->getByIdUrl($this->entityName, $id),
-            ($expand?['expand'=>$expand->flatten()]:[])
+            ($expand?['expand'=>$expand->flatten()]:[]),
+            $this->requestOptions
         );
         return new $this->entityClass($this->getSkladInstance(), $res);
     }

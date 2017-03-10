@@ -5,6 +5,7 @@ namespace MoySklad\Components\Http;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use MoySklad\Exceptions\ApiResponseException;
+use MoySklad\Exceptions\PosTokenException;
 use MoySklad\Exceptions\RequestFailedException;
 use MoySklad\Exceptions\ResponseParseException;
 
@@ -14,50 +15,61 @@ class MoySkladHttpClient{
         METHOD_POST = "POST",
         METHOD_PUT = "PUT",
         METHOD_DELETE = "DELETE",
-        HTTP_CODE_SUCCESS = 200;
+        HTTP_CODE_SUCCESS = [200, 201];
 
     private $preRequestSleepTime = 200;
 
     private
         $endpoint = "https://online.moysklad.ru/api/remap/1.1/",
+        $posEndpoint = "https://online.moysklad.ru/api/posap/1.0/",
         $login,
-        $password;
+        $password,
+        $posToken;
 
-    public function __construct($login, $password)
+    public function __construct($login, $password, $posToken)
     {
         $this->login = $login;
         $this->password = $password;
+        $this->posToken = $posToken;
     }
 
-    public function get($method, $payload = []){
+    public function setPosToken($posToken){
+        $this->posToken = $posToken;
+    }
+
+    public function get($method, $payload = [], $options = null){
         return $this->makeRequest(
             self::METHOD_GET,
             $method,
-            $payload
+            $payload,
+            $options
         );
     }
 
-    public function post($method, $payload = []){
+    public function post($method, $payload = [], $options = null){
         return $this->makeRequest(
             self::METHOD_POST,
             $method,
-            $payload
+            $payload,
+            $options
         );
     }
 
-    public function put($method, $payload = []){
+    public function put($method, $payload = [], $options = null){
         return $this->makeRequest(
             self::METHOD_PUT,
             $method,
-            $payload
+            $payload,
+            $options
         );
     }
 
-    public function delete($method, $payload = []){
+    public function delete($method, $payload = [], $options = null){
         return $this->makeRequest(
             self::METHOD_DELETE,
             $method,
-            $payload
+            $payload,
+            $options
         );
     }
 
@@ -87,36 +99,56 @@ class MoySkladHttpClient{
         $requestHttpMethod,
         $apiMethod,
         $data = [],
-        $options = []
+        $options = null
     ){
-        $requestOptions = [
-            "base_uri" => $this->endpoint,
-            "headers" => [
-                "Authorization" => "Basic " . base64_encode($this->login . ':' . $this->password)
-            ],
+        if ( !$options ) $options = new RequestConfig();
+
+        $password = $this->password;
+        if ( $options->get('usePosApi') ){
+            if ( $options->get('usePosToken') ){
+                if ( empty($this->posToken) ){
+                    throw new PosTokenException();
+                }
+                $password = $this->posToken;
+            }
+            $endpoint = $this->posEndpoint;
+        } else {
+            $endpoint = $this->endpoint;
+        }
+
+        $headers = [
+            "Authorization" => "Basic " . base64_encode($this->login . ':' . $password)
         ];
+        $config = [
+            "base_uri" => $endpoint,
+            "headers" => $headers
+        ];
+
         $jsonRequestsTypes = [
             self::METHOD_POST,
             self::METHOD_PUT,
             self::METHOD_DELETE
         ];
         $requestBody = [];
-        if ( $requestHttpMethod === self::METHOD_GET ){
-            $requestBody['query'] = $data;
-        } else if ( in_array($requestHttpMethod, $jsonRequestsTypes) ){
-            $requestBody['json'] = $data;
+        if ( $options->get('ignoreRequestBody') === false ){
+            if ( $requestHttpMethod === self::METHOD_GET ){
+                $requestBody['query'] = $data;
+            } else if ( in_array($requestHttpMethod, $jsonRequestsTypes) ){
+                $requestBody['json'] = $data;
+            }
         }
 
         $serializedRequest = (isset($requestBody['json'])?\json_decode(\json_encode($requestBody['json'])):$requestBody['query']);
         $reqLog = [
             "req" => [
                 "type" => $requestHttpMethod,
-                "method" => $apiMethod,
-                "body" => $serializedRequest
+                "method" => $endpoint . $apiMethod,
+                "body" => $serializedRequest,
+                "headers" => $headers
             ]
         ];
-
-        $client = new Client($requestOptions);
+        RequestLog::add($reqLog);
+        $client = new Client($config);
         try{
             usleep($this->preRequestSleepTime);
             $res = $client->request(
@@ -124,29 +156,38 @@ class MoySkladHttpClient{
                 $apiMethod,
                 $requestBody
             );
-            if ( $res->getStatusCode() === self::HTTP_CODE_SUCCESS ){
+            if ( in_array($res->getStatusCode(), self::HTTP_CODE_SUCCESS) ){
                 if ( $requestHttpMethod !== self::METHOD_DELETE ){
-                    if ( is_null($result = \json_decode($res->getBody())) === false ){
+                    $result = \json_decode($res->getBody());
+                    if ( is_null($result) === false ){
                         $reqLog['res'] = $result;
-                        RequestLog::add($reqLog);
+                        RequestLog::replaceLast($reqLog);
                         return $result;
                     } else {
                         throw new ResponseParseException($res);
                     }
                 }
-                RequestLog::add($reqLog);
+                RequestLog::replaceLast($reqLog);
+            } else {
+                throw new RequestFailedException($reqLog['req'], $res);
             }
-        } catch (ClientException $e){
-            $req = $reqLog['req'];
-            $res = $e->getResponse()->getBody()->getContents();
-            $except = new RequestFailedException($req, $res);
-            if ( $res = \json_decode($res) ){
-                if ( $res->errors ){
-                    $except = new ApiResponseException($req, $res);
+        } catch (\Exception $e){
+            if ( $e instanceof ClientException){
+                $req = $reqLog['req'];
+                $res = $e->getResponse()->getBody()->getContents();
+                $except = new RequestFailedException($req, $res);
+                if ( $res = \json_decode($res) ){
+                    if ( $res->errors ){
+                        $except = new ApiResponseException($req, $res);
+                    }
                 }
-            }
+            } else $except = $e;
             if ( defined('PHPUNIT') ){
-                print_r($except->getDump());
+                if ( $except instanceof RequestFailedException ){
+                    print_r($except->getDump());
+                } else {
+                    print_r(RequestLog::getLast());
+                }
             }
             throw $except;
         }

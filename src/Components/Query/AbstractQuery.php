@@ -5,6 +5,7 @@ namespace MoySklad\Components\Query;
 use MoySklad\Components\Expand;
 use MoySklad\Components\Fields\MetaField;
 use MoySklad\Components\FilterQuery;
+use MoySklad\Components\Http\RequestConfig;
 use MoySklad\Components\Specs\QuerySpecs\QuerySpecs;
 use MoySklad\Lists\EntityList;
 use MoySklad\MoySklad;
@@ -17,7 +18,8 @@ abstract class AbstractQuery{
     protected
         $entityClass,
         $entityName,
-        $querySpecs;
+        $querySpecs,
+        $requestOptions;
     /**
      * @var Expand $expand
      */
@@ -50,6 +52,16 @@ abstract class AbstractQuery{
      */
     public function setCustomQueryUrl($customQueryUrl){
         $this->customQueryUrl = $customQueryUrl;
+        return $this;
+    }
+
+    /**
+     * @param RequestConfig $options
+     * @return $this
+     */
+    public function setRequestOptions(RequestConfig $options){
+        $this->requestOptions = $options;
+        return $this;
     }
 
     /**
@@ -83,7 +95,7 @@ abstract class AbstractQuery{
             $query = array_merge($querySpecs->toArray(), [
                 "search" => $searchString
             ]);
-            return $this->getSkladInstance()->getClient()->get($this->getQueryUrl(), $query);
+            return $this->getSkladInstance()->getClient()->get($this->getQueryUrl(), $query, $this->requestOptions);
         }, $this->querySpecs, [
             $searchString
         ]);
@@ -105,7 +117,7 @@ abstract class AbstractQuery{
             } else {
                 $query = $querySpecs->toArray();
             }
-            return $this->getSkladInstance()->getClient()->get($this->getQueryUrl(), $query);
+            return $this->getSkladInstance()->getClient()->get($this->getQueryUrl(), $query, $this->requestOptions);
         }, $this->querySpecs, [
             $filterQuery
         ]);
@@ -158,6 +170,8 @@ abstract class AbstractQuery{
      * @return null|string
      */
     protected function getQueryUrl(){
-        return (!empty($this->customQueryUrl)?$this->customQueryUrl: ApiUrlRepository::instance()->getListUrl($this->entityName));
+        return (!empty($this->customQueryUrl)?
+            $this->customQueryUrl:
+            ApiUrlRepository::instance()->getListUrl($this->entityName));
     }
 }
