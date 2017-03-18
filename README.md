@@ -1,4 +1,4 @@
-#Moysklad PHP
+## Moysklad PHP
 
 **WIP**
 
@@ -15,13 +15,13 @@
     5) phpunit --configuration="./phpunit.xml" <ИЛИ> npm run test
     
 
-#Класс MoySklad
+## Класс MoySklad
 
 Используется для авторизации, явно передается параметром в большинство компонентов т.к. возможно использование нескольких аккаунтов моегосклада одновременно.
 
 `$sklad = MoySklad::getInstance($login, $password);`
 
-#Сущности
+## Сущности
 
 **Основной объект библиотеки**
 
@@ -60,7 +60,7 @@ $product->attachImage(ImageField::createFromPath(
 ));
 ```
 
-#Получение сущностей
+## Получение сущностей
 
 **Получение всех сущностей:**
 
@@ -94,7 +94,7 @@ $filteredList = Product::query($sklad)->filter(
 
 `$product = Product::query($sklad)->byId("12345-654321-123456-54321");`
 
-#Создание, обновление
+## Создание, обновление
 
 ```
 $counterparty = (new Counterparty($sklad, [
@@ -117,11 +117,11 @@ $order = (new CustomerOrder($this->sklad))->buildCreation()
 
 `$product->buildUpdate()->addCountry($country)->execute();`
 
-#Удаление
+## Удаление
 
 `$product->delete()`;
 
-#Связи
+## Связи
 
 **Чаще всего сущность полученная через api имеет какие-то связи**
 
@@ -139,7 +139,7 @@ $order = (new CustomerOrder($this->sklad))->buildCreation()
 
 `$products = $order->relationListQuery("positions")->getList()`
 
-#Список сущностей
+## Список сущностей
 
 **EntityList - обертка для массива для работы с апи**
 
@@ -161,7 +161,7 @@ $el = new EntityList($sklad, [$neko, $doge])->each(function($e) use($vasyan){
 
 `$el->toArray()`;
 
-#Отчеты
+## Отчеты
 
 **Содержат статические методы для получения отчетов.**
 ```
@@ -173,7 +173,7 @@ $report = SalesReport::byEmployee($sklad, SalesReportQuerySpecs::create([
     "counterparty.id" => $cpId
 ]));
 ```
-#Что не доделано и может работать не верно
+## Что не доделано и может работать не верно
 
 Комментарии где-то есть, где-то нет. Но это поправится.
 
