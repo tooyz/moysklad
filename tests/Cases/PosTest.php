@@ -25,7 +25,6 @@ class PosTest extends TestCase{
              */
             $retail = $retails->get(0);
             $token = $retail->getAuthToken();
-            dd($token);
         }
     }
 }
