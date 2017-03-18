@@ -165,11 +165,11 @@ $el = new EntityList($sklad, [$neko, $doge])->each(function($e) use($vasyan){
 
 **Содержат статические методы для получения отчетов.**
 ```
-$report = DashboardReport::day($this->sklad);
+$report = DashboardReport::day($sklad);
 ```
 **Некоторым можно указать особые поисковые запросы типо CounterpartyReportQuerySpecs**
 ```
-$report = SalesReport::byEmployee($this->sklad, SalesReportQuerySpecs::create([
+$report = SalesReport::byEmployee($sklad, SalesReportQuerySpecs::create([
     "counterparty.id" => $cpId
 ]));
 ```
