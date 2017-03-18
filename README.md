@@ -163,8 +163,16 @@ $el = new EntityList($sklad, [$neko, $doge])->each(function($e) use($vasyan){
 
 #Отчеты
 
-**Они есть. Лежат в Moysklad\Entities\Reports неймспейсе. Некоторым можно указать особые поисковые запросы типо CounterpartyReportQuerySpecs**
-
+**Содержат статические методы для получения отчетов.**
+```
+$report = DashboardReport::day($this->sklad);
+```
+**Некоторым можно указать особые поисковые запросы типо CounterpartyReportQuerySpecs**
+```
+$report = SalesReport::byEmployee($this->sklad, SalesReportQuerySpecs::create([
+    "counterparty.id" => $cpId
+]));
+```
 #Что не доделано и может работать не верно
 
 Комментарии где-то есть, где-то нет. Но это поправится.

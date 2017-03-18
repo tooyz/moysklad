@@ -268,7 +268,7 @@ abstract class AbstractEntity implements \JsonSerializable {
         return [];
     }
 
-    private function tryToMutate(){
+    protected function tryToMutate(){
         if ( $this instanceof PreventsMutation ){
             throw new EntityCantBeMutatedException($this);
         }
