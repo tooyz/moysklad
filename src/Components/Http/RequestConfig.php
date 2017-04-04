@@ -22,7 +22,24 @@ class RequestConfig{
      * @throws \Exception
      */
     public function get($key){
-        if ( !$key ) throw new \Exception("Unknown option '$key'");
+        $this->checkKey($key);
         return $this->fields[$key];
+    }
+
+    /**
+     * @param $key
+     * @param $value
+     */
+    public function set($key, $value){
+        $this->checkKey($key);
+        $this->fields[$key] = $value;
+    }
+
+    /**
+     * @param $key
+     * @throws \Exception
+     */
+    private function checkKey($key){
+        if ( !isset($this->fields[$key]) ) throw new \Exception("Unknown option '$key'");
     }
 }

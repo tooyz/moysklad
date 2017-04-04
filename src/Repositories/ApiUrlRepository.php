@@ -48,7 +48,12 @@ class ApiUrlRepository extends AbstractSingleton {
         return 'entity/' . $entityName . '/metadata/attributes/' . $fieldId;
     }
 
+    public function getNewDocumentTemplateUrl($entityName){
+        return 'entity/' . $entityName . '/new';
+    }
+
     public function getPosAttachTokenUrl($retailStoreId){
         return "admin/attach/${retailStoreId}";
     }
+
 }
