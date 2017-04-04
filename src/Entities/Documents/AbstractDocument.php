@@ -26,22 +26,16 @@ class AbstractDocument extends AbstractEntity{
     /**
      * Create document template
      * @param MoySklad $sklad
-     * @param null $forEntity
-     * @param MetaField|null $meta
      * @return \stdClass
      */
-    public static function newTemplate(MoySklad $sklad, $forEntity = null, MetaField $meta = null){
+    public function newTemplate(MoySklad $sklad, $makeEmptyTemplate = false){
         $requestConfig = new RequestConfig();
-        if ( empty($forEntity) || empty($meta) ) {
+        if ( $makeEmptyTemplate ) {
             $requestConfig->set("ignoreRequestBody", true);
         }
         return $sklad->getClient()->put(
             ApiUrlRepository::instance()->getNewDocumentTemplateUrl(static::$entityName),
-            [
-                $forEntity => [
-                    "meta" => $meta
-                ]
-            ],
+            $this->mergeFieldsWithLinks(),
             $requestConfig
         );
     }
