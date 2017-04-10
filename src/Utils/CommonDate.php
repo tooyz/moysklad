@@ -5,7 +5,8 @@ namespace MoySklad\Utils;
 class CommonDate{
     private $input;
 
-    public function __construct($time){
+    public function __construct($time = null){
+        if ( !$time ) $time = time();
         $this->input = $time;
     }
 
