@@ -3,6 +3,11 @@
 namespace MoySklad\Components\Specs;
 
 
+/**
+ * @deprecated
+ * Class CreationSpecs
+ * @package MoySklad\Components\Specs
+ */
 class CreationSpecs extends AbstractSpecs {
     protected static $cachedDefaultSpecs = null;
     /**

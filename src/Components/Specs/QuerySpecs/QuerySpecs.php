@@ -3,6 +3,7 @@
 namespace MoySklad\Components\Specs\QuerySpecs;
 
 use MoySklad\Components\Specs\AbstractSpecs;
+use MoySklad\Entities\Employee;
 use MoySklad\Utils\CommonDate;
 
 class QuerySpecs extends AbstractSpecs {
@@ -44,7 +45,7 @@ class QuerySpecs extends AbstractSpecs {
         }
         try{
             if ( $res->updatedFrom !== null ) $res->updatedFrom->format();
-            if ( $res->updatedBy !== null ) $res->updatedBy->format();
+            if ( $res->updatedTo !== null ) $res->updatedTo->format();
         } catch ( \Exception $e ){
             throw new \Exception('"updatedFrom" and "updatedTo" specs should be instances of "'.CommonDate::class.'" class');
         }
