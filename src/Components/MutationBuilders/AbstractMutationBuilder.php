@@ -52,6 +52,7 @@ use MoySklad\Entities\Misc\CustomEntity;
 use MoySklad\Entities\Misc\State;
 use MoySklad\Entities\Organization;
 use MoySklad\Entities\Products\AbstractProduct;
+use MoySklad\Entities\Products\Bundle;
 use MoySklad\Entities\Products\Consignment;
 use MoySklad\Entities\Products\Product;
 use MoySklad\Entities\Products\Service;
@@ -220,6 +221,10 @@ abstract class AbstractMutationBuilder{
 
     public function addProduct(Product $product, LinkingSpecs $specs = null){
         return $this->simpleLink($product, $specs);
+    }
+
+    public function addBundle(Bundle $bundle, LinkingSpecs $specs = null){
+        return $this->simpleLink($bundle, $specs);
     }
 
     public function addService(Service $service, LinkingSpecs $specs = null){

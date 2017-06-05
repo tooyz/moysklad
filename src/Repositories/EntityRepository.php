@@ -61,6 +61,7 @@ use MoySklad\Entities\Misc\State;
 use MoySklad\Entities\Misc\Webhook;
 use MoySklad\Entities\Organization;
 use MoySklad\Entities\Products\AbstractProduct;
+use MoySklad\Entities\Products\Bundle;
 use MoySklad\Entities\Products\Consignment;
 use MoySklad\Entities\Products\Product;
 use MoySklad\Entities\Products\Service;
@@ -89,6 +90,7 @@ class EntityRepository extends AbstractSingleton{
         Organization::class,
         AbstractProduct::class,
         Product::class,
+        Bundle::class,
         Service::class,
         Employee::class,
         Group::class,

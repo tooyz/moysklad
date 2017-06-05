@@ -2,7 +2,6 @@
 
 namespace MoySklad\Entities\Products;
 
-
 use MoySklad\Exceptions\IncompatibleFieldsException;
 use MoySklad\Traits\AttachesImage;
 use MoySklad\Traits\RequiresOnlyNameForCreation;
