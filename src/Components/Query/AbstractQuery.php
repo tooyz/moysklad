@@ -49,6 +49,7 @@ abstract class AbstractQuery{
     /**
      * Url that will be used instead of default list url
      * @param $customQueryUrl
+     * @return $this
      */
     public function setCustomQueryUrl($customQueryUrl){
         $this->customQueryUrl = $customQueryUrl;
@@ -76,8 +77,7 @@ abstract class AbstractQuery{
 
     /**
      * Get list of entities
-     * @param array $queryParams
-     * @return array|EntityList
+     * @return EntityList
      */
     public function getList(){
         return $this->filter(null);
@@ -86,7 +86,6 @@ abstract class AbstractQuery{
     /**
      * Search within list of entities
      * @param string $searchString
-     * @param QuerySpecs|null $querySpecs
      * @return EntityList
      */
     public function search($searchString = ''){
@@ -104,7 +103,6 @@ abstract class AbstractQuery{
     /**
      * Filter within list of entities
      * @param FilterQuery|null $filterQuery
-     * @param QuerySpecs|null $querySpecs
      * @return EntityList
      */
     public function filter( FilterQuery $filterQuery = null ){

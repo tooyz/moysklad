@@ -4,7 +4,6 @@ namespace MoySklad\Components\Specs;
 
 
 /**
- * @deprecated
  * Class CreationSpecs
  * @package MoySklad\Components\Specs
  */

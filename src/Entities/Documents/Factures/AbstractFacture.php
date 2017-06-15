@@ -3,8 +3,8 @@
 namespace MoySklad\Entities\Documents\Factures;
 
 use MoySklad\Entities\Documents\AbstractDocument;
-use MoySklad\Interfaces\PreventsMutation;
+use MoySklad\Interfaces\DoesNotSupportMutation;
 
-class AbstractFacture extends AbstractDocument implements PreventsMutation {
+class AbstractFacture extends AbstractDocument implements DoesNotSupportMutation {
     public static $entityName = 'a_facture';
 }

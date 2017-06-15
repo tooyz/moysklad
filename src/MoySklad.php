@@ -19,7 +19,7 @@ class MoySklad{
     /**
      * @var MoySklad[]
      */
-    private static $repository = [];
+    private static $instances = [];
 
     private function __construct($login, $password, $posToken, $hashCode)
     {
@@ -41,14 +41,15 @@ class MoySklad{
      * Use it instead of constructor
      * @param $login
      * @param $password
+     * @param $posToken
      * @return MoySklad
      */
     public static function getInstance($login, $password, $posToken = null){
         $hash = self::makeHash($login, $password);
-        if ( empty(self::$repository[$hash]) ){
-            self::$repository[$hash] = new self($login, $password, $posToken, $hash);
+        if ( empty(self::$instances[$hash]) ){
+            self::$instances[$hash] = new self($login, $password, $posToken, $hash);
         }
-        return self::$repository[$hash];
+        return self::$instances[$hash];
     }
 
     /**
@@ -57,7 +58,7 @@ class MoySklad{
      * @return MoySklad
      */
     public static function findInstanceByHash($hashCode){
-        return self::$repository[$hashCode];
+        return self::$instances[$hashCode];
     }
 
     /**

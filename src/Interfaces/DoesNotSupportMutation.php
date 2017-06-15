@@ -2,6 +2,6 @@
 
 namespace MoySklad\Interfaces;
 
-interface PreventsMutation{
+interface DoesNotSupportMutation{
 
 }

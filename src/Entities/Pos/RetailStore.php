@@ -3,10 +3,10 @@
 namespace MoySklad\Entities\Pos;
 
 use MoySklad\Components\Http\RequestConfig;
-use MoySklad\Interfaces\PreventsMutation;
+use MoySklad\Interfaces\DoesNotSupportMutation;
 use MoySklad\Repositories\ApiUrlRepository;
 
-class RetailStore extends PosEntity implements PreventsMutation{
+class RetailStore extends PosEntity implements DoesNotSupportMutation{
     public static $entityName = 'retailstore';
     protected static $customQueryUrl = "admin/retailstore";
 
