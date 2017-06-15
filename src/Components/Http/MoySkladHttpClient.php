@@ -177,7 +177,7 @@ class MoySkladHttpClient{
                 $res = $e->getResponse()->getBody()->getContents();
                 $except = new RequestFailedException($req, $res);
                 if ( $res = \json_decode($res) ){
-                    if ( $res->errors ){
+                    if ( isset($res->errors) || (is_array($res) && isset($res[0]->errors))){
                         $except = new ApiResponseException($req, $res);
                     }
                 }
