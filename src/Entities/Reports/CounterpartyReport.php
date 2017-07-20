@@ -9,7 +9,7 @@ use MoySklad\Entities\Documents\AbstractDocument;
 use MoySklad\MoySklad;
 use MoySklad\Repositories\ApiUrlRepository;
 
-class StockReport extends AbstractReport  {
+class CounterpartyReport extends AbstractReport  {
     public static $reportName = 'counterparty';
 
     public static function get(MoySklad $sklad, CounterpartyReportQuerySpecs $specs = null){
