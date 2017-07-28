@@ -80,3 +80,4 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         return $baseName . rand(1, 9999) . time();
     }
 }
+

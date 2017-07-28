@@ -17,3 +17,4 @@ class CounterpartyReport extends AbstractReport  {
         return static::queryWithParam($sklad, $counterparty->getMeta()->getId());
     }
 }
+
