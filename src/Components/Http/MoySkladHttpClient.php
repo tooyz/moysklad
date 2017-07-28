@@ -90,10 +90,10 @@ class MoySkladHttpClient{
      * @param $apiMethod
      * @param array $data
      * @param array $options
-     * @throws ApiResponseException
-     * @throws RequestFailedException
-     * @throws ResponseParseException
      * @return \stdClass
+     * @throws ApiResponseException
+     * @throws PosTokenException
+     * @throws RequestFailedException
      */
     private function makeRequest(
         $requestHttpMethod,
@@ -182,14 +182,8 @@ class MoySkladHttpClient{
                     }
                 }
             } else $except = $e;
-            if ( defined('PHPUNIT') ){
-                if ( $except instanceof RequestFailedException ){
-                    print_r($except->getDump());
-                } else {
-                    print_r(RequestLog::getLast());
-                }
-            }
             throw $except;
         }
+        return null;
     }
 }

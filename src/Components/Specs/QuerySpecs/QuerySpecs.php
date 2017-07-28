@@ -3,7 +3,6 @@
 namespace MoySklad\Components\Specs\QuerySpecs;
 
 use MoySklad\Components\Specs\AbstractSpecs;
-use MoySklad\Entities\Employee;
 use MoySklad\Utils\CommonDate;
 
 class QuerySpecs extends AbstractSpecs {
@@ -35,6 +34,7 @@ class QuerySpecs extends AbstractSpecs {
      * Fixes wrong limit spec. Fixes maxLimit lower then limit
      * @param array $specs
      * @return static
+     * @throws \Exception
      */
     public static function create($specs = [])
     {

@@ -5,7 +5,6 @@ namespace MoySklad\Entities\Reports;
 use MoySklad\Components\Specs\QuerySpecs\Reports\StockReportQuerySpecs;
 use MoySklad\Entities\Documents\AbstractDocument;
 use MoySklad\MoySklad;
-use MoySklad\Repositories\ApiUrlRegistry;
 
 class StockReport extends AbstractReport  {
     public static $reportName = 'stock';

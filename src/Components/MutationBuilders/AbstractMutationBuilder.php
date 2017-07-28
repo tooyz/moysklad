@@ -2,7 +2,6 @@
 
 namespace MoySklad\Components\MutationBuilders;
 
-use MoySklad\Components\Specs\CreationSpecs;
 use MoySklad\Components\Specs\LinkingSpecs;
 use MoySklad\Entities\AbstractEntity;
 use MoySklad\Entities\Account;
@@ -30,7 +29,7 @@ use MoySklad\Entities\Documents\Payments\PaymentIn;
 use MoySklad\Entities\Documents\Payments\PaymentOut;
 use MoySklad\Entities\Documents\Positions\CustomerOrderPosition;
 use MoySklad\Entities\Documents\Positions\EnterPosition;
-use MoySklad\Entities\Documents\Positions\RetailShift;
+use MoySklad\Entities\Documents\RetailShift;
 use MoySklad\Entities\Documents\PriceList;
 use MoySklad\Entities\Documents\Processings\Processing;
 use MoySklad\Entities\Documents\Processings\ProcessingOrder;
@@ -318,5 +317,5 @@ abstract class AbstractMutationBuilder{
         return $this;
     }
 
-    abstract function execute();
+    public abstract function execute();
 }

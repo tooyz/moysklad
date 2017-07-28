@@ -3,7 +3,6 @@
 namespace MoySklad\Exceptions;
 
 use \Exception;
-use MoySklad\Entities\AbstractEntity;
 
 /**
  * Thrown when one field can't be used with another

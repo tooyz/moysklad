@@ -5,11 +5,11 @@ namespace MoySklad\Entities\Reports;
 use MoySklad\Components\Specs\EmptySpecs;
 use MoySklad\Components\Specs\QuerySpecs\QuerySpecs;
 use MoySklad\Entities\AbstractEntity;
-use MoySklad\Interfaces\DoesNotSupportMutation;
+use MoySklad\Interfaces\DoesNotSupportMutationInterface;
 use MoySklad\MoySklad;
 use MoySklad\Repositories\ApiUrlRegistry;
 
-abstract class AbstractReport extends AbstractEntity implements DoesNotSupportMutation {
+abstract class AbstractReport extends AbstractEntity implements DoesNotSupportMutationInterface {
     public static $entityName = 'report';
     public static $reportName = 'a_report';
 

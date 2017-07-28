@@ -7,7 +7,6 @@ use MoySklad\Entities\AbstractEntity;
 use MoySklad\Exceptions\Relations\RelationDoesNotExistException;
 use MoySklad\Exceptions\Relations\RelationIsList;
 use MoySklad\Exceptions\Relations\RelationIsSingle;
-use MoySklad\Lists\EntityList;
 use MoySklad\Lists\RelationEntityList;
 use MoySklad\MoySklad;
 

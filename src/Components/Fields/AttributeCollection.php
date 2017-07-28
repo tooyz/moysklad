@@ -30,18 +30,18 @@ class AttributeCollection extends AbstractFieldAccessor{
      * Append an attribute
      * @param Attribute $attribute
      */
-    function add(Attribute $attribute){
+    public function add(Attribute $attribute){
         $this->storage->attrs[] = $attribute;
     }
 
     /**
      * @return mixed
      */
-    function getList(){
+    public function getList(){
         return $this->storage->attrs;
     }
 
-    function jsonSerialize()
+    public function jsonSerialize()
     {
         return $this->storage->attrs;
     }

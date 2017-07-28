@@ -9,7 +9,6 @@ use MoySklad\Repositories\ApiUrlRegistry;
 class UpdateBuilder extends AbstractMutationBuilder {
     /**
      * Update entity with current fields
-     * @param boolean $getIdFromMeta
      * @return AbstractEntity
      * @throws EntityHasNoIdException
      */

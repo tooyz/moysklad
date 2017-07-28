@@ -19,7 +19,7 @@ use MoySklad\Entities\Misc\State;
 use MoySklad\Exceptions\EntityCantBeMutatedException;
 use MoySklad\Exceptions\EntityHasNoIdException;
 use MoySklad\Exceptions\EntityHasNoMetaException;
-use MoySklad\Interfaces\DoesNotSupportMutation;
+use MoySklad\Interfaces\DoesNotSupportMutationInterface;
 use MoySklad\Lists\EntityList;
 use MoySklad\MoySklad;
 use MoySklad\Components\Fields\EntityFields;
@@ -283,29 +283,29 @@ abstract class AbstractEntity implements \JsonSerializable {
     }
 
     protected function checkMutationPossibility(){
-        if ( $this instanceof DoesNotSupportMutation ){
+        if ( $this instanceof DoesNotSupportMutationInterface ){
             throw new EntityCantBeMutatedException($this);
         }
     }
-    
-    function jsonSerialize()
+
+    public function jsonSerialize()
     {
         $res = $this->fields->getInternal();
         $res->relations = $this->relations;
         return $res;
     }
 
-    function __get($name)
+    public function __get($name)
     {
         return $this->fields->{$name};
     }
 
-    function __set($name, $value)
+    public function __set($name, $value)
     {
         $this->fields->{$name} = $value;
     }
 
-    function __isset($name)
+    public function __isset($name)
     {
         return isset($this->fields->{$name});
     }

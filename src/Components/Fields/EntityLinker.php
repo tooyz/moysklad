@@ -2,11 +2,8 @@
 
 namespace MoySklad\Components\Fields;
 
-use MoySklad\Components\Fields\AbstractFieldAccessor;
 use MoySklad\Components\Specs\ConstructionSpecs;
-use MoySklad\Components\Specs\CreationSpecs;
 use MoySklad\Components\Specs\LinkingSpecs;
-use MoySklad\Entities\Counterparty;
 use MoySklad\Entities\AbstractEntity;
 
 /**

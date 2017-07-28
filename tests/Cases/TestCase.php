@@ -3,6 +3,8 @@
 namespace Tests\Cases;
 
 use Faker\Generator;
+use MoySklad\Components\Http\RequestLog;
+use MoySklad\Exceptions\RequestFailedException;
 use MoySklad\MoySklad;
 use Tests\Config;
 use Faker\Factory as Faker;
@@ -10,8 +12,6 @@ use Faker\Factory as Faker;
 require_once "vendor/autoload.php";
 require_once "../vendor/autoload.php";
 require_once "includes.php";
-
-define("PHPUNIT", 1);
 
 abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
@@ -26,6 +26,15 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     *@var Generator $faker
     */
     protected $faker;
+
+    protected function onNotSuccessfulTest($e){
+        if ( $e instanceof RequestFailedException ){
+            var_dump($e->getDump());
+        } else {
+            var_dump(RequestLog::getLast());
+        }
+        parent::onNotSuccessfulTest($e);
+    }
 
     public function setUp()
     {

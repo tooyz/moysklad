@@ -25,6 +25,7 @@ class AbstractDocument extends AbstractEntity{
     /**
      * Create document template
      * @param MoySklad $sklad
+     * @param $makeEmptyTemplate
      * @return \stdClass
      */
     public function newTemplate(MoySklad $sklad, $makeEmptyTemplate = false){
