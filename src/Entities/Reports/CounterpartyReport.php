@@ -6,7 +6,7 @@ use MoySklad\Components\Specs\QuerySpecs\Reports\CounterpartyReportQuerySpecs;
 use MoySklad\Entities\Counterparty;
 use MoySklad\MoySklad;
 
-class StockReport extends AbstractReport  {
+class CounterpartyReport extends AbstractReport  {
     public static $reportName = 'counterparty';
 
     public static function get(MoySklad $sklad, CounterpartyReportQuerySpecs $specs = null){
