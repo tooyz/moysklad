@@ -221,7 +221,7 @@ class EntityList implements \JsonSerializable, \ArrayAccess, \IteratorAggregate,
         return json_encode($this->jsonSerialize(), $options);
     }
 
-    function jsonSerialize()
+    public function jsonSerialize()
     {
         return $this->toArray();
     }

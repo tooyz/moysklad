@@ -12,7 +12,7 @@ class UpdateBuilder extends AbstractMutationBuilder {
      * @return AbstractEntity
      * @throws EntityHasNoIdException
      */
-    function execute()
+    public function execute()
     {
         $entity = &$this->e;
         $entityClass = get_class($entity);
