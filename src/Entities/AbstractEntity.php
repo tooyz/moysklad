@@ -23,7 +23,7 @@ use MoySklad\Interfaces\DoesNotSupportMutation;
 use MoySklad\Lists\EntityList;
 use MoySklad\MoySklad;
 use MoySklad\Components\Fields\EntityFields;
-use MoySklad\Repositories\ApiUrlRepository;
+use MoySklad\Repositories\ApiUrlRegistry;
 use MoySklad\Traits\AccessesSkladInstance;
 use MoySklad\Traits\Deletes;
 
@@ -261,7 +261,7 @@ abstract class AbstractEntity implements \JsonSerializable {
      */
     public static function getMetaData(MoySklad $sklad){
         $res = $sklad->getClient()->get(
-            ApiUrlRepository::instance()->getMetadataUrl(static::$entityName)
+            ApiUrlRegistry::instance()->getMetadataUrl(static::$entityName)
         );
         $attributes = (isset($res->attributes)?$res->attributes:[]);
         $attributes = new EntityList($sklad, $attributes);

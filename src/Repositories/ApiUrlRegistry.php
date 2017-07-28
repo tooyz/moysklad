@@ -5,7 +5,7 @@ namespace MoySklad\Repositories;
 use MoySklad\Entities\Reports\AbstractReport;
 use MoySklad\Utils\AbstractSingleton;
 
-class ApiUrlRepository extends AbstractSingleton {
+class ApiUrlRegistry extends AbstractSingleton {
     protected static $instance = null;
 
     public function getCreateUrl($entityName){

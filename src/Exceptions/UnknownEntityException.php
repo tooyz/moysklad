@@ -5,7 +5,7 @@ namespace MoySklad\Exceptions;
 use \Exception;
 
 /**
- * No class with given "type" was found in EntityRepository
+ * No class with given "type" was found in EntityRegistry
  * Class UnknownEntityException
  * @package MoySklad\Exceptions
  */

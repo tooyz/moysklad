@@ -7,7 +7,7 @@ use MoySklad\Components\Specs\QuerySpecs\QuerySpecs;
 use MoySklad\Entities\AbstractEntity;
 use MoySklad\Interfaces\DoesNotSupportMutation;
 use MoySklad\MoySklad;
-use MoySklad\Repositories\ApiUrlRepository;
+use MoySklad\Repositories\ApiUrlRegistry;
 
 abstract class AbstractReport extends AbstractEntity implements DoesNotSupportMutation {
     public static $entityName = 'report';
@@ -22,9 +22,9 @@ abstract class AbstractReport extends AbstractEntity implements DoesNotSupportMu
     protected static function queryWithParam(MoySklad $sklad, $param = null, QuerySpecs $specs = null){
         if ( !$specs ) $specs = EmptySpecs::create();
         if ( $param === null ){
-            $url = ApiUrlRepository::instance()->getReportUrl(static::$reportName);
+            $url = ApiUrlRegistry::instance()->getReportUrl(static::$reportName);
         } else {
-            $url = ApiUrlRepository::instance()->getReportWithParamUrl(static::$reportName, $param);
+            $url = ApiUrlRegistry::instance()->getReportWithParamUrl(static::$reportName, $param);
         }
         return $sklad->getClient()->get($url, $specs->toArray());
     }

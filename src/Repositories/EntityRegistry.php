@@ -74,10 +74,10 @@ use MoySklad\Utils\AbstractSingleton;
 
 /**
  * Map of entity name => representing class
- * Class EntityRepository
+ * Class EntityRegistry
  * @package MoySklad\Repositories
  */
-class EntityRepository extends AbstractSingleton{
+class EntityRegistry extends AbstractSingleton{
     protected static $instance = null;
     public $entities = [
         AbstractEntity::class,

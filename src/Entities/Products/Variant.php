@@ -9,6 +9,6 @@ class Variant extends AbstractProduct{
 
     public static function getFieldsRequiredForCreation()
     {
-        return [Product::class, Characteristics::class];
+        return [Product::$entityName, Characteristics::$entityName];
     }
 }

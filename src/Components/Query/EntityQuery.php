@@ -3,14 +3,10 @@
 namespace MoySklad\Components\Query;
 
 use MoySklad\Components\Expand;
-use MoySklad\Components\Fields\MetaField;
-use MoySklad\Components\FilterQuery;
-use MoySklad\Components\Specs\QuerySpecs;
 use MoySklad\Entities\AbstractEntity;
 use MoySklad\Lists\EntityList;
 use MoySklad\MoySklad;
-use MoySklad\Repositories\ApiUrlRepository;
-use MoySklad\Traits\AccessesSkladInstance;
+use MoySklad\Repositories\ApiUrlRegistry;
 
 class EntityQuery extends AbstractQuery {
     protected static $entityListClass = EntityList::class;
@@ -23,7 +19,7 @@ class EntityQuery extends AbstractQuery {
      */
     public function byId($id, Expand $expand = null){
         $res = $this->getSkladInstance()->getClient()->get(
-            ApiUrlRepository::instance()->getByIdUrl($this->entityName, $id),
+            ApiUrlRegistry::instance()->getByIdUrl($this->entityName, $id),
             ($expand?['expand'=>$expand->flatten()]:[]),
             $this->requestOptions
         );

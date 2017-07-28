@@ -9,7 +9,7 @@ use MoySklad\Components\Http\RequestConfig;
 use MoySklad\Components\Specs\QuerySpecs\QuerySpecs;
 use MoySklad\Lists\EntityList;
 use MoySklad\MoySklad;
-use MoySklad\Repositories\ApiUrlRepository;
+use MoySklad\Repositories\ApiUrlRegistry;
 use MoySklad\Traits\AccessesSkladInstance;
 
 abstract class AbstractQuery{
@@ -170,6 +170,6 @@ abstract class AbstractQuery{
     protected function getQueryUrl(){
         return (!empty($this->customQueryUrl)?
             $this->customQueryUrl:
-            ApiUrlRepository::instance()->getListUrl($this->entityName));
+            ApiUrlRegistry::instance()->getListUrl($this->entityName));
     }
 }

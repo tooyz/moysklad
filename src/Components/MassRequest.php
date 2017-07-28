@@ -3,10 +3,9 @@
 namespace MoySklad\Components;
 
 use MoySklad\Entities\AbstractEntity;
-use MoySklad\Exceptions\StackingRequestDifferentMethodException;
 use MoySklad\Lists\EntityList;
 use MoySklad\MoySklad;
-use MoySklad\Repositories\ApiUrlRepository;
+use MoySklad\Repositories\ApiUrlRegistry;
 use MoySklad\Traits\AccessesSkladInstance;
 
 /**
@@ -49,7 +48,7 @@ class MassRequest{
      */
     public function create(){
         $className = get_class($this->stack[0]);
-        $url = ApiUrlRepository::instance()->getCreateUrl($className::$entityName);
+        $url = ApiUrlRegistry::instance()->getCreateUrl($className::$entityName);
         $res = $this->getSkladInstance()->getClient()->post(
             $url,
             array_map(function( AbstractEntity $e){

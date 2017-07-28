@@ -5,7 +5,7 @@ namespace MoySklad\Lists;
 use MoySklad\Components\Fields\MetaField;
 use MoySklad\Components\Query\RelationQuery;
 use MoySklad\MoySklad;
-use MoySklad\Repositories\ApiUrlRepository;
+use MoySklad\Repositories\ApiUrlRegistry;
 
 /**
  * EntityList with meta. Used for query
@@ -38,7 +38,7 @@ class RelationEntityList extends EntityList{
         $relHref = $this->meta->parseRelationHref();
         $res = new RelationQuery($this->getSkladInstance(), $this->meta->getClass());
         $res->setCustomQueryUrl(
-            ApiUrlRepository::instance()->getRelationListUrl($relHref['entityClass'], $relHref['entityId'], $relHref['relationClass'])
+            ApiUrlRegistry::instance()->getRelationListUrl($relHref['entityClass'], $relHref['entityId'], $relHref['relationClass'])
         );
         return $res;
     }

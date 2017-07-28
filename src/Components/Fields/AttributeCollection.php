@@ -3,8 +3,7 @@
 namespace MoySklad\Components\Fields;
 
 use MoySklad\Entities\Misc\Attribute;
-use MoySklad\Exceptions\UnknownEntityException;
-use MoySklad\Repositories\EntityRepository;
+use MoySklad\Repositories\EntityRegistry;
 
 /**
  * "attributes" field of entity
@@ -23,7 +22,7 @@ class AttributeCollection extends AbstractFieldAccessor{
             parent::__construct(['attrs' => $fields]);
         }
         if ( self::$ep === null ){
-            self::$ep = EntityRepository::instance();
+            self::$ep = EntityRegistry::instance();
         }
     }
 
