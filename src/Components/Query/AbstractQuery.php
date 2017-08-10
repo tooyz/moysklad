@@ -23,7 +23,7 @@ abstract class AbstractQuery{
     /**
      * @var Expand $expand
      */
-    private $expand;
+    protected $expand = null;
     private $customQueryUrl = null;
     protected static $entityListClass;
 
@@ -71,7 +71,9 @@ abstract class AbstractQuery{
      * @return QuerySpecs
      */
     protected function attachExpand(QuerySpecs &$querySpecs){
-        $querySpecs->expand = $this->expand;
+        if ( $this->expand !== null ){
+            $querySpecs->expand = $this->expand;
+        }
         return $querySpecs;
     }
 

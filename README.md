@@ -217,7 +217,7 @@ $counterparty = $counterparty->buildUpdate()
 ```
 Product::query($sklad, QuerySpecs::create([
             'maxResults' => 25,
-            'expand' => Expand::create([Employee::class]),
+            'expand' => Expand::create([Employee::$entityName]),
             'updatedFrom' => new CommonDate("2017-01-01"),
             'updatedBy' => "admin@admin"
         ]))->getList();

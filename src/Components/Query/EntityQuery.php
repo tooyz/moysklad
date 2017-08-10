@@ -12,10 +12,11 @@ class EntityQuery extends AbstractQuery {
     /**
      * Get entity by id
      * @param $id
-     * @param Expand|null $expand
+     * @param Expand|null $expand Deprecated, use withExpand()
      * @return AbstractEntity
      */
     public function byId($id, Expand $expand = null){
+        if ( !$expand ) $expand = $this->expand;
         $res = $this->getSkladInstance()->getClient()->get(
             ApiUrlRegistry::instance()->getByIdUrl($this->entityName, $id),
             ($expand?['expand'=>$expand->flatten()]:[]),
