@@ -3,11 +3,13 @@
 namespace Tests\Cases;
 
 use MoySklad\Components\Expand;
+use MoySklad\Components\FilterQuery;
 use MoySklad\Components\Http\RequestLog;
 use MoySklad\Components\Specs\QuerySpecs\QuerySpecs;
 use MoySklad\Entities\AbstractEntity;
 use MoySklad\Entities\Assortment;
 use MoySklad\Entities\Employee;
+use MoySklad\Entities\Folders\ProductFolder;
 use MoySklad\Entities\Group;
 use MoySklad\Entities\Products\Product;
 use MoySklad\Entities\Products\Service;
@@ -57,6 +59,7 @@ class EntityGetTest extends TestCase{
 
     /**
      * @depends testGetProductList
+     * @param EntityList $productList
      */
     public function testProductRelations(EntityList $productList){
         $this->methodStart();
@@ -69,6 +72,7 @@ class EntityGetTest extends TestCase{
 
     /**
      * @depends testGetProductList
+     * @param EntityList $productList
      */
     public function testEntityRefresh(EntityList $productList){
         $this->methodStart();
@@ -98,7 +102,9 @@ class EntityGetTest extends TestCase{
     public function testGetProductWithExpand(){
         $this->methodStart();
         $someProduct = Product::query($this->sklad, QuerySpecs::create(['maxResults' => 1]))->getList()->get(0);
-        $sameProduct = Product::query($this->sklad)->byId($someProduct->id, Expand::create(['owner']));
+        $sameProduct = Product::query($this->sklad)
+            ->withExpand(Expand::create(['owner']))
+            ->byId($someProduct->id);
         $this->assertNotNull(
             $sameProduct->relations->find(Employee::class)->id
         );

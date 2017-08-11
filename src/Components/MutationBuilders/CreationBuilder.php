@@ -33,6 +33,6 @@ class CreationBuilder extends AbstractMutationBuilder {
             ) throw new IncompleteCreationFieldsException($this->e);
         }
         $mr = new MassRequest($this->e->getSkladInstance(), $this->e);
-        return $mr->create()[0];
+        return $mr->create()->get(0);
     }
 }

@@ -44,8 +44,8 @@ class EntityCreateTest extends TestCase{
 
         $this->assertTrue(isset($variant->id));
 
-        $product->delete(true);
         $variant->delete(true);
+        $product->delete(true);
 
         $this->methodEnd();
     }
