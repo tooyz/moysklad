@@ -29,7 +29,6 @@ class CustomerOrderAffectsStockTest extends TestCase{
         $testProductName = $this->makeName("TestProduct");
         $testCounterpartyName = $this->makeName('TestCounterparty');
         $testEnterName = $this->makeName("TestEnter");
-        $testCustomerOrder = $this->makeName("TestCustomerOrder");
 
         $org = Organization::query($this->sklad)->getList()->get(0);
         $store = Store::query($this->sklad)->getList()->get(0);
@@ -38,17 +37,22 @@ class CustomerOrderAffectsStockTest extends TestCase{
             "name" => $testCounterpartyName
         ]))->buildCreation()->execute();
         $this->say("Cp id:" . $cp->id);
+
         $product = (new Product($this->sklad, [
             "name" => $testProductName,
             "quantity" => 25
         ]))->buildCreation()->execute();
         $this->say("Product id:" . $product->id);
+
+        $positionList = new EntityList($this->sklad);
+        $positionList->push($product);
+
         $enter = (new Enter($this->sklad, [
            "name" => $testEnterName
         ]))->buildCreation()->
             addOrganization($org)->
             addStore($store)->
-            addPositionList(new EntityList($this->sklad, $product))->
+            addPositionList($positionList)->
             execute();
         $this->say("Enter id:" . $enter->id );
 
@@ -65,7 +69,7 @@ class CustomerOrderAffectsStockTest extends TestCase{
             ->buildCreation()
             ->addCounterparty($cp)
             ->addOrganization($org)
-            ->addPositionList(new EntityList($this->sklad, $product))
+            ->addPositionList(new EntityList($this->sklad, [$product]))
             ->execute();
 
         $this->say("Order id:" . $co->id );

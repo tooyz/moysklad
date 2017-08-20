@@ -5,7 +5,7 @@ namespace MoySklad\Traits;
 use MoySklad\Entities\AbstractEntity;
 use MoySklad\Exceptions\ApiResponseException;
 use MoySklad\Exceptions\EntityHasNoIdException;
-use MoySklad\Repositories\ApiUrlRegistry;
+use MoySklad\Registers\ApiUrlRegistry;
 
 trait Deletes{
 

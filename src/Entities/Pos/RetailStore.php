@@ -4,7 +4,7 @@ namespace MoySklad\Entities\Pos;
 
 use MoySklad\Components\Http\RequestConfig;
 use MoySklad\Interfaces\DoesNotSupportMutationInterface;
-use MoySklad\Repositories\ApiUrlRegistry;
+use MoySklad\Registers\ApiUrlRegistry;
 
 class RetailStore extends PosEntity implements DoesNotSupportMutationInterface{
     public static $entityName = 'retailstore';

@@ -19,11 +19,12 @@ use MoySklad\Entities\Misc\State;
 use MoySklad\Exceptions\EntityCantBeMutatedException;
 use MoySklad\Exceptions\EntityHasNoIdException;
 use MoySklad\Exceptions\EntityHasNoMetaException;
+use MoySklad\Exceptions\IncompleteCreationFieldsException;
 use MoySklad\Interfaces\DoesNotSupportMutationInterface;
 use MoySklad\Lists\EntityList;
 use MoySklad\MoySklad;
 use MoySklad\Components\Fields\EntityFields;
-use MoySklad\Repositories\ApiUrlRegistry;
+use MoySklad\Registers\ApiUrlRegistry;
 use MoySklad\Traits\AccessesSkladInstance;
 use MoySklad\Traits\Deletes;
 
@@ -121,17 +122,27 @@ abstract class AbstractEntity implements \JsonSerializable {
     }
 
     /**
+     * @return string
+     * @throws EntityHasNoIdException
+     */
+    public function findEntityId(){
+        $id = null;
+        if ( empty($this->fields->id) ){
+            if ( !$id = $this->getMeta()->getId()) throw new EntityHasNoIdException($this);
+        } else {
+            $id = $this->fields->id;
+        }
+        return $id;
+    }
+
+    /**
      * Replaces current fields with response entity fields, expand may be used to load relations
      * @param Expand|null $expand
      * @return mixed
      * @throws EntityHasNoIdException
      */
     public function fresh(Expand $expand = null){
-        if ( empty($this->fields->id) ){
-            if ( !$id = $this->getMeta()->getId()) throw new EntityHasNoIdException($this);
-        } else {
-            $id = $this->id;
-        }
+        $id = $this->findEntityId();
         $queriedEntity = static::query($this->getSkladInstance())->byId($id, $expand);
         $this->replaceFields($queriedEntity);
         return $this;
@@ -280,6 +291,15 @@ abstract class AbstractEntity implements \JsonSerializable {
      */
     public static function getFieldsRequiredForCreation(){
         return [];
+    }
+
+    public function validateFieldsRequiredForCreation(){
+        $requiredFields = static::getFieldsRequiredForCreation();
+        foreach ( $requiredFields as $requiredField ){
+            if (
+                !isset($this->links->{$requiredField}) && !isset($this->{$requiredField})
+            ) throw new IncompleteCreationFieldsException($this);
+        }
     }
 
     protected function checkMutationPossibility(){

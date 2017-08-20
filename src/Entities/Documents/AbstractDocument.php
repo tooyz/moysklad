@@ -3,10 +3,13 @@
 namespace MoySklad\Entities\Documents;
 
 use MoySklad\Components\Http\RequestConfig;
+use MoySklad\Components\Specs\QuerySpecs\QuerySpecs;
 use MoySklad\Entities\AbstractEntity;
 use MoySklad\Entities\Misc\Attribute;
+use MoySklad\Entities\Misc\Publication;
+use MoySklad\Lists\EntityList;
 use MoySklad\MoySklad;
-use MoySklad\Repositories\ApiUrlRegistry;
+use MoySklad\Registers\ApiUrlRegistry;
 
 class AbstractDocument extends AbstractEntity{
     public static $entityName = 'a_document';
@@ -24,6 +27,7 @@ class AbstractDocument extends AbstractEntity{
 
     /**
      * Create document template
+     * @deprecated $sklad argument is deprecated and will be removed
      * @param MoySklad $sklad
      * @param $makeEmptyTemplate
      * @return \stdClass
@@ -38,5 +42,34 @@ class AbstractDocument extends AbstractEntity{
             $this->mergeFieldsWithLinks(),
             $requestConfig
         );
+    }
+
+    public function getPublications(QuerySpecs $querySpecs){
+        return Publication::query($this->getSkladInstance(), $querySpecs)
+            ->setCustomQueryUrl(ApiUrlRegistry::instance()->getDocumentPublicationsUrl($this::$entityName, $this->findEntityId()))
+            ->getList();
+    }
+
+    public function createPublication(Publication $publication){
+        $publication->validateFieldsRequiredForCreation();
+        $res = $this->getSkladInstance()->getClient()->post(
+            ApiUrlRegistry::instance()->getDocumentPublicationsUrl(static::$entityName, $this->findEntityId()),
+            $publication->mergeFieldsWithLinks()
+        );
+        return new Publication($this->getSkladInstance(), $res);
+    }
+
+    public function deletePublication(Publication $publication){
+        $this->getSkladInstance()->getClient()->delete(
+            ApiUrlRegistry::instance()->getDocumentPublicationWithIdUrl(static::$entityName, $this->findEntityId(), $publication->findEntityId())
+        );
+        return true;
+    }
+
+    public function getPublicationById($id){
+        $res = $this->getSkladInstance()->getClient()->get(
+            ApiUrlRegistry::instance()->getDocumentPublicationWithIdUrl(static::$entityName, $this->findEntityId(), $id)
+        );
+        return new Publication($this->getSkladInstance(), $res);
     }
 }

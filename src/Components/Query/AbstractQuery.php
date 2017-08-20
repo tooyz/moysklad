@@ -9,7 +9,7 @@ use MoySklad\Components\Http\RequestConfig;
 use MoySklad\Components\Specs\QuerySpecs\QuerySpecs;
 use MoySklad\Lists\EntityList;
 use MoySklad\MoySklad;
-use MoySklad\Repositories\ApiUrlRegistry;
+use MoySklad\Registers\ApiUrlRegistry;
 use MoySklad\Traits\AccessesSkladInstance;
 
 abstract class AbstractQuery{

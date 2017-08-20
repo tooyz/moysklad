@@ -3,7 +3,7 @@
 namespace MoySklad\Components\Fields;
 
 use MoySklad\Exceptions\UnknownEntityException;
-use MoySklad\Repositories\EntityRegistry;
+use MoySklad\Registers\EntityRegistry;
 
 /**
  * "meta" field of entity

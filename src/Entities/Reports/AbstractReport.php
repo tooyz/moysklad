@@ -7,7 +7,7 @@ use MoySklad\Components\Specs\QuerySpecs\QuerySpecs;
 use MoySklad\Entities\AbstractEntity;
 use MoySklad\Interfaces\DoesNotSupportMutationInterface;
 use MoySklad\MoySklad;
-use MoySklad\Repositories\ApiUrlRegistry;
+use MoySklad\Registers\ApiUrlRegistry;
 
 abstract class AbstractReport extends AbstractEntity implements DoesNotSupportMutationInterface {
     public static $entityName = 'report';

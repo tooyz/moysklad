@@ -1,6 +1,6 @@
 <?php
 
-namespace MoySklad\Repositories;
+namespace MoySklad\Registers;
 
 use MoySklad\Entities\Reports\AbstractReport;
 use MoySklad\Utils\AbstractSingleton;
@@ -56,4 +56,11 @@ class ApiUrlRegistry extends AbstractSingleton {
         return "admin/attach/${retailStoreId}";
     }
 
+    public function getDocumentPublicationsUrl($entityName, $id){
+        return 'entity/' . $entityName . "/" . $id . '/publication';
+    }
+
+    public function getDocumentPublicationWithIdUrl($entityName, $id, $publicationId){
+        return 'entity/' . $entityName . "/" . $id . '/publication/' . $publicationId;
+    }
 }

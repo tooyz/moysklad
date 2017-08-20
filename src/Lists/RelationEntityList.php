@@ -5,7 +5,7 @@ namespace MoySklad\Lists;
 use MoySklad\Components\Fields\MetaField;
 use MoySklad\Components\Query\RelationQuery;
 use MoySklad\MoySklad;
-use MoySklad\Repositories\ApiUrlRegistry;
+use MoySklad\Registers\ApiUrlRegistry;
 
 /**
  * EntityList with meta. Used for query

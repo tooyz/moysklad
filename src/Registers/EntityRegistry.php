@@ -1,6 +1,6 @@
 <?php
 
-namespace MoySklad\Repositories;
+namespace MoySklad\Registers;
 
 use MoySklad\Entities\AbstractEntity;
 use MoySklad\Entities\Account;
@@ -33,6 +33,7 @@ use MoySklad\Entities\Documents\Orders\CustomerOrder;
 use MoySklad\Entities\Documents\Orders\PurchaseOrder;
 use MoySklad\Entities\Documents\Positions\AbstractPosition;
 use MoySklad\Entities\Documents\Positions\CustomerOrderPosition;
+use MoySklad\Entities\Documents\Positions\DemandPosition;
 use MoySklad\Entities\Documents\Positions\EnterPosition;
 use MoySklad\Entities\Documents\PriceList;
 use MoySklad\Entities\Documents\Processings\AbstractProcessing;
@@ -57,6 +58,8 @@ use MoySklad\Entities\Misc\Attribute;
 use MoySklad\Entities\Misc\Characteristics;
 use MoySklad\Entities\Misc\CompanySettings;
 use MoySklad\Entities\Misc\CustomEntity;
+use MoySklad\Entities\Misc\CustomTemplate;
+use MoySklad\Entities\Misc\Publication;
 use MoySklad\Entities\Misc\State;
 use MoySklad\Entities\Misc\Webhook;
 use MoySklad\Entities\Organization;
@@ -75,7 +78,7 @@ use MoySklad\Utils\AbstractSingleton;
 /**
  * Map of entity name => representing class
  * Class EntityRegistry
- * @package MoySklad\Repositories
+ * @package MoySklad\Registries
  */
 class EntityRegistry extends AbstractSingleton{
     protected static $instance = null;
@@ -101,6 +104,7 @@ class EntityRegistry extends AbstractSingleton{
         AbstractPosition::class,
         EnterPosition::class,
         CustomerOrderPosition::class,
+        DemandPosition::class,
         Country::class,
         Webhook::class,
         ProductFolder::class,
@@ -109,10 +113,12 @@ class EntityRegistry extends AbstractSingleton{
         AbstractMovement::class,
         Enter::class,
         Attribute::class,
+        Publication::class,
         Store::class,
         Characteristics::class,
         CompanySettings::class,
         CustomEntity::class,
+        CustomTemplate::class,
         Cashier::class,
         Contract::class,
         Discount::class,

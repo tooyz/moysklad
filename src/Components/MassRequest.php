@@ -5,7 +5,7 @@ namespace MoySklad\Components;
 use MoySklad\Entities\AbstractEntity;
 use MoySklad\Lists\EntityList;
 use MoySklad\MoySklad;
-use MoySklad\Repositories\ApiUrlRegistry;
+use MoySklad\Registers\ApiUrlRegistry;
 use MoySklad\Traits\AccessesSkladInstance;
 
 /**

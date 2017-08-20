@@ -5,7 +5,7 @@ namespace MoySklad\Components\Query;
 use MoySklad\Components\Expand;
 use MoySklad\Entities\AbstractEntity;
 use MoySklad\Lists\EntityList;
-use MoySklad\Repositories\ApiUrlRegistry;
+use MoySklad\Registers\ApiUrlRegistry;
 
 class EntityQuery extends AbstractQuery {
     protected static $entityListClass = EntityList::class;

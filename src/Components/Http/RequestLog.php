@@ -6,12 +6,16 @@ abstract class RequestLog{
     private static
         $history = [],
         $total = 0,
-        $storageSize = 10;
+        $storageSize = 50;
+
+    public static function setStorageSize($size){
+        if ( is_int($size) ) self::$storageSize = $size;
+    }
 
     public static function add($row){
         self::$total++;
         self::$history[] = $row;
-        if ( count(self::$history) > self::$storageSize ){
+        if ( self::$storageSize !== 0 && count(self::$history) > self::$storageSize ){
             array_shift(self::$history);
         }
     }

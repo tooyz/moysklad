@@ -3,7 +3,7 @@
 namespace MoySklad\Components\Fields;
 
 use MoySklad\Entities\Misc\Attribute;
-use MoySklad\Repositories\EntityRegistry;
+use MoySklad\Registers\EntityRegistry;
 
 /**
  * "attributes" field of entity
