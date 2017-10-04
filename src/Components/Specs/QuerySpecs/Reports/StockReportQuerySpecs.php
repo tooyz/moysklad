@@ -11,7 +11,7 @@ class StockReportQuerySpecs extends QuerySpecs {
     public function getDefaults()
     {
         $res = parent::getDefaults();
-        $res->{'operation.id'} = null;
+        $res['operation.id'] = null;
         return $res;
     }
 }

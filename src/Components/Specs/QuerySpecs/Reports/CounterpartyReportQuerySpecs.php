@@ -11,7 +11,7 @@ class CounterpartyReportQuerySpecs extends QuerySpecs {
     public function getDefaults()
     {
         $res = parent::getDefaults();
-        $res->id = null;
+        $res['id'] = null;
         return $res;
     }
 
