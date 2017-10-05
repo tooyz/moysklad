@@ -143,7 +143,8 @@ abstract class AbstractEntity implements \JsonSerializable {
      */
     public function fresh(Expand $expand = null){
         $id = $this->findEntityId();
-        $queriedEntity = static::query($this->getSkladInstance())->byId($id, $expand);
+        $sklad = $this->getSkladInstance();
+        $queriedEntity = static::query($sklad)->byId($id, $expand);
         $this->replaceFields($queriedEntity);
         return $this;
     }

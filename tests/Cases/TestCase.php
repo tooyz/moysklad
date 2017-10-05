@@ -68,12 +68,14 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     }
 
     protected function timeStart(){
-        $this->lastTimer = microtime();
+        $this->lastTimer = microtime(true);
     }
 
     protected function timeEnd(){
+        var_dump($this->lastTimer);
+        $res = microtime(true) - $this->lastTimer;
         $this->lastTimer = null;
-        return microtime() - $this->lastTimer;
+        return $res;
     }
 
     protected function makeName($baseName){

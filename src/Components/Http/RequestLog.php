@@ -25,7 +25,11 @@ abstract class RequestLog{
     }
 
     public static function getLast(){
-        return self::$history[count(self::$history) - 1];
+        $idx = count(self::$history) - 1;
+        if ( $idx >= 0 ){
+            return self::$history[$idx];
+        }
+        return null;
     }
 
     public static function getRequestList(){

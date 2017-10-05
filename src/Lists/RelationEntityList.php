@@ -36,7 +36,8 @@ class RelationEntityList extends EntityList{
      */
     public function query(){
         $relHref = $this->meta->parseRelationHref();
-        $res = new RelationQuery($this->getSkladInstance(), $this->meta->getClass());
+        $sklad = $this->getSkladInstance();
+        $res = new RelationQuery($sklad, $this->meta->getClass());
         $res->setCustomQueryUrl(
             ApiUrlRegistry::instance()->getRelationListUrl($relHref['entityClass'], $relHref['entityId'], $relHref['relationClass'])
         );

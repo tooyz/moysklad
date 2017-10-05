@@ -8,6 +8,7 @@ use MoySklad\Components\Http\RequestLog;
 use MoySklad\Components\Specs\QuerySpecs\QuerySpecs;
 use MoySklad\Entities\AbstractEntity;
 use MoySklad\Entities\Assortment;
+use MoySklad\Entities\Documents\Movements\Demand;
 use MoySklad\Entities\Employee;
 use MoySklad\Entities\Folders\ProductFolder;
 use MoySklad\Entities\Group;
@@ -31,7 +32,6 @@ class EntityGetTest extends TestCase{
         $productList = Product::query($this->sklad, QuerySpecs::create([
             'maxResults' => 25
         ]))->getList();
-       // dd($productList->meta);
         $this->say("Took " . $this->timeEnd() . " sec");
         $this->assertTrue(
             $productList[0] instanceof Product
