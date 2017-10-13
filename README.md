@@ -255,4 +255,8 @@ RequestLog::setStorageSize(500); // 500 запросов
 RequestLog::setStorageSize(0); //Без лимита
 ```
 
+## Другие библиотеки
+
+* Ruby https://github.com/dapi/moysklad
+* JavaScript/nodejs https://github.com/wmakeev/moysklad-client
 
