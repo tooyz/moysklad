@@ -3,7 +3,9 @@
 namespace Tests\Cases;
 
 
+use MoySklad\Components\Http\RequestLog;
 use MoySklad\Components\Specs\LinkingSpecs;
+use MoySklad\Entities\Currency;
 use MoySklad\Entities\Misc\Characteristics;
 use MoySklad\Entities\Products\Product;
 use MoySklad\Entities\Products\Variant;
@@ -20,7 +22,13 @@ class EntityCreateTest extends TestCase{
     public function testCreation(){
         $this->methodStart();
 
-        $product = new Product($this->sklad, ["name" => "random_name_" . time()]);
+        $product = new Product($this->sklad, [
+            "name" => "random_name_" . time(),
+            "salePrices" => [[
+                "value" => 99,
+                "priceType" => "Цена продажи"
+            ]]
+        ]);
         $product = $product->create();
         $this->assertTrue(isset($product->id));
 

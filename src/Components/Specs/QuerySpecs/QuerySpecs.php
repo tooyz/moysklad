@@ -65,6 +65,9 @@ class QuerySpecs extends AbstractSpecs {
         }
         foreach ( $res as $k=>$v ){
             if ( $v === null ) unset($res->{$k});
+            if ( $v instanceof CommonDate ){
+                $res->{$k} = $v->format();
+            }
         }
         return $res;
     }
