@@ -195,7 +195,10 @@ abstract class AbstractMutationBuilder{
     }
 
     public function addAttribute(Attribute $attribute, LinkingSpecs $specs = null){
-        return $this->simpleLink($attribute, $specs);
+        return $this->simpleLink($attribute, $specs, LinkingSpecs::create([
+            'multiple' => true,
+            'name' => 'attributes'
+        ]));
     }
 
     public function addCharacteristics(Characteristics $characteristics, LinkingSpecs $specs = null){
