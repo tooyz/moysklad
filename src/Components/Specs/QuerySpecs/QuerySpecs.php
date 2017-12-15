@@ -44,8 +44,8 @@ class QuerySpecs extends AbstractSpecs {
             $res->limit = $res->maxResults;
         }
         try{
-            if ( $res->updatedFrom !== null ) $res->updatedFrom->format();
-            if ( $res->updatedTo !== null ) $res->updatedTo->format();
+            if ( $res->updatedFrom !== null ) $res->updatedFrom = $res->updatedFrom->format();
+            if ( $res->updatedTo !== null ) $res->updatedTo = $res->updatedTo->format();
         } catch ( \Exception $e ){
             throw new \Exception('"updatedFrom" and "updatedTo" specs should be instances of "'.CommonDate::class.'" class');
         }
