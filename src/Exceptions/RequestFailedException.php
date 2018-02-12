@@ -4,6 +4,11 @@ namespace MoySklad\Exceptions;
 
 use \Exception;
 
+/**
+ * Request has failed anyhow
+ * Class RequestFailedException
+ * @package MoySklad\Exceptions
+ */
 class RequestFailedException extends Exception{
     protected
         $request,

@@ -1,10 +1,11 @@
 <?php
 
-namespace MoySklad\Repositories;
+namespace MoySklad\Registers;
 
+use MoySklad\Entities\Reports\AbstractReport;
 use MoySklad\Utils\AbstractSingleton;
 
-class RequestUrlRepository extends AbstractSingleton {
+class ApiUrlRegistry extends AbstractSingleton {
     protected static $instance = null;
 
     public function getCreateUrl($entityName){
@@ -31,8 +32,12 @@ class RequestUrlRepository extends AbstractSingleton {
         return $this->getListUrl($entityName) . "/" . $entityId . "/" . $relatedEntityName;
     }
 
-    public function getReportUrl($period){
-        return 'report/dashboard/' . $period;
+    public function getReportUrl($reportName){
+        return AbstractReport::$entityName . '/'.$reportName;
+    }
+
+    public function getReportWithParamUrl($reportName, $param){
+        return AbstractReport::$entityName . '/'.$reportName.'/' . $param;
     }
 
     public function getMetadataUrl($entityName){
@@ -41,5 +46,21 @@ class RequestUrlRepository extends AbstractSingleton {
 
     public function getMetadataAttributeUrl($entityName, $fieldId){
         return 'entity/' . $entityName . '/metadata/attributes/' . $fieldId;
+    }
+
+    public function getNewDocumentTemplateUrl($entityName){
+        return 'entity/' . $entityName . '/new';
+    }
+
+    public function getPosAttachTokenUrl($retailStoreId){
+        return "admin/attach/${retailStoreId}";
+    }
+
+    public function getDocumentPublicationsUrl($entityName, $id){
+        return 'entity/' . $entityName . "/" . $id . '/publication';
+    }
+
+    public function getDocumentPublicationWithIdUrl($entityName, $id, $publicationId){
+        return 'entity/' . $entityName . "/" . $id . '/publication/' . $publicationId;
     }
 }

@@ -19,16 +19,14 @@ class CreationBuilder extends AbstractMutationBuilder {
         $this->specs = $specs;
     }
 
+    /**
+     * @return AbstractEntity
+     * @throws IncompleteCreationFieldsException
+     */
     public function execute()
     {
-        $eClass = get_class($this->e);
-        $requiredFields = $eClass::getFieldsRequiredForCreation();
-        foreach ( $requiredFields as $requiredField ){
-            if (
-                !isset($this->e->links->{$requiredField}) && !isset($this->e->{$requiredField})
-            ) throw new IncompleteCreationFieldsException($this->e);
-        }
+        $this->e->validateFieldsRequiredForCreation();
         $mr = new MassRequest($this->e->getSkladInstance(), $this->e);
-        return $mr->create()[0];
+        return $mr->create()->get(0);
     }
 }

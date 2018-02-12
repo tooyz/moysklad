@@ -2,8 +2,11 @@
 
 namespace MoySklad\Exceptions;
 
-use \Exception;
-
+/**
+ * Request did not fail, but response contained "errors" field
+ * Class ApiResponseException
+ * @package MoySklad\Exceptions
+ */
 class ApiResponseException extends RequestFailedException{
     protected
         $code,
@@ -15,7 +18,7 @@ class ApiResponseException extends RequestFailedException{
         parent::__construct($request, $response);
         $error = $response->errors[0];
         $this->code = $error->code;
-        $this->errorText = $error->errorText;
+        $this->errorText = $error->error;
         $this->moreInfo = $error->moreInfo;
     }
 

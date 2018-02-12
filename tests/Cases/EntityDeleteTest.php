@@ -21,13 +21,13 @@ class EntityDeleteTest extends TestCase{
         $product = (new Product($this->sklad, [
             "name" => "TestProduct"
         ]))->buildCreation()->execute();
-        $product = Product::byId($this->sklad, $product->id);
+        $product = Product::query($this->sklad)->byId($product->id);
         $this->assertTrue(!empty($product->id));
         $this->say("Created product with id: " . $product->id);
         $this->assertTrue($product->delete() === true);
         $this->say("Deleted");
         $this->expectException(ApiResponseException::class);
-        $product = Product::byId($this->sklad, $product->id);
+        $product = Product::query($this->sklad)->byId($product->id);
         $this->methodEnd();
     }
 }

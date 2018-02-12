@@ -3,11 +3,14 @@
 namespace Tests\Cases;
 
 use MoySklad\Components\Expand;
+use MoySklad\Components\FilterQuery;
 use MoySklad\Components\Http\RequestLog;
-use MoySklad\Components\Specs\QuerySpecs;
+use MoySklad\Components\Specs\QuerySpecs\QuerySpecs;
 use MoySklad\Entities\AbstractEntity;
 use MoySklad\Entities\Assortment;
+use MoySklad\Entities\Documents\Movements\Demand;
 use MoySklad\Entities\Employee;
+use MoySklad\Entities\Folders\ProductFolder;
 use MoySklad\Entities\Group;
 use MoySklad\Entities\Products\Product;
 use MoySklad\Entities\Products\Service;
@@ -26,10 +29,9 @@ class EntityGetTest extends TestCase{
         $this->methodStart();
         $this->say("Start getting products");
         $this->timeStart();
-        $productList = Product::listQuery($this->sklad, QuerySpecs::create([
+        $productList = Product::query($this->sklad, QuerySpecs::create([
             'maxResults' => 25
-        ]))->get();
-       // dd($productList->meta);
+        ]))->getList();
         $this->say("Took " . $this->timeEnd() . " sec");
         $this->assertTrue(
             $productList[0] instanceof Product
@@ -37,9 +39,9 @@ class EntityGetTest extends TestCase{
 
         $this->say("Start getting assortment");
         $this->timeStart();
-        $assortmentList = Assortment::listQuery($this->sklad, QuerySpecs::create([
+        $assortmentList = Assortment::query($this->sklad, QuerySpecs::create([
             'maxResults' => 25
-        ]))->get();
+        ]))->getList();
         $this->say("Took " . $this->timeEnd() . " sec");
         $this->say("Start transform, have " . $assortmentList->count() . " items\n");
         $this->timeStart();
@@ -57,6 +59,7 @@ class EntityGetTest extends TestCase{
 
     /**
      * @depends testGetProductList
+     * @param EntityList $productList
      */
     public function testProductRelations(EntityList $productList){
         $this->methodStart();
@@ -69,6 +72,7 @@ class EntityGetTest extends TestCase{
 
     /**
      * @depends testGetProductList
+     * @param EntityList $productList
      */
     public function testEntityRefresh(EntityList $productList){
         $this->methodStart();
@@ -85,9 +89,9 @@ class EntityGetTest extends TestCase{
 
     public function testGetProductListWithExpand(){
         $this->methodStart();
-        $products = Product::listQuery($this->sklad, QuerySpecs::create([
+        $products = Product::query($this->sklad, QuerySpecs::create([
             'maxResults' => 5
-        ]))->withExpand(Expand::create(['owner']))->get()->each(function(Product $p){
+        ]))->withExpand(Expand::create(['owner']))->getList()->each(function(Product $p){
            $this->assertNotNull(
                $p->relations->find(Employee::class)->id
            );
@@ -97,8 +101,10 @@ class EntityGetTest extends TestCase{
 
     public function testGetProductWithExpand(){
         $this->methodStart();
-        $someProduct = Product::listQuery($this->sklad, QuerySpecs::create(['maxResults' => 1]))->get()->get(0);
-        $sameProduct = Product::byId($this->sklad, $someProduct->id, Expand::create(['owner']));
+        $someProduct = Product::query($this->sklad, QuerySpecs::create(['maxResults' => 1]))->getList()->get(0);
+        $sameProduct = Product::query($this->sklad)
+            ->withExpand(Expand::create(['owner']))
+            ->byId($someProduct->id);
         $this->assertNotNull(
             $sameProduct->relations->find(Employee::class)->id
         );

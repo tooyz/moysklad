@@ -13,7 +13,7 @@ use MoySklad\Traits\AccessesSkladInstance;
  * Class EntityList
  * @package MoySklad\Lists
  */
-class EntityList implements \JsonSerializable, \ArrayAccess {
+class EntityList implements \JsonSerializable, \ArrayAccess, \IteratorAggregate, \Countable {
     use AccessesSkladInstance;
     
     protected
@@ -45,7 +45,11 @@ class EntityList implements \JsonSerializable, \ArrayAccess {
      * @return EntityList $this
      */
     public function each(callable $cb){
-        $this->getIterator()->each($cb);
+        foreach ($this->items as $key => $item) {
+            if ($cb($item, $key) === false) {
+                break;
+            }
+        }
         return $this;
     }
 
@@ -121,7 +125,7 @@ class EntityList implements \JsonSerializable, \ArrayAccess {
 
     /**
      * Get iterator with stored items
-     * @return ListIterator
+     * @return \Iterator
      */
     public function getIterator(){
         return new ListIterator($this->items);
@@ -208,7 +212,16 @@ class EntityList implements \JsonSerializable, \ArrayAccess {
         return $this->items;
     }
 
-    function jsonSerialize()
+    /**
+     * Get json representation
+     * @param $options
+     * @return string
+     */
+    public function toJson($options){
+        return json_encode($this->jsonSerialize(), $options);
+    }
+
+    public function jsonSerialize()
     {
         return $this->toArray();
     }

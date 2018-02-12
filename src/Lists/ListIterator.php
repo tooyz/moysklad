@@ -7,51 +7,40 @@ namespace MoySklad\Lists;
  * Class ListIterator
  * @package MoySklad\Lists
  */
-class ListIterator{
-    public $id;
+final class ListIterator implements \Iterator{
     private
         $items = [],
-        $cursor = 0,
-        $length;
+        $cursor = 0;
 
     public function __construct(&$items)
     {
         $this->items = $items;
-        $this->length = count($items);
-        $this->id = rand(1, 0xFFFFFFFF);
     }
 
-    /**
-     * Get next item
-     * @return null
-     */
-    public function next(){
-        if ( $this->hasNext() ){
-            $i = $this->cursor;
-            $this->cursor++;
-            return $this->items[$i];
-        }
-        return null;
+    public function rewind()
+    {
+        $this->cursor = 0;
     }
 
-    /**
-     * Has next item
-     * @return bool
-     */
-    public function hasNext(){
-        return $this->cursor < $this->length;
+    public function valid()
+    {
+        return array_key_exists($this->cursor, $this->items);
     }
 
-    /**
-     * Run callback foreach item
-     * @param callable $cb
-     * @return $this
-     */
-    public function each(callable $cb){
-        while ( $item = $this->next() ){
-            $cb($item, $this->cursor);
-        }
-        return $this;
+    public function key()
+    {
+        return $this->cursor;
+    }
+
+    public function current()
+    {
+        return $this->items[$this->cursor];
+    }
+
+    public function next()
+    {
+        ++$this->cursor;
     }
 }
+
 

@@ -2,9 +2,6 @@
 
 namespace MoySklad;
 
-use MoySklad\Entities\AbstractEntity;
-use MoySklad\Entities\Product;
-use MoySklad\Exceptions\UnknownEntityException;
 use MoySklad\Components\Http\MoySkladHttpClient;
 
 class MoySklad{
@@ -22,11 +19,11 @@ class MoySklad{
     /**
      * @var MoySklad[]
      */
-    private static $repository = [];
+    private static $instances = [];
 
-    private function __construct($login, $password, $hashCode)
+    private function __construct($login, $password, $posToken, $hashCode)
     {
-        $this->client = new MoySkladHttpClient($login, $password);
+        $this->client = new MoySkladHttpClient($login, $password, $posToken);
         $this->hashCode = $hashCode;
     }
 
@@ -37,26 +34,22 @@ class MoySklad{
      * @return string
      */
     private static function makeHash($login, $password){
-        $lp = $login.$password;
-        $i = 0;
-        $str = (string)array_reduce(str_split($lp), function($a, $x) use (&$i){
-            return $a += (ord($x) | (++$i * $i));
-        }, 0);
-        return str_pad($str, 8, '0');
+        return crc32($login.$password);
     }
 
     /**
      * Use it instead of constructor
      * @param $login
      * @param $password
+     * @param $posToken
      * @return MoySklad
      */
-    public static function getInstance($login, $password){
+    public static function getInstance($login, $password, $posToken = null){
         $hash = self::makeHash($login, $password);
-        if ( empty(self::$repository[$hash]) ){
-            self::$repository[$hash] = new self($login, $password, $hash);
+        if ( empty(self::$instances[$hash]) ){
+            self::$instances[$hash] = new self($login, $password, $posToken, $hash);
         }
-        return self::$repository[$hash];
+        return self::$instances[$hash];
     }
 
     /**
@@ -65,7 +58,7 @@ class MoySklad{
      * @return MoySklad
      */
     public static function findInstanceByHash($hashCode){
-        return self::$repository[$hashCode];
+        return self::$instances[$hashCode];
     }
 
     /**
@@ -81,5 +74,9 @@ class MoySklad{
      */
     public function getClient(){
         return $this->client;
+    }
+
+    public function setPosToken($posToken){
+        $this->client->setPosToken($posToken);
     }
 }

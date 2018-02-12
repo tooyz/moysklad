@@ -2,8 +2,6 @@
 
 namespace MoySklad\Entities\Documents\Movements;
 
-
-use MoySklad\Entities\Documents\Movements\AbstractMovement;
 use MoySklad\Entities\Organization;
 use MoySklad\Entities\Store;
 

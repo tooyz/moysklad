@@ -31,7 +31,7 @@ class SearchTest extends TestCase{
         $el->massCreate();
         $ids = $el->map(function(Product $p){return $p->id;})->toArray();
         $this->say("Created products ids: " . \json_encode($ids));
-        $foundProducts =  Product::listQuery($this->sklad)->search($productName);
+        $foundProducts =  Product::query($this->sklad)->search($productName);
         $this->say("Found " . $foundProducts->count() . " products");
         $foundProductsIds = $foundProducts->
                             map(function(Product $p) use($ids){

@@ -1,6 +1,6 @@
 <?php
 
-namespace MoySklad\Repositories;
+namespace MoySklad\Registers;
 
 use MoySklad\Entities\AbstractEntity;
 use MoySklad\Entities\Account;
@@ -13,6 +13,16 @@ use MoySklad\Entities\Country;
 use MoySklad\Entities\Currency;
 use MoySklad\Entities\Discount;
 use MoySklad\Entities\Documents\AbstractDocument;
+use MoySklad\Entities\Documents\Cash\AbstractCash;
+use MoySklad\Entities\Documents\Cash\CashIn;
+use MoySklad\Entities\Documents\Cash\CashOut;
+use MoySklad\Entities\Documents\CommissionReports\AbstractCommissionReport;
+use MoySklad\Entities\Documents\CommissionReports\CommissionReportIn;
+use MoySklad\Entities\Documents\CommissionReports\CommissionReportOut;
+use MoySklad\Entities\Documents\Factures\AbstractFacture;
+use MoySklad\Entities\Documents\Factures\FactureIn;
+use MoySklad\Entities\Documents\Factures\FactureOut;
+use MoySklad\Entities\Documents\Inventory;
 use MoySklad\Entities\Documents\Movements\AbstractMovement;
 use MoySklad\Entities\Documents\Movements\Demand;
 use MoySklad\Entities\Documents\Movements\Enter;
@@ -23,7 +33,25 @@ use MoySklad\Entities\Documents\Orders\CustomerOrder;
 use MoySklad\Entities\Documents\Orders\PurchaseOrder;
 use MoySklad\Entities\Documents\Positions\AbstractPosition;
 use MoySklad\Entities\Documents\Positions\CustomerOrderPosition;
+use MoySklad\Entities\Documents\Positions\DemandPosition;
 use MoySklad\Entities\Documents\Positions\EnterPosition;
+use MoySklad\Entities\Products\Components\AbstractComponent;
+use MoySklad\Entities\Products\Components\BundleComponent;
+use MoySklad\Entities\Documents\PriceList;
+use MoySklad\Entities\Documents\Processings\AbstractProcessing;
+use MoySklad\Entities\Documents\Processings\Processing;
+use MoySklad\Entities\Documents\Processings\ProcessingOrder;
+use MoySklad\Entities\Documents\Processings\ProcessingPlan;
+use MoySklad\Entities\Documents\Retail\AbstractRetail;
+use MoySklad\Entities\Documents\Retail\RetailDemand;
+use MoySklad\Entities\Documents\Retail\RetailSalesReturn;
+use MoySklad\Entities\Documents\RetailDrawer\AbstractRetailDrawer;
+use MoySklad\Entities\Documents\RetailDrawer\RetailDrawerCashIn;
+use MoySklad\Entities\Documents\RetailDrawer\RetailDrawerCashOut;
+use MoySklad\Entities\Documents\RetailShift;
+use MoySklad\Entities\Documents\Returns\AbstractReturn;
+use MoySklad\Entities\Documents\Returns\PurchaseReturn;
+use MoySklad\Entities\Documents\Returns\SalesReturn;
 use MoySklad\Entities\Employee;
 use MoySklad\Entities\ExpenseItem;
 use MoySklad\Entities\Folders\ProductFolder;
@@ -32,10 +60,13 @@ use MoySklad\Entities\Misc\Attribute;
 use MoySklad\Entities\Misc\Characteristics;
 use MoySklad\Entities\Misc\CompanySettings;
 use MoySklad\Entities\Misc\CustomEntity;
+use MoySklad\Entities\Misc\CustomTemplate;
+use MoySklad\Entities\Misc\Publication;
 use MoySklad\Entities\Misc\State;
 use MoySklad\Entities\Misc\Webhook;
 use MoySklad\Entities\Organization;
 use MoySklad\Entities\Products\AbstractProduct;
+use MoySklad\Entities\Products\Bundle;
 use MoySklad\Entities\Products\Consignment;
 use MoySklad\Entities\Products\Product;
 use MoySklad\Entities\Products\Service;
@@ -46,7 +77,12 @@ use MoySklad\Entities\Store;
 use MoySklad\Entities\Uom;
 use MoySklad\Utils\AbstractSingleton;
 
-class EntityRepository extends AbstractSingleton{
+/**
+ * Map of entity name => representing class
+ * Class EntityRegistry
+ * @package MoySklad\Registries
+ */
+class EntityRegistry extends AbstractSingleton{
     protected static $instance = null;
     public $entities = [
         AbstractEntity::class,
@@ -59,6 +95,7 @@ class EntityRepository extends AbstractSingleton{
         Organization::class,
         AbstractProduct::class,
         Product::class,
+        Bundle::class,
         Service::class,
         Employee::class,
         Group::class,
@@ -69,6 +106,9 @@ class EntityRepository extends AbstractSingleton{
         AbstractPosition::class,
         EnterPosition::class,
         CustomerOrderPosition::class,
+        DemandPosition::class,
+        AbstractComponent::class,
+        BundleComponent::class,
         Country::class,
         Webhook::class,
         ProductFolder::class,
@@ -77,10 +117,12 @@ class EntityRepository extends AbstractSingleton{
         AbstractMovement::class,
         Enter::class,
         Attribute::class,
+        Publication::class,
         Store::class,
         Characteristics::class,
         CompanySettings::class,
         CustomEntity::class,
+        CustomTemplate::class,
         Cashier::class,
         Contract::class,
         Discount::class,
@@ -90,7 +132,32 @@ class EntityRepository extends AbstractSingleton{
         Currency::class,
         Loss::class,
         Demand::class,
-        Supply::class
+        Supply::class,
+        AbstractCash::class,
+        CashIn::class,
+        CashOut::class,
+        AbstractRetail::class,
+        RetailSalesReturn::class,
+        RetailDemand::class,
+        AbstractRetailDrawer::class,
+        RetailDrawerCashIn::class,
+        RetailDrawerCashOut::class,
+        AbstractReturn::class,
+        PurchaseReturn::class,
+        SalesReturn::class,
+        AbstractFacture::class,
+        FactureIn::class,
+        FactureOut::class,
+        Inventory::class,
+        RetailShift::class,
+        AbstractCommissionReport::class,
+        CommissionReportIn::class,
+        CommissionReportOut::class,
+        AbstractProcessing::class,
+        Processing::class,
+        ProcessingOrder::class,
+        ProcessingPlan::class,
+        PriceList::class
     ];
     public $entityNames = [];
 

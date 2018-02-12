@@ -4,6 +4,10 @@ namespace MoySklad\Exceptions\Relations;
 
 use \Exception;
 
+/**
+ * Class RelationIsSingle
+ * @package MoySklad\Exceptions\Relations
+ */
 class RelationIsSingle extends Exception{
     public function __construct($relationName, $entityClass, $code = 0, Exception $previous = null)
     {

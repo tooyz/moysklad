@@ -3,7 +3,7 @@
 namespace Tests\Cases;
 
 use MoySklad\Components\FilterQuery;
-use MoySklad\Components\Specs\QuerySpecs;
+use MoySklad\Components\Specs\QuerySpecs\QuerySpecs;
 use MoySklad\Entities\Assortment;
 use MoySklad\Entities\Counterparty;
 use MoySklad\Entities\Documents\Movements\Enter;
@@ -29,30 +29,34 @@ class CustomerOrderAffectsStockTest extends TestCase{
         $testProductName = $this->makeName("TestProduct");
         $testCounterpartyName = $this->makeName('TestCounterparty');
         $testEnterName = $this->makeName("TestEnter");
-        $testCustomerOrder = $this->makeName("TestCustomerOrder");
 
-        $org = Organization::listQuery($this->sklad)->get()->get(0);
-        $store = Store::listQuery($this->sklad)->get()->get(0);
+        $org = Organization::query($this->sklad)->getList()->get(0);
+        $store = Store::query($this->sklad)->getList()->get(0);
 
         $cp = (new Counterparty($this->sklad, [
             "name" => $testCounterpartyName
         ]))->buildCreation()->execute();
         $this->say("Cp id:" . $cp->id);
+
         $product = (new Product($this->sklad, [
             "name" => $testProductName,
             "quantity" => 25
         ]))->buildCreation()->execute();
         $this->say("Product id:" . $product->id);
+
+        $positionList = new EntityList($this->sklad);
+        $positionList->push($product);
+
         $enter = (new Enter($this->sklad, [
            "name" => $testEnterName
         ]))->buildCreation()->
             addOrganization($org)->
             addStore($store)->
-            addPositionList(new EntityList($this->sklad, $product))->
+            addPositionList($positionList)->
             execute();
         $this->say("Enter id:" . $enter->id );
 
-        $filteredProduct = Assortment::listQuery($this->sklad,QuerySpecs::create([
+        $filteredProduct = Assortment::query($this->sklad,QuerySpecs::create([
             "maxResults" => 1
         ]))->filter(
             (new FilterQuery())->eq("name", $testProductName)
@@ -65,7 +69,7 @@ class CustomerOrderAffectsStockTest extends TestCase{
             ->buildCreation()
             ->addCounterparty($cp)
             ->addOrganization($org)
-            ->addPositionList(new EntityList($this->sklad, $product))
+            ->addPositionList(new EntityList($this->sklad, [$product]))
             ->execute();
 
         $this->say("Order id:" . $co->id );

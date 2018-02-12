@@ -5,6 +5,11 @@ namespace MoySklad\Exceptions;
 use \Exception;
 use MoySklad\Entities\AbstractEntity;
 
+/**
+ * Not all fields required for creation were passed
+ * Class IncompleteCreationFieldsException
+ * @package MoySklad\Exceptions
+ */
 class IncompleteCreationFieldsException extends Exception{
     public function __construct(AbstractEntity $entity, $code = 0, Exception $previous = null)
     {

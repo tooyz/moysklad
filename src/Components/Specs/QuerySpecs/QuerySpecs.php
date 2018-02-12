@@ -1,7 +1,8 @@
 <?php
 
-namespace MoySklad\Components\Specs;
+namespace MoySklad\Components\Specs\QuerySpecs;
 
+use MoySklad\Components\Specs\AbstractSpecs;
 use MoySklad\Utils\CommonDate;
 
 class QuerySpecs extends AbstractSpecs {
@@ -33,17 +34,18 @@ class QuerySpecs extends AbstractSpecs {
      * Fixes wrong limit spec. Fixes maxLimit lower then limit
      * @param array $specs
      * @return static
+     * @throws \Exception
      */
     public static function create($specs = [])
     {
-        if ( $specs['limit'] > self::MAX_LIST_LIMIT ) $specs['limit'] = self::MAX_LIST_LIMIT;
+        if ( isset($specs['limit']) && $specs['limit'] > self::MAX_LIST_LIMIT ) $specs['limit'] = self::MAX_LIST_LIMIT;
         $res = parent::create($specs);
         if ( $res->maxResults !== 0 && $res->maxResults < $res->limit ) {
             $res->limit = $res->maxResults;
         }
         try{
-            if ( $res->updatedFrom !== null ) $res->updatedFrom->format();
-            if ( $res->updatedBy !== null ) $res->updatedBy->format();
+            if ( $res->updatedFrom !== null ) $res->updatedFrom = $res->updatedFrom->format();
+            if ( $res->updatedTo !== null ) $res->updatedTo = $res->updatedTo->format();
         } catch ( \Exception $e ){
             throw new \Exception('"updatedFrom" and "updatedTo" specs should be instances of "'.CommonDate::class.'" class');
         }
@@ -63,6 +65,9 @@ class QuerySpecs extends AbstractSpecs {
         }
         foreach ( $res as $k=>$v ){
             if ( $v === null ) unset($res->{$k});
+            if ( $v instanceof CommonDate ){
+                $res->{$k} = $v->format();
+            }
         }
         return $res;
     }

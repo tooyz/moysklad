@@ -17,12 +17,12 @@ class GetRelationsTest extends TestCase{
     }
 
     public function testGetSingleRelation(){
-        $cp = Counterparty::listQuery($this->sklad)->get()->get(0);
-        $accounts = $cp->relations->getListQuery('accounts')->get();
+        $cp = Counterparty::query($this->sklad)->getList()->get(0);
+        $accounts = $cp->relations->listQuery('accounts')->getList();
         $this->assertInstanceOf(RelationEntityList::class, $accounts);
-        $owner = $cp->relations->loadSingleRelation('owner');
+        $owner = $cp->relations->fresh('owner');
         $this->assertTrue(!empty($owner->id));
         $this->expectException(RelationDoesNotExistException::class);
-        $cp->relations->loadSingleRelation('undefined');
+        $cp->relations->fresh('undefined');
     }
 }

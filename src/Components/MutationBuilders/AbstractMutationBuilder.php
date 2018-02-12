@@ -2,7 +2,6 @@
 
 namespace MoySklad\Components\MutationBuilders;
 
-use MoySklad\Components\Specs\CreationSpecs;
 use MoySklad\Components\Specs\LinkingSpecs;
 use MoySklad\Entities\AbstractEntity;
 use MoySklad\Entities\Account;
@@ -13,6 +12,11 @@ use MoySklad\Entities\Counterparty;
 use MoySklad\Entities\Country;
 use MoySklad\Entities\Currency;
 use MoySklad\Entities\Discount;
+use MoySklad\Entities\Documents\Cash\CashIn;
+use MoySklad\Entities\Documents\Cash\CashOut;
+use MoySklad\Entities\Documents\Factures\FactureIn;
+use MoySklad\Entities\Documents\Factures\FactureOut;
+use MoySklad\Entities\Documents\Inventory;
 use MoySklad\Entities\Documents\Invoices\InvoiceIn;
 use MoySklad\Entities\Documents\Invoices\InvoiceOut;
 use MoySklad\Entities\Documents\Movements\Demand;
@@ -25,7 +29,17 @@ use MoySklad\Entities\Documents\Payments\PaymentIn;
 use MoySklad\Entities\Documents\Payments\PaymentOut;
 use MoySklad\Entities\Documents\Positions\CustomerOrderPosition;
 use MoySklad\Entities\Documents\Positions\EnterPosition;
-use MoySklad\Entities\Documents\Positions\RetailShift;
+use MoySklad\Entities\Documents\RetailShift;
+use MoySklad\Entities\Documents\PriceList;
+use MoySklad\Entities\Documents\Processings\Processing;
+use MoySklad\Entities\Documents\Processings\ProcessingOrder;
+use MoySklad\Entities\Documents\Processings\ProcessingPlan;
+use MoySklad\Entities\Documents\Retail\RetailDemand;
+use MoySklad\Entities\Documents\Retail\RetailSalesReturn;
+use MoySklad\Entities\Documents\RetailDrawer\RetailDrawerCashIn;
+use MoySklad\Entities\Documents\RetailDrawer\RetailDrawerCashOut;
+use MoySklad\Entities\Documents\Returns\PurchaseReturn;
+use MoySklad\Entities\Documents\Returns\SalesReturn;
 use MoySklad\Entities\Employee;
 use MoySklad\Entities\ExpenseItem;
 use MoySklad\Entities\Folders\ProductFolder;
@@ -37,6 +51,7 @@ use MoySklad\Entities\Misc\CustomEntity;
 use MoySklad\Entities\Misc\State;
 use MoySklad\Entities\Organization;
 use MoySklad\Entities\Products\AbstractProduct;
+use MoySklad\Entities\Products\Bundle;
 use MoySklad\Entities\Products\Consignment;
 use MoySklad\Entities\Products\Product;
 use MoySklad\Entities\Products\Service;
@@ -180,7 +195,10 @@ abstract class AbstractMutationBuilder{
     }
 
     public function addAttribute(Attribute $attribute, LinkingSpecs $specs = null){
-        return $this->simpleLink($attribute, $specs);
+        return $this->simpleLink($attribute, $specs, LinkingSpecs::create([
+            'multiple' => true,
+            'name' => 'attributes'
+        ]));
     }
 
     public function addCharacteristics(Characteristics $characteristics, LinkingSpecs $specs = null){
@@ -207,12 +225,76 @@ abstract class AbstractMutationBuilder{
         return $this->simpleLink($product, $specs);
     }
 
+    public function addBundle(Bundle $bundle, LinkingSpecs $specs = null){
+        return $this->simpleLink($bundle, $specs);
+    }
+
     public function addService(Service $service, LinkingSpecs $specs = null){
         return $this->simpleLink($service, $specs);
     }
 
     public function addVariant(Variant $variant, LinkingSpecs $specs = null){
         return $this->simpleLink($variant, $specs);
+    }
+
+    public function addCashIn(CashIn $cashIn, LinkingSpecs $specs = null){
+        return $this->simpleLink($cashIn, $specs);
+    }
+
+    public function addCashOut(CashOut $cashOut, LinkingSpecs $specs = null){
+        return $this->simpleLink($cashOut, $specs);
+    }
+
+    public function addRetailDemand(RetailDemand $demand, LinkingSpecs $specs = null){
+        return $this->simpleLink($demand, $specs);
+    }
+
+    public function addRetailSalesReturn(RetailSalesReturn $retailSalesReturn, LinkingSpecs $specs = null){
+        return $this->simpleLink($retailSalesReturn, $specs);
+    }
+
+    public function addRetailDrawerCashIn(RetailDrawerCashIn $cashIn, LinkingSpecs $specs = null){
+        return $this->simpleLink($cashIn, $specs);
+    }
+
+    public function addRetailDrawerCashOut(RetailDrawerCashOut $cashOut, LinkingSpecs $specs = null){
+        return $this->simpleLink($cashOut, $specs);
+    }
+
+    public function addSalesReturn(SalesReturn $return, LinkingSpecs $specs = null){
+        return $this->simpleLink($return, $specs);
+    }
+
+    public function addPurchaseReturn(PurchaseReturn $return, LinkingSpecs $specs = null){
+        return $this->simpleLink($return, $specs);
+    }
+
+    public function addFactureIn(FactureIn $factureIn, LinkingSpecs $specs = null){
+        return $this->simpleLink($factureIn, $specs);
+    }
+
+    public function addFactureOut(FactureOut $factureOut, LinkingSpecs $specs = null){
+        return $this->simpleLink($factureOut, $specs);
+    }
+
+    public function addInventory(Inventory $inventory, LinkingSpecs $specs = null){
+        return $this->simpleLink($inventory, $specs);
+    }
+
+    public function addProcessing(Processing $processing, LinkingSpecs $specs = null){
+        return $this->simpleLink($processing, $specs);
+    }
+
+    public function addProcessingPlan(ProcessingPlan $plan, LinkingSpecs $specs = null){
+        return $this->simpleLink($plan, $specs);
+    }
+
+    public function addProcessingOrder(ProcessingOrder $order, LinkingSpecs $specs = null){
+        return $this->simpleLink($order, $specs);
+    }
+
+    public function addPriceList(PriceList $list, LinkingSpecs $specs = null){
+        return $this->simpleLink($list, $specs);
     }
 
     public function addPositionList(EntityList $positions){
@@ -238,5 +320,5 @@ abstract class AbstractMutationBuilder{
         return $this;
     }
 
-    abstract function execute();
+    public abstract function execute();
 }

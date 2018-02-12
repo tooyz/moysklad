@@ -1,29 +1,31 @@
 <?php
 
-namespace MoySklad\Components\ListQuery;
+namespace MoySklad\Components\Query;
 
 use MoySklad\Components\Expand;
 use MoySklad\Components\Fields\MetaField;
 use MoySklad\Components\FilterQuery;
-use MoySklad\Components\Specs\QuerySpecs;
+use MoySklad\Components\Http\RequestConfig;
+use MoySklad\Components\Specs\QuerySpecs\QuerySpecs;
 use MoySklad\Lists\EntityList;
 use MoySklad\MoySklad;
-use MoySklad\Repositories\RequestUrlRepository;
+use MoySklad\Registers\ApiUrlRegistry;
 use MoySklad\Traits\AccessesSkladInstance;
 
-class ListQuery{
+abstract class AbstractQuery{
     use AccessesSkladInstance;
     
     protected
         $entityClass,
         $entityName,
-        $querySpecs;
+        $querySpecs,
+        $requestOptions;
     /**
      * @var Expand $expand
      */
-    private $expand;
+    protected $expand = null;
     private $customQueryUrl = null;
-    protected static $entityListClass = EntityList::class;
+    protected static $entityListClass;
 
     public function __construct(MoySklad &$skladInstance, $entityClass, QuerySpecs $querySpecs = null)
     {
@@ -47,9 +49,20 @@ class ListQuery{
     /**
      * Url that will be used instead of default list url
      * @param $customQueryUrl
+     * @return $this
      */
     public function setCustomQueryUrl($customQueryUrl){
         $this->customQueryUrl = $customQueryUrl;
+        return $this;
+    }
+
+    /**
+     * @param RequestConfig $options
+     * @return $this
+     */
+    public function setRequestOptions(RequestConfig $options){
+        $this->requestOptions = $options;
+        return $this;
     }
 
     /**
@@ -58,23 +71,23 @@ class ListQuery{
      * @return QuerySpecs
      */
     protected function attachExpand(QuerySpecs &$querySpecs){
-        $querySpecs->expand = $this->expand;
+        if ( $this->expand !== null ){
+            $querySpecs->expand = $this->expand;
+        }
         return $querySpecs;
     }
 
     /**
      * Get list of entities
-     * @param array $queryParams
-     * @return array|EntityList
+     * @return EntityList
      */
-    public function get(){
+    public function getList(){
         return $this->filter(null);
     }
 
     /**
      * Search within list of entities
      * @param string $searchString
-     * @param QuerySpecs|null $querySpecs
      * @return EntityList
      */
     public function search($searchString = ''){
@@ -83,7 +96,7 @@ class ListQuery{
             $query = array_merge($querySpecs->toArray(), [
                 "search" => $searchString
             ]);
-            return $this->getSkladInstance()->getClient()->get($this->getQueryUrl(), $query);
+            return $this->getSkladInstance()->getClient()->get($this->getQueryUrl(), $query, $this->requestOptions);
         }, $this->querySpecs, [
             $searchString
         ]);
@@ -92,7 +105,6 @@ class ListQuery{
     /**
      * Filter within list of entities
      * @param FilterQuery|null $filterQuery
-     * @param QuerySpecs|null $querySpecs
      * @return EntityList
      */
     public function filter( FilterQuery $filterQuery = null ){
@@ -105,7 +117,7 @@ class ListQuery{
             } else {
                 $query = $querySpecs->toArray();
             }
-            return $this->getSkladInstance()->getClient()->get($this->getQueryUrl(), $query);
+            return $this->getSkladInstance()->getClient()->get($this->getQueryUrl(), $query, $this->requestOptions);
         }, $this->querySpecs, [
             $filterQuery
         ]);
@@ -158,6 +170,8 @@ class ListQuery{
      * @return null|string
      */
     protected function getQueryUrl(){
-        return (!empty($this->customQueryUrl)?$this->customQueryUrl: RequestUrlRepository::instance()->getListUrl($this->entityName));
+        return (!empty($this->customQueryUrl)?
+            $this->customQueryUrl:
+            ApiUrlRegistry::instance()->getListUrl($this->entityName));
     }
 }
