@@ -223,6 +223,34 @@ Product::query($sklad, QuerySpecs::create([
         ]))->getList();
 ```
 
+## Публикации
+
+**Документные сущности поддерживают публикации**
+
+**Получение**
+
+```
+$publications = $customerOrder->getPublications(QuerySpecs::create())
+```
+
+**Создание**
+
+```
+$publication = $customerOrder->createPublication($customTemplate)
+```
+
+**Удаление**
+
+```
+$customerOrder->deletePublication($publication)
+```
+
+**Получение публикации по id**
+
+```
+$publication = $customerOrder->getPublicationById("123-456")
+```
+
 ## Отчеты
 
 **Содержат статические методы для получения отчетов.**

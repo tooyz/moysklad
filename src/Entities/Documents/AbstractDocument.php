@@ -6,6 +6,7 @@ use MoySklad\Components\Http\RequestConfig;
 use MoySklad\Components\Specs\QuerySpecs\QuerySpecs;
 use MoySklad\Entities\AbstractEntity;
 use MoySklad\Entities\Misc\Attribute;
+use MoySklad\Entities\Misc\CustomTemplate;
 use MoySklad\Entities\Misc\Publication;
 use MoySklad\Lists\EntityList;
 use MoySklad\MoySklad;
@@ -27,38 +28,50 @@ class AbstractDocument extends AbstractEntity{
 
     /**
      * Create document template
-     * @deprecated $sklad argument is deprecated and will be removed
-     * @param MoySklad $sklad
      * @param $makeEmptyTemplate
      * @return \stdClass
      */
-    public function newTemplate(MoySklad $sklad, $makeEmptyTemplate = false){
+    public function newTemplate($makeEmptyTemplate = false){
         $requestConfig = new RequestConfig();
         if ( $makeEmptyTemplate ) {
             $requestConfig->set("ignoreRequestBody", true);
         }
-        return $sklad->getClient()->put(
+        return $this->getSkladInstance()->getClient()->put(
             ApiUrlRegistry::instance()->getNewDocumentTemplateUrl(static::$entityName),
             $this->mergeFieldsWithLinks(),
             $requestConfig
         );
     }
 
+    /**
+     * @param QuerySpecs $querySpecs
+     * @return EntityList
+     */
     public function getPublications(QuerySpecs $querySpecs){
         return Publication::query($this->getSkladInstance(), $querySpecs)
             ->setCustomQueryUrl(ApiUrlRegistry::instance()->getDocumentPublicationsUrl($this::$entityName, $this->findEntityId()))
             ->getList();
     }
 
-    public function createPublication(Publication $publication){
-        $publication->validateFieldsRequiredForCreation();
+    /**
+     * @param CustomTemplate $template
+     * @return Publication
+     */
+    public function createPublication(CustomTemplate $template){
+        $template->validateFieldsRequiredForCreation();
         $res = $this->getSkladInstance()->getClient()->post(
             ApiUrlRegistry::instance()->getDocumentPublicationsUrl(static::$entityName, $this->findEntityId()),
-            $publication->mergeFieldsWithLinks()
+            [
+                "template" => $template->mergeFieldsWithLinks()
+            ]
         );
         return new Publication($this->getSkladInstance(), $res);
     }
 
+    /**
+     * @param Publication $publication
+     * @return bool
+     */
     public function deletePublication(Publication $publication){
         $this->getSkladInstance()->getClient()->delete(
             ApiUrlRegistry::instance()->getDocumentPublicationWithIdUrl(static::$entityName, $this->findEntityId(), $publication->findEntityId())
@@ -66,6 +79,10 @@ class AbstractDocument extends AbstractEntity{
         return true;
     }
 
+    /**
+     * @param $id
+     * @return Publication
+     */
     public function getPublicationById($id){
         $res = $this->getSkladInstance()->getClient()->get(
             ApiUrlRegistry::instance()->getDocumentPublicationWithIdUrl(static::$entityName, $this->findEntityId(), $id)
