@@ -4,6 +4,7 @@ namespace MoySklad\Entities;
 
 use MoySklad\Components\Expand;
 use MoySklad\Components\Fields\AttributeCollection;
+use MoySklad\Components\Fields\EntityFields;
 use MoySklad\Components\Fields\EntityLinker;
 use MoySklad\Components\Fields\EntityRelation;
 use MoySklad\Components\Fields\MetaField;
@@ -23,7 +24,6 @@ use MoySklad\Exceptions\IncompleteCreationFieldsException;
 use MoySklad\Interfaces\DoesNotSupportMutationInterface;
 use MoySklad\Lists\EntityList;
 use MoySklad\MoySklad;
-use MoySklad\Components\Fields\EntityFields;
 use MoySklad\Registers\ApiUrlRegistry;
 use MoySklad\Traits\AccessesSkladInstance;
 use MoySklad\Traits\Deletes;
@@ -280,7 +280,7 @@ abstract class AbstractEntity implements \JsonSerializable {
         $res->attributes = $attributes->map(function($e) use($sklad){
             return new Attribute($sklad, $e);
         });
-        $states = new EntityList($sklad, $res->states);
+        $states = new EntityList($sklad, isset($res->states) ? $res->states : []);
         $res->states = $states->map(function($e) use($sklad){
             return new State($sklad, $e);
         });
