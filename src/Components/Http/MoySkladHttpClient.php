@@ -41,7 +41,7 @@ class MoySkladHttpClient{
      * @param $method
      * @param array $payload
      * @param null $options
-     * @return \stdClass|string[]
+     * @return string
      * @throws \Throwable
      */
     public function get($method, $payload = [], $options = null){
@@ -57,7 +57,7 @@ class MoySkladHttpClient{
      * @param $method
      * @param array $payload
      * @param null $options
-     * @return \stdClass|string[]
+     * @return string
      * @throws \Throwable
      */
     public function post($method, $payload = [], $options = null){
@@ -73,7 +73,7 @@ class MoySkladHttpClient{
      * @param $method
      * @param array $payload
      * @param null $options
-     * @return \stdClass|string[]
+     * @return string
      * @throws \Throwable
      */
     public function put($method, $payload = [], $options = null){
@@ -89,7 +89,7 @@ class MoySkladHttpClient{
      * @param $method
      * @param array $payload
      * @param null $options
-     * @return \stdClass|string[]
+     * @return string
      * @throws \Throwable
      */
     public function delete($method, $payload = [], $options = null){

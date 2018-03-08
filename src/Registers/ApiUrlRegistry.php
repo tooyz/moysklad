@@ -56,6 +56,10 @@ class ApiUrlRegistry extends AbstractSingleton {
         return "admin/attach/${retailStoreId}";
     }
 
+    public function getPosRetailStoreQueryUrl(){
+        return "admin/retailstore/";
+    }
+
     public function getDocumentPublicationsUrl($entityName, $id){
         return 'entity/' . $entityName . "/" . $id . '/publication';
     }
@@ -82,5 +86,21 @@ class ApiUrlRegistry extends AbstractSingleton {
 
     public function getMetadataExportCustomTemplateWithIdUrl($entityName, $id){
         return 'entity/' . $entityName . '/metadata/customtemplate/' . $id;
+    }
+
+    public function getAuditUrl(){
+        return "audit/";
+    }
+
+    public function getAuditEventsUrl($auditId){
+        return "audit/" . $auditId . "/events";
+    }
+
+    public function getAuditEventsEntityUrl($entityName, $id){
+        return 'entity/' . $entityName . '/' . $id . '/audit';
+    }
+
+    public function getAuditFiltersUrl(){
+        return "audit/metadata/filters";
     }
 }

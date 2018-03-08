@@ -8,6 +8,12 @@ use MoySklad\Entities\Products\Product;
 require_once "TestCase.php";
 
 class TestImageAttachment extends TestCase{
+    /**
+     * @throws \MoySklad\Exceptions\EntityCantBeMutatedException
+     * @throws \MoySklad\Exceptions\EntityHasNoIdException
+     * @throws \MoySklad\Exceptions\IncompleteCreationFieldsException
+     * @throws \MoySklad\Exceptions\InvalidUrlException
+     */
     public function testUrlImage(){
         $this->methodStart();
         $product = new Product($this->sklad, [

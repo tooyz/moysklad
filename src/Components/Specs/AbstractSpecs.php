@@ -12,6 +12,11 @@ use MoySklad\Exceptions\UnknownSpecException;
 abstract class AbstractSpecs{
     protected static $cachedDefaultSpecs = null;
 
+    /**
+     * AbstractSpecs constructor.
+     * @param array $specs
+     * @throws UnknownSpecException
+     */
     protected function __construct($specs = [])
     {
         $defaults = $this->getDefaults();
@@ -40,6 +45,17 @@ abstract class AbstractSpecs{
             return $cl::$cachedDefaultSpecs;
         }
         return new static($specs);
+    }
+
+    /**
+     * @param static $otherSpecs
+     * @return static
+     */
+    public function mergeWith($otherSpecs){
+        foreach ($otherSpecs as $key => $otherSpec){
+            $this->{$key} = $otherSpec;
+        }
+        return static::create($this->toArray());
     }
 
     /**

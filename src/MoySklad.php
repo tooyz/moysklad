@@ -3,6 +3,7 @@
 namespace MoySklad;
 
 use MoySklad\Components\Http\MoySkladHttpClient;
+use MoySklad\Registers\EntityRegistry;
 
 class MoySklad{
 
@@ -45,11 +46,12 @@ class MoySklad{
      * @return MoySklad
      */
     public static function getInstance($login, $password, $posToken = null){
-        $hash = self::makeHash($login, $password);
-        if ( empty(self::$instances[$hash]) ){
-            self::$instances[$hash] = new self($login, $password, $posToken, $hash);
+        $hash = static::makeHash($login, $password);
+        if ( empty(static::$instances[$hash]) ){
+            static::$instances[$hash] = new static($login, $password, $posToken, $hash);
+            EntityRegistry::instance()->bootEntities();
         }
-        return self::$instances[$hash];
+        return static::$instances[$hash];
     }
 
     /**
@@ -58,7 +60,7 @@ class MoySklad{
      * @return MoySklad
      */
     public static function findInstanceByHash($hashCode){
-        return self::$instances[$hashCode];
+        return static::$instances[$hashCode];
     }
 
     /**

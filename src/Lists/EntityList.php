@@ -20,12 +20,14 @@ class EntityList implements \JsonSerializable, \ArrayAccess, \IteratorAggregate,
      * @var array
      */
     protected
-        $items = [];
+        $items = [],
+        $attributes;
 
     public function __construct(MoySklad $skladInstance, $items = [], MetaField $metaField = null)
     {
         $this->skladHashCode = $skladInstance->hashCode();
         $this->replaceItems($items);
+        $this->attributes = new \stdClass();
     }
 
     /**
@@ -40,6 +42,26 @@ class EntityList implements \JsonSerializable, \ArrayAccess, \IteratorAggregate,
         } else {
             $this->items = $items;
         }
+    }
+
+    public function replaceAttributes($attributes){
+        $this->attributes = $attributes;
+    }
+
+    public function setAttribute($key, $value){
+        $this->attributes->{$key} = $value;
+    }
+
+    public function getAttribute($key){
+        return $this->attributes->{$key};
+    }
+
+    public function getMeta(){
+        return isset($this->attributes->meta)?$this->attributes->meta:null;
+    }
+
+    public function getAttributes(){
+        return $this->attributes;
     }
 
     /**
