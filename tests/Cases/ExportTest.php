@@ -18,6 +18,7 @@ class ExportTest extends TestCase{
      * @throws \Exception
      * @throws \MoySklad\Exceptions\EntityCantBeMutatedException
      * @throws \MoySklad\Exceptions\EntityHasNoIdException
+     * @throws \Throwable
      */
     public function testGetEmbeddedTemplates(){
         $this->methodStart();
@@ -27,9 +28,15 @@ class ExportTest extends TestCase{
          * @var Inventory $inv
          */
         $inv = (new Inventory($this->sklad))->buildCreation()->addOrganization($organization)->addStore($store)->execute();
-        $export = $inv->getExportEmbeddedTemplates();
-        $inv->delete(true);
-        $this->assertNotNull($export->get(0)->getContent());
+        $templates = $inv->getExportEmbeddedTemplates();
+        $export = $inv->createExport(
+            $templates->map(function($e){
+                $e->count = 3;
+                return $e;
+            })
+        );
+        $inv->delete(true);;
+        $this->assertNotNull($export->getFileLink());
         $this->methodEnd();
     }
 }

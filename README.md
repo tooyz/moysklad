@@ -251,6 +251,42 @@ $customerOrder->deletePublication($publication)
 $publication = $customerOrder->getPublicationById("123-456")
 ```
 
+## Печать документов
+
+**Документные сущности поддерживают печать**
+
+**Создание**
+
+При создании запроса на печать можно передать либо AbstractTemplate либо EntityList&lt;AbstractTemplate>
+```
+$export = $demand->createExport($templateEntity, 'xls');
+$exports = $demand->createExport($templateList);
+```
+
+**Получение стандартных шаблонов**
+
+```
+$templates = $demand->getExportEmbeddedTemplates();
+```
+
+**Получение пользовательских шаблонов**
+
+```
+$templates = $demand->getExportCustomTemplates();
+```
+
+**Получение стандартного шаблона по id**
+
+```
+$templates = $demand->getExportEmbeddedTemplateById(123);
+```
+
+**Получение пользовательского шаблона по id**
+
+```
+$templates = $demand->getExportCustomTemplateById(123);
+```
+
 ## Отчеты
 
 **Содержат статические методы для получения отчетов.**

@@ -12,7 +12,7 @@ class Export extends AbstractEntity  {
         return ["extension"];
     }
 
-    public function getContent(){
-        return $this->fields->content;
+    public function getFileLink(){
+        return $this->fields->file;
     }
 }

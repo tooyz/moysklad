@@ -259,6 +259,7 @@ abstract class AbstractEntity implements \JsonSerializable {
      * @param null $expand
      * @return mixed
      * @throws \MoySklad\Exceptions\Relations\RelationIsList
+     * @throws \MoySklad\Exceptions\Relations\RelationDoesNotExistException
      */
     public function loadRelation($relationName, $expand = null){
         return $this->relations->fresh($relationName, $expand);

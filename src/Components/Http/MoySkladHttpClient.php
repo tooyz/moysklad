@@ -118,7 +118,7 @@ class MoySkladHttpClient{
      * @param $apiMethod
      * @param array $data
      * @param array $options
-     * @return \stdClass|string[]
+     * @return string
      * @throws \Throwable
      */
     private function makeRequest(
@@ -191,10 +191,13 @@ class MoySkladHttpClient{
                 $requestBody
             );
             if ( in_array($res->getStatusCode(), self::HTTP_CODE_SUCCESS) ){
+                $reqLog['resHeaders'] = $res->getHeaders();
                 if ( $requestHttpMethod !== self::METHOD_DELETE ){
                     if ( !$options->get('followRedirects') ){
                         RequestLog::replaceLast($reqLog);
-                        return $res->getHeader('Location');
+                        $location = $res->getHeader('Location');
+                        if ( isset($location[0]) ) return $location[0];
+                        return "";
                     } else {
                         $result = \json_decode($res->getBody());
                         if ( is_null($result) === false ){

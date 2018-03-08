@@ -3,12 +3,16 @@
 namespace MoySklad\Entities\Documents;
 
 use MoySklad\Components\Http\RequestConfig;
+use MoySklad\Components\Http\RequestLog;
 use MoySklad\Components\Specs\QuerySpecs\QuerySpecs;
 use MoySklad\Entities\AbstractEntity;
+use MoySklad\Entities\Documents\Templates\AbstractTemplate;
+use MoySklad\Entities\Documents\Templates\CustomTemplate;
+use MoySklad\Entities\Documents\Templates\EmbeddedTemplate;
 use MoySklad\Entities\Misc\Attribute;
-use MoySklad\Entities\Misc\CustomTemplate;
 use MoySklad\Entities\Misc\Export;
 use MoySklad\Entities\Misc\Publication;
+use MoySklad\Exceptions\UnknownEntityException;
 use MoySklad\Lists\EntityList;
 use MoySklad\MoySklad;
 use MoySklad\Registers\ApiUrlRegistry;
@@ -103,29 +107,47 @@ class AbstractDocument extends AbstractEntity{
     }
 
     /**
-     * @param CustomTemplate $template
+     * @param CustomTemplate|EntityList $templateOrTemplates
      * @param string $extension
-     * @return Publication
+     * @return Export
      * @throws \Exception
      * @throws \MoySklad\Exceptions\EntityHasNoIdException
-     * @throws \MoySklad\Exceptions\IncompleteCreationFieldsException
      * @throws \Throwable
      */
-    public function createExport(CustomTemplate $template, $extension){
+    public function createExport($templateOrTemplates, $extension = 'pdf'){
         $supportedExtensions = ['xls', 'pdf', 'html', 'ods'];
-        $template->validateFieldsRequiredForCreation();
         if ( !in_array($extension, $supportedExtensions) ){
             throw new \Exception("Extension must be one of: " . implode(',', $supportedExtensions));
         }
+        if ( $templateOrTemplates instanceof EntityList ){
+            foreach ( $templateOrTemplates as $template ){
+                if ( empty($template->count) || $template->count <= 0) $template->count = 1;
+                else if ( $template->count > 10 ) throw new \Exception("Template count field is more then 10");
+            }
+            $exportRequest = [
+                "templates" => $templateOrTemplates->map(function(AbstractTemplate $template){
+                    return [
+                        "template" => $template,
+                        "count" => $template->count
+                    ];
+                })
+            ];
+        } else if ( $templateOrTemplates instanceof AbstractTemplate ){
+            $exportRequest = [
+                "template" => $templateOrTemplates,
+                "extension" => $extension,
+            ];
+        } else {
+            throw new \Exception("First argument must be either template or EntityList of templates");
+        }
         $res = $this->getSkladInstance()->getClient()->post(
             ApiUrlRegistry::instance()->getDocumentExportUrl(static::$entityName, $this->findEntityId()),
-            [
-                "template" => $template->mergeFieldsWithLinks(),
-                "extension" => $extension,
-            ],
+            $exportRequest,
             new RequestConfig(['followRedirects' => false])
         );
-        return new Publication($this->getSkladInstance(), $res);
+        return new Export($this->getSkladInstance(), [
+            'file' => $res
+        ]);
     }
 
     /**
@@ -133,7 +155,7 @@ class AbstractDocument extends AbstractEntity{
      * @return EntityList
      */
     public function getExportEmbeddedTemplates(QuerySpecs $querySpecs = null){
-        $res = Export::query($this->getSkladInstance(), $querySpecs)
+        $res = EmbeddedTemplate::query($this->getSkladInstance(), $querySpecs)
             ->setCustomQueryUrl(ApiUrlRegistry::instance()->getMetadataExportEmbeddedTemplateUrl(static::$entityName))
             ->getList();
         return $res;
@@ -144,7 +166,7 @@ class AbstractDocument extends AbstractEntity{
      * @return EntityList
      */
     public function getExportCustomTemplates(QuerySpecs $querySpecs = null){
-        $res = Export::query($this->getSkladInstance(), $querySpecs)
+        $res = CustomTemplate::query($this->getSkladInstance(), $querySpecs)
             ->setCustomQueryUrl(ApiUrlRegistry::instance()->getMetadataExportCustomTemplateUrl(static::$entityName))
             ->getList();
         return $res;
@@ -160,5 +182,17 @@ class AbstractDocument extends AbstractEntity{
             ApiUrlRegistry::instance()->getMetadataExportCustomTemplateWithIdUrl(static::$entityName, $id)
         );
         return new CustomTemplate($this->getSkladInstance(), $res);
+    }
+
+    /**
+     * @param $id
+     * @return EmbeddedTemplate
+     * @throws \Throwable
+     */
+    public function getExportEmbeddedTemplateById($id){
+        $res = $this->getSkladInstance()->getClient()->get(
+            ApiUrlRegistry::instance()->getMetadataExportEmbeddedTemplateWithIdUrl(static::$entityName, $id)
+        );
+        return new EmbeddedTemplate($this->getSkladInstance(), $res);
     }
 }

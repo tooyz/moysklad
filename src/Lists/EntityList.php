@@ -15,7 +15,10 @@ use MoySklad\Traits\AccessesSkladInstance;
  */
 class EntityList implements \JsonSerializable, \ArrayAccess, \IteratorAggregate, \Countable {
     use AccessesSkladInstance;
-    
+
+    /**
+     * @var array
+     */
     protected
         $items = [];
 
@@ -244,5 +247,17 @@ class EntityList implements \JsonSerializable, \ArrayAccess, \IteratorAggregate,
     public function offsetUnset($offset)
     {
         unset($this->items[$offset]);
+    }
+
+    public function __clone()
+    {
+        $newItems = [];
+        /**
+         * @var AbstractEntity $item
+         */
+        foreach ($this->items as $item){
+            $newItems[] = clone $item;
+        }
+        $this->replaceItems($newItems);
     }
 }
