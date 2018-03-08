@@ -5,6 +5,8 @@ namespace MoySklad\Utils;
 abstract class AbstractSingleton{
     protected static $instance = null;
 
+    protected function __construct(){}
+
     /**
      * @return static|null
      */

@@ -15,7 +15,6 @@ trait Deletes{
      * @param bool $getIdFromMeta
      * @return bool
      * @throws EntityHasNoIdException
-     * @throws ApiResponseException
      */
     public function delete($getIdFromMeta = false){
         /**

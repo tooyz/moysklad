@@ -12,6 +12,10 @@ class RetailStore extends PosEntity implements DoesNotSupportMutationInterface{
 
     /**
      * @return \stdClass
+     * @throws \Exception
+     * @throws \MoySklad\Exceptions\ApiResponseException
+     * @throws \MoySklad\Exceptions\PosTokenException
+     * @throws \MoySklad\Exceptions\RequestFailedException
      */
     public function getAuthToken(){
         return $this->getSkladInstance()->getClient()->post(

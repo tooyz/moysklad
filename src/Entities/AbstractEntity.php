@@ -15,6 +15,7 @@ use MoySklad\Components\Specs\ConstructionSpecs;
 use MoySklad\Components\Specs\CreationSpecs;
 use MoySklad\Components\Specs\LinkingSpecs;
 use MoySklad\Components\Specs\QuerySpecs\QuerySpecs;
+use MoySklad\Entities\Documents\AbstractDocument;
 use MoySklad\Entities\Misc\Attribute;
 use MoySklad\Entities\Misc\State;
 use MoySklad\Exceptions\EntityCantBeMutatedException;
@@ -27,6 +28,7 @@ use MoySklad\MoySklad;
 use MoySklad\Registers\ApiUrlRegistry;
 use MoySklad\Traits\AccessesSkladInstance;
 use MoySklad\Traits\Deletes;
+use stdClass;
 
 /**
  * Root entity object
@@ -99,8 +101,9 @@ abstract class AbstractEntity implements \JsonSerializable {
 
     /**
      * Returns new AbstractEntity inheritor with class taken from meta
-     * @throws EntityHasNoMetaException
      * @return $this
+     * @throws EntityHasNoMetaException
+     * @throws \MoySklad\Exceptions\UnknownEntityException
      */
     public function transformToMetaClass(){
         $eMeta = $this->getMeta();
@@ -178,6 +181,7 @@ abstract class AbstractEntity implements \JsonSerializable {
      * Get a CreationBuilder
      * @param CreationSpecs|null $specs
      * @return CreationBuilder
+     * @throws EntityCantBeMutatedException
      */
     public function buildCreation(CreationSpecs $specs = null){
         $this->checkMutationPossibility();
@@ -187,6 +191,7 @@ abstract class AbstractEntity implements \JsonSerializable {
     /**
      * Get an UpdateBuilder
      * @return UpdateBuilder
+     * @throws EntityCantBeMutatedException
      */
     public function buildUpdate(){
         $this->checkMutationPossibility();
@@ -196,8 +201,9 @@ abstract class AbstractEntity implements \JsonSerializable {
     /**
      * Create with existing fields
      * @param CreationSpecs|null $specs
-     * @return AbstractEntity
-     * @throws \MoySklad\Exceptions\IncompleteCreationFieldsException
+     * @return AbstractEntity|AbstractDocument
+     * @throws EntityCantBeMutatedException
+     * @throws IncompleteCreationFieldsException
      */
     public function create(CreationSpecs $specs = null){
         $this->checkMutationPossibility();
@@ -208,6 +214,7 @@ abstract class AbstractEntity implements \JsonSerializable {
      * Update with existing fields
      * @return AbstractEntity
      * @throws EntityHasNoIdException
+     * @throws EntityCantBeMutatedException
      */
     public function update(){
         $this->checkMutationPossibility();
@@ -235,6 +242,7 @@ abstract class AbstractEntity implements \JsonSerializable {
      * Puts relations to links
      * @internal
      * @return $this
+     * @throws \Exception
      */
     public function copyRelationsToLinks(){
         foreach ($this->relations->getInternal() as $k=>$v){
@@ -260,7 +268,9 @@ abstract class AbstractEntity implements \JsonSerializable {
      * Get RelationListQuery object which van be used for getting, filtering and searching lists of relations
      * @param $relationName
      * @return \MoySklad\Components\Query\RelationQuery
+     * @throws \MoySklad\Exceptions\Relations\RelationDoesNotExistException
      * @throws \MoySklad\Exceptions\Relations\RelationIsSingle
+     * @throws \MoySklad\Exceptions\UnknownEntityException
      */
     public function relationListQuery($relationName){
         return $this->relations->listQuery($relationName);
@@ -269,7 +279,8 @@ abstract class AbstractEntity implements \JsonSerializable {
     /**
      * Get entity metadata information
      * @param MoySklad $sklad
-     * @return \stdClass
+     * @return stdClass
+     * @throws \Throwable
      */
     public static function getMetaData(MoySklad $sklad){
         $res = $sklad->getClient()->get(
@@ -294,6 +305,9 @@ abstract class AbstractEntity implements \JsonSerializable {
         return [];
     }
 
+    /**
+     * @throws IncompleteCreationFieldsException
+     */
     public function validateFieldsRequiredForCreation(){
         $requiredFields = static::getFieldsRequiredForCreation();
         foreach ( $requiredFields as $requiredField ){
@@ -303,6 +317,9 @@ abstract class AbstractEntity implements \JsonSerializable {
         }
     }
 
+    /**
+     * @throws EntityCantBeMutatedException
+     */
     protected function checkMutationPossibility(){
         if ( $this instanceof DoesNotSupportMutationInterface ){
             throw new EntityCantBeMutatedException($this);

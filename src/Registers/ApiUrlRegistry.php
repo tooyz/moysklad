@@ -63,4 +63,24 @@ class ApiUrlRegistry extends AbstractSingleton {
     public function getDocumentPublicationWithIdUrl($entityName, $id, $publicationId){
         return 'entity/' . $entityName . "/" . $id . '/publication/' . $publicationId;
     }
+
+    public function getDocumentExportUrl($entityName, $id){
+        return 'entity/' . $entityName . "/" . $id . '/export/';
+    }
+
+    public function getMetadataExportEmbeddedTemplateUrl($entityName){
+        return 'entity/' . $entityName . '/metadata/embeddedtemplate/';
+    }
+
+    public function getMetadataExportEmbeddedTemplateWithIdUrl($entityName, $id){
+        return 'entity/' . $entityName . '/metadata/embeddedtemplate/' . $id;
+    }
+
+    public function getMetadataExportCustomTemplateUrl($entityName){
+        return 'entity/' . $entityName . '/metadata/customtemplate/';
+    }
+
+    public function getMetadataExportCustomTemplateWithIdUrl($entityName, $id){
+        return 'entity/' . $entityName . '/metadata/customtemplate/' . $id;
+    }
 }
