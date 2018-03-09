@@ -48,14 +48,19 @@ abstract class AbstractSpecs{
     }
 
     /**
+     * Create new specs from two existing, does not modify the original ones
      * @param static $otherSpecs
      * @return static
      */
     public function mergeWith($otherSpecs){
+        $defaults = static::getDefaults();
+        $newSpecs = $this->toArray();
         foreach ($otherSpecs as $key => $otherSpec){
-            $this->{$key} = $otherSpec;
+            if ( $otherSpec !== $defaults[$key] ){
+                $newSpecs[$key] = $otherSpec;
+            }
         }
-        return static::create($this->toArray());
+        return static::create($newSpecs);
     }
 
     /**

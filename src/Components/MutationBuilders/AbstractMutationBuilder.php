@@ -301,7 +301,9 @@ abstract class AbstractMutationBuilder{
      * @throws \Exception
      */
     public function addCustomerOrder(CustomerOrder $customerOrder, LinkingSpecs $specs = null){
-        return $this->simpleLink($customerOrder, $specs);
+        return $this->simpleLink($customerOrder, $specs, LinkingSpecs::create([
+            'name' => 'customerOrder'
+        ]));
     }
 
     /**
@@ -371,7 +373,9 @@ abstract class AbstractMutationBuilder{
      * @throws \Exception
      */
     public function addProductFolder(ProductFolder $folder, LinkingSpecs $specs = null){
-        return $this->simpleLink($folder, $specs);
+        return $this->simpleLink($folder, $specs, LinkingSpecs::create([
+            'name' => 'productFolder'
+        ]));
     }
 
     /**
@@ -655,9 +659,15 @@ abstract class AbstractMutationBuilder{
      * @throws \Exception
      */
     protected function simpleLink(AbstractEntity $linkedEntity, LinkingSpecs $specs = null, LinkingSpecs $defaultSpecs = null){
-        if ( $defaultSpecs && !$specs ) $specs = $defaultSpecs;
-        if ( !$specs ) $specs = LinkingSpecs::create([]);
-        $this->e->links->link($linkedEntity, $specs);
+        if ( !$specs ) {
+            $newSpecs = LinkingSpecs::create([]);
+        } else {
+            $newSpecs = $specs;
+        }
+        if ( $defaultSpecs ){
+            $newSpecs = $defaultSpecs->mergeWith($newSpecs);
+        }
+        $this->e->links->link($linkedEntity, $newSpecs);
         return $this;
     }
 
