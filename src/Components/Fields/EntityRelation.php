@@ -49,6 +49,13 @@ class EntityRelation extends AbstractFieldAccessor {
     }
 
 
+    /**
+     * @param $relationName
+     * @param Expand|null $expand
+     * @return AbstractEntity
+     * @throws RelationDoesNotExistException
+     * @throws RelationIsList
+     */
     public function fresh($relationName, Expand $expand = null){
         $this->checkRelationExists($relationName);
         /**
@@ -61,6 +68,13 @@ class EntityRelation extends AbstractFieldAccessor {
         return $rel->replaceFields($queriedEntity);
     }
 
+    /**
+     * @param $relationName
+     * @return \MoySklad\Components\Query\RelationQuery
+     * @throws RelationDoesNotExistException
+     * @throws RelationIsSingle
+     * @throws \MoySklad\Exceptions\UnknownEntityException
+     */
     public function listQuery($relationName){
         $this->checkRelationExists($relationName);
         /**
@@ -82,10 +96,17 @@ class EntityRelation extends AbstractFieldAccessor {
         return null;
     }
 
+    /**
+     * @return array
+     */
     public function getNames(){
         return array_keys((array)$this->storage);
     }
 
+    /**
+     * @param $relationName
+     * @throws RelationDoesNotExistException
+     */
     private function checkRelationExists($relationName){
         if ( empty($this->storage->{$relationName}) ){
             throw new RelationDoesNotExistException($relationName, $this->relatedByClass);

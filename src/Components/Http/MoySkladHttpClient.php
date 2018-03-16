@@ -15,7 +15,7 @@ class MoySkladHttpClient{
         METHOD_POST = "POST",
         METHOD_PUT = "PUT",
         METHOD_DELETE = "DELETE",
-        HTTP_CODE_SUCCESS = [200, 201];
+        HTTP_CODE_SUCCESS = [200, 201, 307];
 
     private $preRequestSleepTime = 200;
 
@@ -37,6 +37,13 @@ class MoySkladHttpClient{
         $this->posToken = $posToken;
     }
 
+    /**
+     * @param $method
+     * @param array $payload
+     * @param null $options
+     * @return string
+     * @throws \Throwable
+     */
     public function get($method, $payload = [], $options = null){
         return $this->makeRequest(
             self::METHOD_GET,
@@ -46,6 +53,13 @@ class MoySkladHttpClient{
         );
     }
 
+    /**
+     * @param $method
+     * @param array $payload
+     * @param null $options
+     * @return string
+     * @throws \Throwable
+     */
     public function post($method, $payload = [], $options = null){
         return $this->makeRequest(
             self::METHOD_POST,
@@ -55,6 +69,13 @@ class MoySkladHttpClient{
         );
     }
 
+    /**
+     * @param $method
+     * @param array $payload
+     * @param null $options
+     * @return string
+     * @throws \Throwable
+     */
     public function put($method, $payload = [], $options = null){
         return $this->makeRequest(
             self::METHOD_PUT,
@@ -64,6 +85,13 @@ class MoySkladHttpClient{
         );
     }
 
+    /**
+     * @param $method
+     * @param array $payload
+     * @param null $options
+     * @return string
+     * @throws \Throwable
+     */
     public function delete($method, $payload = [], $options = null){
         return $this->makeRequest(
             self::METHOD_DELETE,
@@ -90,10 +118,8 @@ class MoySkladHttpClient{
      * @param $apiMethod
      * @param array $data
      * @param array $options
-     * @return \stdClass
-     * @throws ApiResponseException
-     * @throws PosTokenException
-     * @throws RequestFailedException
+     * @return string
+     * @throws \Throwable
      */
     private function makeRequest(
         $requestHttpMethod,
@@ -124,6 +150,10 @@ class MoySkladHttpClient{
             "headers" => $headers
         ];
 
+        if ( !$options->get('followRedirects') ){
+            $config['allow_redirects'] = false;
+        }
+
         $jsonRequestsTypes = [
             self::METHOD_POST,
             self::METHOD_PUT,
@@ -138,7 +168,11 @@ class MoySkladHttpClient{
             }
         }
 
-        $serializedRequest = (isset($requestBody['json'])?\json_decode(\json_encode($requestBody['json'])):$requestBody['query']);
+        $serializedRequest = (
+            isset($requestBody['json'])?
+                \json_decode(\json_encode($requestBody['json'])):
+                $requestBody['query']
+        );
         $reqLog = [
             "req" => [
                 "type" => $requestHttpMethod,
@@ -157,21 +191,29 @@ class MoySkladHttpClient{
                 $requestBody
             );
             if ( in_array($res->getStatusCode(), self::HTTP_CODE_SUCCESS) ){
+                $reqLog['resHeaders'] = $res->getHeaders();
                 if ( $requestHttpMethod !== self::METHOD_DELETE ){
-                    $result = \json_decode($res->getBody());
-                    if ( is_null($result) === false ){
-                        $reqLog['res'] = $result;
+                    if ( !$options->get('followRedirects') ){
                         RequestLog::replaceLast($reqLog);
-                        return $result;
+                        $location = $res->getHeader('Location');
+                        if ( isset($location[0]) ) return $location[0];
+                        return "";
                     } else {
-                        throw new ResponseParseException($res);
+                        $result = \json_decode($res->getBody());
+                        if ( is_null($result) === false ){
+                            $reqLog['res'] = $result;
+                            RequestLog::replaceLast($reqLog);
+                            return $result;
+                        } else {
+                            throw new ResponseParseException($res);
+                        }
                     }
                 }
                 RequestLog::replaceLast($reqLog);
             } else {
                 throw new RequestFailedException($reqLog['req'], $res);
             }
-        } catch (\Exception $e){
+        } catch (\Throwable $e){
             if ( $e instanceof ClientException){
                 $req = $reqLog['req'];
                 $res = $e->getResponse()->getBody()->getContents();

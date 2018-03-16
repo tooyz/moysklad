@@ -15,6 +15,9 @@ class QuerySpecs extends AbstractSpecs {
      *  offset: get results with offset
      *  maxResults: get only this amount of results. If 0 - unlimited
      *  expand: use expand parameter to get chosen relations
+     *  updatedFrom: entity should be updated from date
+     *  updatedTo: entity should be updated up to date
+     *  updatedBy: entity should be updated by employee
      * @return array
      */
     public function getDefaults()
@@ -26,7 +29,7 @@ class QuerySpecs extends AbstractSpecs {
             "expand" => null,
             "updatedFrom" => null,
             "updatedTo" => null,
-            "updatedBy" => null
+            "updatedBy" => null,
         ];
     }
 
@@ -44,9 +47,13 @@ class QuerySpecs extends AbstractSpecs {
             $res->limit = $res->maxResults;
         }
         try{
-            if ( $res->updatedFrom !== null ) $res->updatedFrom = $res->updatedFrom->format();
-            if ( $res->updatedTo !== null ) $res->updatedTo = $res->updatedTo->format();
-        } catch ( \Exception $e ){
+            foreach ( ['updatedFrom', 'updatedTo'] as $date ){
+                if ( $res->{$date} !== null ) {
+                    if ( is_string($res->{$date}) ) $res->{$date} = new CommonDate($res->{$date});
+                    $res->{$date} = $res->{$date}->format();
+                }
+            }
+        } catch ( \Throwable $e ){
             throw new \Exception('"updatedFrom" and "updatedTo" specs should be instances of "'.CommonDate::class.'" class');
         }
 

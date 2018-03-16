@@ -2,7 +2,6 @@
 
 namespace Tests\Cases;
 
-use MoySklad\Components\Http\RequestLog;
 use MoySklad\Entities\Counterparty;
 use MoySklad\Exceptions\Relations\RelationDoesNotExistException;
 use MoySklad\Lists\RelationEntityList;
@@ -16,6 +15,12 @@ class GetRelationsTest extends TestCase{
         parent::setUp();
     }
 
+    /**
+     * @throws RelationDoesNotExistException
+     * @throws \MoySklad\Exceptions\Relations\RelationIsList
+     * @throws \MoySklad\Exceptions\Relations\RelationIsSingle
+     * @throws \MoySklad\Exceptions\UnknownEntityException
+     */
     public function testGetSingleRelation(){
         $cp = Counterparty::query($this->sklad)->getList()->get(0);
         $accounts = $cp->relations->listQuery('accounts')->getList();

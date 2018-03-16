@@ -9,7 +9,8 @@ class RequestConfig{
     private $fields = [
         "usePosApi" => false,
         "usePosToken" => false,
-        "ignoreRequestBody" => false
+        "ignoreRequestBody" => false,
+        "followRedirects" => true
     ];
 
     public function __construct($fields = []){
@@ -29,6 +30,7 @@ class RequestConfig{
     /**
      * @param $key
      * @param $value
+     * @throws \Exception
      */
     public function set($key, $value){
         $this->checkKey($key);

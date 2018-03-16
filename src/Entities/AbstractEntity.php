@@ -4,6 +4,7 @@ namespace MoySklad\Entities;
 
 use MoySklad\Components\Expand;
 use MoySklad\Components\Fields\AttributeCollection;
+use MoySklad\Components\Fields\EntityFields;
 use MoySklad\Components\Fields\EntityLinker;
 use MoySklad\Components\Fields\EntityRelation;
 use MoySklad\Components\Fields\MetaField;
@@ -14,6 +15,10 @@ use MoySklad\Components\Specs\ConstructionSpecs;
 use MoySklad\Components\Specs\CreationSpecs;
 use MoySklad\Components\Specs\LinkingSpecs;
 use MoySklad\Components\Specs\QuerySpecs\QuerySpecs;
+use MoySklad\Entities\Audit\AbstractAudit;
+use MoySklad\Entities\Audit\Audit;
+use MoySklad\Entities\Audit\AuditEvent;
+use MoySklad\Entities\Documents\AbstractDocument;
 use MoySklad\Entities\Misc\Attribute;
 use MoySklad\Entities\Misc\State;
 use MoySklad\Exceptions\EntityCantBeMutatedException;
@@ -23,10 +28,10 @@ use MoySklad\Exceptions\IncompleteCreationFieldsException;
 use MoySklad\Interfaces\DoesNotSupportMutationInterface;
 use MoySklad\Lists\EntityList;
 use MoySklad\MoySklad;
-use MoySklad\Components\Fields\EntityFields;
 use MoySklad\Registers\ApiUrlRegistry;
 use MoySklad\Traits\AccessesSkladInstance;
 use MoySklad\Traits\Deletes;
+use stdClass;
 
 /**
  * Root entity object
@@ -65,6 +70,12 @@ abstract class AbstractEntity implements \JsonSerializable {
      */
     public $attributes;
 
+    /**
+     * AbstractEntity constructor.
+     * @param MoySklad $skladInstance
+     * @param array $fields
+     * @param ConstructionSpecs|null $specs
+     */
     public function __construct(MoySklad $skladInstance, $fields = [], ConstructionSpecs $specs = null)
     {
         if ( !$specs ) $specs = ConstructionSpecs::create();
@@ -74,18 +85,6 @@ abstract class AbstractEntity implements \JsonSerializable {
         $this->relations = new EntityRelation([], static::class);
         $this->skladHashCode = $skladInstance->hashCode();
         $this->processConstructionSpecs($specs);
-    }
-
-    /**
-     * @param ConstructionSpecs $specs
-     */
-    protected function processConstructionSpecs(ConstructionSpecs $specs){
-        if ( $specs->relations ){
-            $this->relations = EntityRelation::createRelations($this->getSkladInstance(), $this);
-            foreach ( $this->relations->getInternal() as $k=>$v ){
-                $this->fields->deleteKey($k);
-            }
-        }
     }
 
     /**
@@ -99,8 +98,9 @@ abstract class AbstractEntity implements \JsonSerializable {
 
     /**
      * Returns new AbstractEntity inheritor with class taken from meta
-     * @throws EntityHasNoMetaException
      * @return $this
+     * @throws EntityHasNoMetaException
+     * @throws \MoySklad\Exceptions\UnknownEntityException
      */
     public function transformToMetaClass(){
         $eMeta = $this->getMeta();
@@ -140,6 +140,7 @@ abstract class AbstractEntity implements \JsonSerializable {
      * @param Expand|null $expand
      * @return mixed
      * @throws EntityHasNoIdException
+     * @throws \Throwable
      */
     public function fresh(Expand $expand = null){
         $id = $this->findEntityId();
@@ -167,7 +168,9 @@ abstract class AbstractEntity implements \JsonSerializable {
      * @return EntityQuery
      */
     public static function query(MoySklad &$skladInstance, QuerySpecs $querySpecs = null){
+        $static = get_called_class();
         $eq = new EntityQuery($skladInstance, static::class, $querySpecs);
+        $eq->setResponseAttributesMapper($static, "listQueryResponseAttributeMapper");
         if ( !is_null(static::$customQueryUrl) ){
             $eq->setCustomQueryUrl(static::$customQueryUrl);
         }
@@ -178,6 +181,7 @@ abstract class AbstractEntity implements \JsonSerializable {
      * Get a CreationBuilder
      * @param CreationSpecs|null $specs
      * @return CreationBuilder
+     * @throws EntityCantBeMutatedException
      */
     public function buildCreation(CreationSpecs $specs = null){
         $this->checkMutationPossibility();
@@ -187,6 +191,7 @@ abstract class AbstractEntity implements \JsonSerializable {
     /**
      * Get an UpdateBuilder
      * @return UpdateBuilder
+     * @throws EntityCantBeMutatedException
      */
     public function buildUpdate(){
         $this->checkMutationPossibility();
@@ -196,8 +201,9 @@ abstract class AbstractEntity implements \JsonSerializable {
     /**
      * Create with existing fields
      * @param CreationSpecs|null $specs
-     * @return AbstractEntity
-     * @throws \MoySklad\Exceptions\IncompleteCreationFieldsException
+     * @return AbstractEntity|AbstractDocument
+     * @throws EntityCantBeMutatedException
+     * @throws IncompleteCreationFieldsException
      */
     public function create(CreationSpecs $specs = null){
         $this->checkMutationPossibility();
@@ -208,6 +214,8 @@ abstract class AbstractEntity implements \JsonSerializable {
      * Update with existing fields
      * @return AbstractEntity
      * @throws EntityHasNoIdException
+     * @throws EntityCantBeMutatedException
+     * @throws \Throwable
      */
     public function update(){
         $this->checkMutationPossibility();
@@ -235,6 +243,7 @@ abstract class AbstractEntity implements \JsonSerializable {
      * Puts relations to links
      * @internal
      * @return $this
+     * @throws \Exception
      */
     public function copyRelationsToLinks(){
         foreach ($this->relations->getInternal() as $k=>$v){
@@ -251,6 +260,7 @@ abstract class AbstractEntity implements \JsonSerializable {
      * @param null $expand
      * @return mixed
      * @throws \MoySklad\Exceptions\Relations\RelationIsList
+     * @throws \MoySklad\Exceptions\Relations\RelationDoesNotExistException
      */
     public function loadRelation($relationName, $expand = null){
         return $this->relations->fresh($relationName, $expand);
@@ -260,16 +270,35 @@ abstract class AbstractEntity implements \JsonSerializable {
      * Get RelationListQuery object which van be used for getting, filtering and searching lists of relations
      * @param $relationName
      * @return \MoySklad\Components\Query\RelationQuery
+     * @throws \MoySklad\Exceptions\Relations\RelationDoesNotExistException
      * @throws \MoySklad\Exceptions\Relations\RelationIsSingle
+     * @throws \MoySklad\Exceptions\UnknownEntityException
      */
     public function relationListQuery($relationName){
-        return $this->relations->listQuery($relationName);
+        $static = get_called_class();
+        $rq = $this->relations->listQuery($relationName);
+        $rq->setResponseAttributesMapper($static, 'listQueryResponseAttributeMapper');
+        return $rq;
+    }
+
+    public function getAuditEvents(){
+        $eq = new EntityQuery($this->getSkladInstance(), AuditEvent::class);
+        $eq->setResponseAttributesMapper(AbstractAudit::class, "listQueryResponseAttributeMapper");
+        if ( static::class === Audit::class ){
+            $eq->setCustomQueryUrl(ApiUrlRegistry::instance()->getAuditEventsUrl($this->fields->id));
+        } else {
+            $eq->setCustomQueryUrl(ApiUrlRegistry::instance()->getAuditEventsEntityUrl(
+                static::$entityName, $this->fields->id
+            ));
+        }
+        return $eq->getList();
     }
 
     /**
      * Get entity metadata information
      * @param MoySklad $sklad
-     * @return \stdClass
+     * @return stdClass
+     * @throws \Throwable
      */
     public static function getMetaData(MoySklad $sklad){
         $res = $sklad->getClient()->get(
@@ -280,7 +309,7 @@ abstract class AbstractEntity implements \JsonSerializable {
         $res->attributes = $attributes->map(function($e) use($sklad){
             return new Attribute($sklad, $e);
         });
-        $states = new EntityList($sklad, $res->states);
+        $states = new EntityList($sklad, isset($res->states) ? $res->states : []);
         $res->states = $states->map(function($e) use($sklad){
             return new State($sklad, $e);
         });
@@ -294,6 +323,9 @@ abstract class AbstractEntity implements \JsonSerializable {
         return [];
     }
 
+    /**
+     * @throws IncompleteCreationFieldsException
+     */
     public function validateFieldsRequiredForCreation(){
         $requiredFields = static::getFieldsRequiredForCreation();
         foreach ( $requiredFields as $requiredField ){
@@ -303,10 +335,35 @@ abstract class AbstractEntity implements \JsonSerializable {
         }
     }
 
+    public static function boot(){}
+
+    /**
+     * @param ConstructionSpecs $specs
+     */
+    protected function processConstructionSpecs(ConstructionSpecs $specs){
+        if ( $specs->relations ){
+            $this->relations = EntityRelation::createRelations($this->getSkladInstance(), $this);
+            foreach ( $this->relations->getInternal() as $k=>$v ){
+                $this->fields->deleteKey($k);
+            }
+        }
+    }
+
+    /**
+     * @throws EntityCantBeMutatedException
+     */
     protected function checkMutationPossibility(){
         if ( $this instanceof DoesNotSupportMutationInterface ){
             throw new EntityCantBeMutatedException($this);
         }
+    }
+
+    /**
+     * @param stdClass $attributes
+     * @return stdClass
+     */
+    public static function listQueryResponseAttributeMapper($attributes, $skladInstance){
+        return $attributes;
     }
 
     public function jsonSerialize()

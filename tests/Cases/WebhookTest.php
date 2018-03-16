@@ -13,7 +13,8 @@ class WebhookTest extends TestCase{
     }
 
     public function testWebhookList(){
-        //$webhooks = Webhook::getList($this->sklad);
+        $webhooks = Webhook::query($this->sklad)->getList();
+        $this->assertNotNull($webhooks);
     }
 
 }

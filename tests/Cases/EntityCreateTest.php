@@ -6,6 +6,7 @@ namespace Tests\Cases;
 use MoySklad\Components\Http\RequestLog;
 use MoySklad\Components\Specs\LinkingSpecs;
 use MoySklad\Entities\Currency;
+use MoySklad\Entities\Folders\ProductFolder;
 use MoySklad\Entities\Misc\Characteristics;
 use MoySklad\Entities\Products\Product;
 use MoySklad\Entities\Products\Variant;
@@ -19,6 +20,12 @@ class EntityCreateTest extends TestCase{
         parent::setUp();
     }
 
+    /**
+     * @throws \Exception
+     * @throws \MoySklad\Exceptions\EntityCantBeMutatedException
+     * @throws \MoySklad\Exceptions\EntityHasNoIdException
+     * @throws \MoySklad\Exceptions\IncompleteCreationFieldsException
+     */
     public function testCreation(){
         $this->methodStart();
 

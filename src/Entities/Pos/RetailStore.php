@@ -8,10 +8,16 @@ use MoySklad\Registers\ApiUrlRegistry;
 
 class RetailStore extends PosEntity implements DoesNotSupportMutationInterface{
     public static $entityName = 'retailstore';
-    protected static $customQueryUrl = "admin/retailstore";
+
+    public static function boot()
+    {
+        parent::boot();
+        static::$customQueryUrl = ApiUrlRegistry::instance()->getPosRetailStoreQueryUrl();
+    }
 
     /**
      * @return \stdClass
+     * @throws \Throwable
      */
     public function getAuthToken(){
         return $this->getSkladInstance()->getClient()->post(

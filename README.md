@@ -1,6 +1,6 @@
 ## Moysklad PHP
 
-**WIP**
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/55ec86f9-d527-4bb7-8e4e-cdc30269728b/small.png)](https://insight.sensiolabs.com/projects/55ec86f9-d527-4bb7-8e4e-cdc30269728b)
 
 Библиотека для сервиса "Мой склад" JSON API 1.1. Некоторые примеры можно найти в "tests". Все ещё далека от завершения.
 
@@ -251,6 +251,42 @@ $customerOrder->deletePublication($publication)
 $publication = $customerOrder->getPublicationById("123-456")
 ```
 
+## Печать документов
+
+**Документные сущности поддерживают печать**
+
+**Создание**
+
+При создании запроса на печать можно передать либо AbstractTemplate либо EntityList&lt;AbstractTemplate>
+```
+$export = $demand->createExport($templateEntity, 'xls');
+$exports = $demand->createExport($templateList);
+```
+
+**Получение стандартных шаблонов**
+
+```
+$templates = $demand->getExportEmbeddedTemplates();
+```
+
+**Получение пользовательских шаблонов**
+
+```
+$templates = $demand->getExportCustomTemplates();
+```
+
+**Получение стандартного шаблона по id**
+
+```
+$templates = $demand->getExportEmbeddedTemplateById(123);
+```
+
+**Получение пользовательского шаблона по id**
+
+```
+$templates = $demand->getExportCustomTemplateById(123);
+```
+
 ## Отчеты
 
 **Содержат статические методы для получения отчетов.**
@@ -262,6 +298,33 @@ $report = DashboardReport::day($sklad);
 $report = SalesReport::byEmployee($sklad, SalesReportQuerySpecs::create([
     "counterparty.id" => $cpId
 ]));
+```
+
+## Аудит
+
+**История событий системы**
+
+**Получить последние 5 контекстов по заказам покупателей**
+```
+$audits = Audit::query($this->sklad, QuerySpecs::create([
+                  'maxResults' => 5
+              ]))->filter((new FilterQuery())
+                             ->eq("entityType", "customerorder")
+                          );
+```
+**Получить события по контексту**
+```
+$events = $audit->getAuditEvents();
+```
+
+**Получить события по сущности**
+```
+$events = $customerOrder->getAuditEvents();
+```
+
+**Получить список фильтров**
+```
+$filters = Audit::getFilters($this->sklad);
 ```
 
 ## Отладка

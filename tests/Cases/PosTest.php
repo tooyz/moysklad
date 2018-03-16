@@ -17,6 +17,9 @@ use MoySklad\Lists\EntityList;
 require_once "TestCase.php";
 
 class PosTest extends TestCase{
+    /**
+     * @throws \Throwable
+     */
     public function testRetailStore(){
 //        $retails = RetailStore::query($this->sklad)->getList();
 //        if ( $retails->count() ){
@@ -25,6 +28,7 @@ class PosTest extends TestCase{
 //             */
 //            $retail = $retails->get(0);
 //            $token = $retail->getAuthToken();
+//            $this->assertNotNull($token);
 //        }
     }
 }

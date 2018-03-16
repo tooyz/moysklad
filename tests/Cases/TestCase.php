@@ -27,7 +27,13 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     */
     protected $faker;
 
-    protected function onNotSuccessfulTest($e){
+    /**
+     * @param \Exception|\Throwable $e
+     * @throws \Exception
+     * @throws \Throwable
+     */
+    protected function onNotSuccessfulTest($e)
+    {
         if ( $e instanceof RequestFailedException ){
             var_dump($e->getDump());
         } else {
@@ -71,6 +77,9 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $this->lastTimer = microtime(true);
     }
 
+    /**
+     * @return mixed|null
+     */
     protected function timeEnd(){
         var_dump($this->lastTimer);
         $res = microtime(true) - $this->lastTimer;
@@ -78,7 +87,11 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         return $res;
     }
 
-    protected function makeName($baseName){
+    /**
+     * @param string $baseName
+     * @return string
+     */
+    protected function makeName($baseName = 'name'){
         return $baseName . rand(1, 9999) . time();
     }
 }

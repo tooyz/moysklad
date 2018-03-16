@@ -56,11 +56,51 @@ class ApiUrlRegistry extends AbstractSingleton {
         return "admin/attach/${retailStoreId}";
     }
 
+    public function getPosRetailStoreQueryUrl(){
+        return "admin/retailstore/";
+    }
+
     public function getDocumentPublicationsUrl($entityName, $id){
         return 'entity/' . $entityName . "/" . $id . '/publication';
     }
 
     public function getDocumentPublicationWithIdUrl($entityName, $id, $publicationId){
         return 'entity/' . $entityName . "/" . $id . '/publication/' . $publicationId;
+    }
+
+    public function getDocumentExportUrl($entityName, $id){
+        return 'entity/' . $entityName . "/" . $id . '/export/';
+    }
+
+    public function getMetadataExportEmbeddedTemplateUrl($entityName){
+        return 'entity/' . $entityName . '/metadata/embeddedtemplate/';
+    }
+
+    public function getMetadataExportEmbeddedTemplateWithIdUrl($entityName, $id){
+        return 'entity/' . $entityName . '/metadata/embeddedtemplate/' . $id;
+    }
+
+    public function getMetadataExportCustomTemplateUrl($entityName){
+        return 'entity/' . $entityName . '/metadata/customtemplate/';
+    }
+
+    public function getMetadataExportCustomTemplateWithIdUrl($entityName, $id){
+        return 'entity/' . $entityName . '/metadata/customtemplate/' . $id;
+    }
+
+    public function getAuditUrl(){
+        return "audit/";
+    }
+
+    public function getAuditEventsUrl($auditId){
+        return "audit/" . $auditId . "/events";
+    }
+
+    public function getAuditEventsEntityUrl($entityName, $id){
+        return 'entity/' . $entityName . '/' . $id . '/audit';
+    }
+
+    public function getAuditFiltersUrl(){
+        return "audit/metadata/filters";
     }
 }

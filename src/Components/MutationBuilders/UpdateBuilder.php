@@ -11,6 +11,7 @@ class UpdateBuilder extends AbstractMutationBuilder {
      * Update entity with current fields
      * @return AbstractEntity
      * @throws EntityHasNoIdException
+     * @throws \Throwable
      */
     public function execute()
     {
@@ -22,6 +23,5 @@ class UpdateBuilder extends AbstractMutationBuilder {
             $entity->mergeFieldsWithLinks()
         );
         return new $entityClass($entity->getSkladInstance(), $res);
-
     }
 }

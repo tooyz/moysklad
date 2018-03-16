@@ -9,6 +9,6 @@ class Enter extends AbstractMovement {
     public static $entityName = 'enter';
     public static function getFieldsRequiredForCreation()
     {
-        return [Organization::$entityName, Store::$entityName];
+        return ['name', Organization::$entityName, Store::$entityName];
     }
 }
