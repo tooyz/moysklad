@@ -225,8 +225,7 @@ abstract class AbstractQuery{
     public function mapResponseAttributes(){
         $result = (object)$this->responseAttributes;
         if ( $this->responseAttributesMapper ){
-            $fn = $this->responseAttributesMapper;
-            return $fn($result, $this->getSkladInstance());
+            return call_user_func($this->responseAttributesMapper, $result, $this->getSkladInstance());
         }
         return $result;
     }
