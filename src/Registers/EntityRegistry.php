@@ -30,6 +30,8 @@ use MoySklad\Entities\Documents\Movements\Demand;
 use MoySklad\Entities\Documents\Movements\Enter;
 use MoySklad\Entities\Documents\Movements\Loss;
 use MoySklad\Entities\Documents\Movements\Supply;
+use MoySklad\Entities\Documents\Payments\PaymentOut;
+use MoySklad\Entities\Documents\Payments\PaymentIn;
 use MoySklad\Entities\Documents\Orders\AbstractOrder;
 use MoySklad\Entities\Documents\Orders\CustomerOrder;
 use MoySklad\Entities\Documents\Orders\PurchaseOrder;
@@ -91,6 +93,8 @@ class EntityRegistry extends AbstractSingleton{
     public $entities = [
         AbstractEntity::class,
         AbstractDocument::class,
+        PaymentIn::class,
+        PaymentOut::class,
         AbstractOrder::class,
         CustomerOrder::class,
         PurchaseOrder::class,
