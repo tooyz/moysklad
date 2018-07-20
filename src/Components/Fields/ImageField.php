@@ -2,6 +2,8 @@
 
 namespace MoySklad\Components\Fields;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\RequestOptions;
 use MoySklad\Exceptions\InvalidUrlException;
 
 class ImageField extends AbstractFieldAccessor{
@@ -48,5 +50,32 @@ class ImageField extends AbstractFieldAccessor{
             "filename" => $fileName,
             "content" => base64_encode($imageBinary)
         ]);
+    }
+
+    /**
+     * @param string $size
+     * @return null|string
+     */
+    public function getDownloadLink($size = 'normal'){
+        if ( isset($this->meta->href) && $size === 'normal' ) return $this->meta->href;
+        if ( isset($this->miniature->href) && $size === 'miniature' ) return $this->miniature->href;
+        if ( isset($this->tiny->href) && $size === 'tiny' ) return $this->tiny->href;
+        return null;
+    }
+
+    /**
+     * @param string $size
+     * @param $saveFile
+     * @return string
+     * @throws \Exception
+     */
+    public function download($size = 'normal', $saveFile){
+        if ( $link = $this->getDownloadLink($size) ){
+            $filePath = fopen($saveFile,'w+');
+            $client = new Client();
+            $response = $client->get($link, [RequestOptions::SINK => $filePath]);
+            return $response->getStatusCode();
+        }
+        throw new \Exception("Image does not have a $size size link. Try to refresh hosting entity");
     }
 }

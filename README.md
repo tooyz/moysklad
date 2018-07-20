@@ -46,19 +46,6 @@ $product->fresh(Expand::create(['country']));
 `$product->transformToClass(Counterparty::class);`
 
 **Или не сделать. Большая часть логики делегирована другим классам.**
-**Можно прицепить картинки.**
-```
-$product->attachImage(ImageField::createFromUrl(
-    "http://url.ru/img.jpg"
-));
-```
-или
-```
-$product->attachImage(ImageField::createFromPath(
-    "images/123.jpg",
-    "renamed_image.jpg"
-));
-```
 
 ## Получение сущностей
 
@@ -160,6 +147,30 @@ $el = new EntityList($sklad, [$neko, $doge])->each(function($e) use($vasyan){
 **Можно превратить в массив**
 
 `$el->toArray()`;
+
+## Работа с картинками
+
+**Прицепление изображений к сущности**
+
+```
+$product->attachImage(ImageField::createFromUrl(
+    "http://url.ru/img.jpg"
+));
+```
+или
+```
+$product->attachImage(ImageField::createFromPath(
+    "images/123.jpg",
+    "renamed_image.jpg"
+));
+```
+
+**Скачивание изображения**
+
+```
+$product->image->download('normal', '/usr/images/cat.jpg');
+/* normal, miniature, tiny - размеры изображений */
+```
 
 
 ## Specs
