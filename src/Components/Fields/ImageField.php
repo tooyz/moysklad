@@ -64,12 +64,12 @@ class ImageField extends AbstractFieldAccessor{
     }
 
     /**
-     * @param string $size
      * @param $saveFile
+     * @param string $size
      * @return string
      * @throws \Exception
      */
-    public function download($size = 'normal', $saveFile){
+    public function download($saveFile, $size = 'normal'){
         if ( $link = $this->getDownloadLink($size) ){
             $filePath = fopen($saveFile,'w+');
             $client = new Client();

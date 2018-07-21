@@ -168,7 +168,7 @@ $product->attachImage(ImageField::createFromPath(
 **Скачивание изображения**
 
 ```
-$product->image->download('normal', '/usr/images/cat.jpg');
+$product->image->download('/usr/images/cat.jpg', 'normal');
 /* normal, miniature, tiny - размеры изображений */
 ```
 
