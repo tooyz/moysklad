@@ -93,6 +93,7 @@ abstract class AbstractQuery{
     /**
      * Get list of entities
      * @return EntityList
+     * @throws \Exception
      */
     public function getList(){
         return $this->filter(null);
@@ -102,6 +103,7 @@ abstract class AbstractQuery{
      * Search within list of entities
      * @param string $searchString
      * @return EntityList
+     * @throws \Exception
      */
     public function search($searchString = ''){
         $this->attachExpand($this->querySpecs);
@@ -121,6 +123,7 @@ abstract class AbstractQuery{
      * Filter within list of entities
      * @param FilterQuery|null $filterQuery
      * @return EntityList
+     * @throws \Exception
      */
     public function filter( FilterQuery $filterQuery = null ){
         $this->attachExpand($this->querySpecs);
@@ -147,6 +150,7 @@ abstract class AbstractQuery{
      * @param array $methodArgs
      * @param int $requestCounter
      * @return EntityList
+     * @throws \Exception
      */
     protected function recursiveRequest(
         callable $method, QuerySpecs $queryParams, $methodArgs = [], $requestCounter = 1
@@ -175,6 +179,7 @@ abstract class AbstractQuery{
      * Get previous QuerySpecs and increase offset
      * @param QuerySpecs $queryParams
      * @return QuerySpecs
+     * @throws \Exception
      */
     protected function recreateQuerySpecs(QuerySpecs &$queryParams){
           return QuerySpecs::create([

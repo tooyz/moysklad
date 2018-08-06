@@ -41,10 +41,12 @@ use MoySklad\Entities\Documents\Positions\DemandPosition;
 use MoySklad\Entities\Documents\Positions\EnterPosition;
 use MoySklad\Entities\Documents\Positions\SalesReturnPosition;
 use MoySklad\Entities\Documents\Positions\SupplyPosition;
+use MoySklad\Entities\Documents\PriceLists\PriceList;
+use MoySklad\Entities\Documents\PriceLists\PriceListRow;
+use MoySklad\Entities\Documents\Processings\ProcessingPlanFolder;
 use MoySklad\Entities\Documents\Templates\CustomTemplate;
 use MoySklad\Entities\Products\Components\AbstractComponent;
 use MoySklad\Entities\Products\Components\BundleComponent;
-use MoySklad\Entities\Documents\PriceList;
 use MoySklad\Entities\Documents\Processings\AbstractProcessing;
 use MoySklad\Entities\Documents\Processings\Processing;
 use MoySklad\Entities\Documents\Processings\ProcessingOrder;
@@ -167,7 +169,9 @@ class EntityRegistry extends AbstractSingleton{
         Processing::class,
         ProcessingOrder::class,
         ProcessingPlan::class,
+        ProcessingPlanFolder::class,
         PriceList::class,
+        PriceListRow::class,
         Audit::class,
         AuditEvent::class
     ];

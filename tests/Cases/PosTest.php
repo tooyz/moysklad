@@ -20,15 +20,15 @@ class PosTest extends TestCase{
     /**
      * @throws \Throwable
      */
-    public function testRetailStore(){
-//        $retails = RetailStore::query($this->sklad)->getList();
-//        if ( $retails->count() ){
-//            /**
-//             * @var RetailStore $retail
-//             */
-//            $retail = $retails->get(0);
-//            $token = $retail->getAuthToken();
-//            $this->assertNotNull($token);
-//        }
-    }
+//    public function testRetailStore(){
+////        $retails = RetailStore::query($this->sklad)->getList();
+////        if ( $retails->count() ){
+////            /**
+////             * @var RetailStore $retail
+////             */
+////            $retail = $retails->get(0);
+////            $token = $retail->getAuthToken();
+////            $this->assertNotNull($token);
+////        }
+//    }
 }
