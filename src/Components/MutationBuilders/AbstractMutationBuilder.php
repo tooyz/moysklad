@@ -29,6 +29,7 @@ use MoySklad\Entities\Documents\Payments\PaymentIn;
 use MoySklad\Entities\Documents\Payments\PaymentOut;
 use MoySklad\Entities\Documents\Positions\CustomerOrderPosition;
 use MoySklad\Entities\Documents\Positions\EnterPosition;
+use MoySklad\Entities\Documents\Positions\LossPosition;
 use MoySklad\Entities\Documents\RetailShift;
 use MoySklad\Entities\Documents\PriceList;
 use MoySklad\Entities\Documents\Processings\Processing;
@@ -354,6 +355,16 @@ abstract class AbstractMutationBuilder{
      */
     public function addEnterPosition(EnterPosition $enterPosition, LinkingSpecs $specs = null){
         return $this->simpleLink($enterPosition, $specs);
+    }
+
+    /**
+     * @param LossPosition $lossPosition
+     * @param LinkingSpecs|null $specs
+     * @return AbstractMutationBuilder
+     * @throws \Exception
+     */
+    public function addLossPosition(LossPosition $lossPosition, LinkingSpecs $specs = null){
+        return $this->simpleLink($lossPosition, $specs);
     }
 
     /**

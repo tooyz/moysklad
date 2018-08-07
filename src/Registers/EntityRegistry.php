@@ -39,6 +39,7 @@ use MoySklad\Entities\Documents\Positions\AbstractPosition;
 use MoySklad\Entities\Documents\Positions\CustomerOrderPosition;
 use MoySklad\Entities\Documents\Positions\DemandPosition;
 use MoySklad\Entities\Documents\Positions\EnterPosition;
+use MoySklad\Entities\Documents\Positions\LossPosition;
 use MoySklad\Entities\Documents\Positions\SalesReturnPosition;
 use MoySklad\Entities\Documents\Positions\SupplyPosition;
 use MoySklad\Entities\Documents\PriceLists\PriceList;
@@ -114,6 +115,7 @@ class EntityRegistry extends AbstractSingleton{
         ContactPerson::class,
         State::class,
         AbstractPosition::class,
+        LossPosition::class,
         EnterPosition::class,
         CustomerOrderPosition::class,
         DemandPosition::class,
