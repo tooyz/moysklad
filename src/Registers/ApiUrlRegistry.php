@@ -23,6 +23,9 @@ class ApiUrlRegistry extends AbstractSingleton {
     public function getByIdUrl($entityName, $id){
         return 'entity/' . $entityName . '/' . $id;
     }
+	public function getBySyncIdUrl($entityName, $id){
+		return 'entity/' . $entityName . '/syncid/' . $id;
+	}
 
     public function getListUrl($entityName){
         return "entity/" . $entityName;

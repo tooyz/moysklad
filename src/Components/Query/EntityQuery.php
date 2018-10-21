@@ -26,4 +26,21 @@ class EntityQuery extends AbstractQuery {
         );
         return new $this->entityClass($this->getSkladInstance(), $res);
     }
+
+	/**
+	 * Get entity by syncid
+	 * @param $id
+	 * @param Expand|null $expand Deprecated, use withExpand()
+	 * @return AbstractEntity
+	 * @throws \Throwable
+	 */
+	public function bySyncId($id, Expand $expand = null){
+		if ( !$expand ) $expand = $this->expand;
+		$res = $this->getSkladInstance()->getClient()->get(
+			ApiUrlRegistry::instance()->getBySyncIdUrl($this->entityName, $id),
+			($expand?['expand'=>$expand->flatten()]:[]),
+			$this->requestOptions
+		);
+		return new $this->entityClass($this->getSkladInstance(), $res);
+	}
 }
