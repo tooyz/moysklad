@@ -15,7 +15,7 @@ class MoySkladHttpClient{
         METHOD_POST = "POST",
         METHOD_PUT = "PUT",
         METHOD_DELETE = "DELETE",
-        HTTP_CODE_SUCCESS = [200, 201, 307];
+        HTTP_CODE_SUCCESS = [200, 201, 307, 303];
 
     private $preRequestSleepTime = 200;
 
