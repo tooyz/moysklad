@@ -78,6 +78,17 @@ class FilterQuery{
     }
 
     /**
+     * Field ~ Value
+     * @param $field
+     * @param $value
+     * @return $this
+     */
+    public function like($field, $value){
+        $this->queryBuffer[] = "$field~$value";
+        return $this;
+    }
+
+    /**
      * Get internal query buffer
      * @return array
      */
