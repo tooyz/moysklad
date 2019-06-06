@@ -36,7 +36,7 @@ abstract class AbstractQuery{
      * @param QuerySpecs|null $querySpecs
      * @throws \Exception
      */
-    public function __construct(MoySklad &$skladInstance, $entityClass, QuerySpecs $querySpecs = null)
+    public function __construct(MoySklad $skladInstance, $entityClass, QuerySpecs $querySpecs = null)
     {
         $this->skladHashCode = $skladInstance->hashCode();
         $this->entityClass = $entityClass;
