@@ -122,13 +122,15 @@ abstract class AbstractEntity implements \JsonSerializable {
     }
 
     /**
+     * @param bool $customEntity
      * @return string
      * @throws EntityHasNoIdException
      */
-    public function findEntityId(){
+    public function findEntityId($customEntity = false){
         $id = null;
+
         if ( empty($this->fields->id) ){
-            if ( !$id = $this->getMeta()->getId()) throw new EntityHasNoIdException($this);
+            if ( !$id = $this->getMeta()->getId($customEntity)) throw new EntityHasNoIdException($this);
         } else {
             $id = $this->fields->id;
         }
@@ -217,9 +219,9 @@ abstract class AbstractEntity implements \JsonSerializable {
      * @throws EntityCantBeMutatedException
      * @throws \Throwable
      */
-    public function update(){
+    public function update($customEntity = false){
         $this->checkMutationPossibility();
-        return $this->buildUpdate()->execute();
+        return $this->buildUpdate()->execute($customEntity);
     }
 
     /**

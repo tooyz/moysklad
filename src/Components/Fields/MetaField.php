@@ -61,11 +61,18 @@ class MetaField extends AbstractFieldAccessor{
 
     /**
      * Try to get entity id in meta
+     * @param bool $customEntity
      * @return null
      */
-    public function getId(){
+    public function getId($customEntity = false){
         if ( !empty($this->href) ){
             $exp = explode("/", $this->href);
+
+            if($customEntity)
+            {
+                return $exp[count($exp) - 2] . '/' . $exp[count($exp) - 1];
+            }
+
             return $exp[count($exp) - 1];
         }
         return null;

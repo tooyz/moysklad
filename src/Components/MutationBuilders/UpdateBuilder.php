@@ -9,15 +9,16 @@ use MoySklad\Registers\ApiUrlRegistry;
 class UpdateBuilder extends AbstractMutationBuilder {
     /**
      * Update entity with current fields
+     * @param bool $customEntity
      * @return AbstractEntity
      * @throws EntityHasNoIdException
      * @throws \Throwable
      */
-    public function execute()
+    public function execute($customEntity = false)
     {
         $entity = &$this->e;
         $entityClass = get_class($entity);
-        $id = $entity->findEntityId();
+        $id = $entity->findEntityId($customEntity);
         $res = $entity->getSkladInstance()->getClient()->put(
             ApiUrlRegistry::instance()->getUpdateUrl($entityClass::$entityName, $id),
             $entity->mergeFieldsWithLinks()
