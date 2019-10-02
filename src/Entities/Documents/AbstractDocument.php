@@ -6,6 +6,7 @@ use MoySklad\Components\Http\RequestConfig;
 use MoySklad\Components\Http\RequestLog;
 use MoySklad\Components\Specs\QuerySpecs\QuerySpecs;
 use MoySklad\Entities\AbstractEntity;
+use MoySklad\Entities\Counterparty;
 use MoySklad\Entities\Documents\Templates\AbstractTemplate;
 use MoySklad\Entities\Documents\Templates\CustomTemplate;
 use MoySklad\Entities\Documents\Templates\EmbeddedTemplate;
@@ -136,6 +137,56 @@ class AbstractDocument extends AbstractEntity{
             $exportRequest = [
                 "template" => $templateOrTemplates,
                 "extension" => $extension,
+            ];
+        } else {
+            throw new \Exception("First argument must be either template or EntityList of templates");
+        }
+        $res = $this->getSkladInstance()->getClient()->post(
+            ApiUrlRegistry::instance()->getDocumentExportUrl(static::$entityName, $this->findEntityId()),
+            $exportRequest,
+            new RequestConfig(['followRedirects' => false])
+        );
+        return new Export($this->getSkladInstance(), [
+            'file' => $res
+        ]);
+    }
+
+    /**
+     * @param CustomTemplate|EntityList $templateOrTemplates
+     * @param string $extension
+     * @return Export
+     * @throws \Exception
+     * @throws \MoySklad\Exceptions\EntityHasNoIdException
+     * @throws \Throwable
+     */
+    public function createExportSrickers($templateOrTemplates, $extension = 'pdf', $counterparty, $count, $salePrice){
+        $supportedExtensions = ['xls', 'pdf', 'html', 'ods'];
+        if ( !in_array($extension, $supportedExtensions) ){
+            throw new \Exception("Extension must be one of: " . implode(',', $supportedExtensions));
+        }
+        if ( $templateOrTemplates instanceof EntityList ){
+            foreach ( $templateOrTemplates as $template ){
+                if ( empty($template->count) || $template->count <= 0) $template->count = 1;
+                else if ( $template->count > 10 ) throw new \Exception("Template count field is more then 10");
+            }
+            $exportRequest = [
+                "templates" => $templateOrTemplates->map(function(AbstractTemplate $template){
+                    return [
+                        "template" => $template,
+                        "count" => $count,
+                        'salePrice' => $counterparty,
+                        'salePrice' => $salePrice,
+
+                    ];
+                })
+            ];
+        } else if ( $templateOrTemplates instanceof AbstractTemplate ){
+            $exportRequest = [
+                "template" => $templateOrTemplates,
+                "extension" => $extension,
+                'organization' => $counterparty,
+                'count' => $count,
+                'salePrice' => $salePrice,
             ];
         } else {
             throw new \Exception("First argument must be either template or EntityList of templates");

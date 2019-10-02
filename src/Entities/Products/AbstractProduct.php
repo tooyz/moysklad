@@ -3,8 +3,9 @@
 namespace MoySklad\Entities\Products;
 
 use MoySklad\Entities\AbstractEntity;
+use MoySklad\Entities\Documents\AbstractDocument;
 
-class AbstractProduct extends AbstractEntity{
+class AbstractProduct extends AbstractDocument{
     public static $entityName = '_a_product';
 
     /**
