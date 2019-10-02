@@ -663,6 +663,30 @@ abstract class AbstractMutationBuilder{
     }
 
     /**
+     * @param Counterparty $counterparty
+     * @param LinkingSpecs|null $specs
+     * @return AbstractMutationBuilder
+     * @throws \Exception
+     */
+    public function addConsignee(Counterparty $counterparty, LinkingSpecs $specs = null){
+        return $this->simpleLink($counterparty, $specs, LinkingSpecs::create([
+            'name' => 'consignee'
+        ]));
+    }
+
+    /**
+     * @param Counterparty $counterparty
+     * @param LinkingSpecs|null $specs
+     * @return AbstractMutationBuilder
+     * @throws \Exception
+     */
+    public function addCarrier(Counterparty $counterparty, LinkingSpecs $specs = null){
+        return $this->simpleLink($counterparty, $specs, LinkingSpecs::create([
+            'name' => 'carrier'
+        ]));
+    }
+
+    /**
      * @param AbstractEntity $linkedEntity
      * @param LinkingSpecs|null $specs
      * @param LinkingSpecs|null $defaultSpecs
