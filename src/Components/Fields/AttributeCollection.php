@@ -21,6 +21,7 @@ class AttributeCollection extends AbstractFieldAccessor{
         } else {
             parent::__construct(['attrs' => $fields]);
         }
+
         if ( self::$ep === null ){
             self::$ep = EntityRegistry::instance();
         }
