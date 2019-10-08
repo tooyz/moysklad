@@ -20,7 +20,7 @@ class MoySkladHttpClient{
     private $preRequestSleepTime = 200;
 
     private
-        $endpoint = "https://online.moysklad.ru/api/remap/1.1/",
+        $endpoint = "https://online.moysklad.ru/api/remap/1.2/",
         $posEndpoint = "https://online.moysklad.ru/api/posap/1.0/",
         $login,
         $password,
