@@ -66,7 +66,9 @@ class MetaField extends AbstractFieldAccessor{
     public function getId(){
         if ( !empty($this->href) ){
             $exp = explode("/", $this->href);
-            return $exp[count($exp) - 1];
+            $idExp = explode("?", $exp[count($exp) - 1]);
+            $id = $idExp[0];
+            return $id;
         }
         return null;
     }
