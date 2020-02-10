@@ -7,7 +7,7 @@ use MoySklad\Utils\CommonDate;
 
 class QuerySpecs extends AbstractSpecs {
     protected static $cachedDefaultSpecs = null;
-    const MAX_LIST_LIMIT = 100;
+    const MAX_LIST_LIMIT = 1000;
 
     /**
      * Get possible variables for spec, will be sent as query string

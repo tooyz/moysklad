@@ -14,7 +14,7 @@ class AbstractProduct extends AbstractEntity{
     public function getSalePrice($name){
         if ( empty($this->salePrices) ) return null;
         foreach ( $this->salePrices as $sp ){
-            if ( $sp->priceType == $name ){
+            if ( $sp->priceType->name == $name ){
                 return $sp;
             }
         }
