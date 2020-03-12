@@ -22,9 +22,9 @@ class MoySklad{
      */
     private static $instances = [];
 
-    private function __construct($login, $password, $posToken, $hashCode)
+    private function __construct($login, $password, $posToken, $hashCode, $subdomain = "online")
     {
-        $this->client = new MoySkladHttpClient($login, $password, $posToken);
+        $this->client = new MoySkladHttpClient($login, $password, $posToken, $subdomain);
         $this->hashCode = $hashCode;
     }
 
@@ -45,10 +45,10 @@ class MoySklad{
      * @param $posToken
      * @return MoySklad
      */
-    public static function getInstance($login, $password, $posToken = null){
+    public static function getInstance($login, $password, $subdomain = "online", $posToken = null){
         $hash = static::makeHash($login, $password);
         if ( empty(static::$instances[$hash]) ){
-            static::$instances[$hash] = new static($login, $password, $posToken, $hash);
+            static::$instances[$hash] = new static($login, $password, $posToken, $hash, $subdomain);
             EntityRegistry::instance()->bootEntities();
         }
         return static::$instances[$hash];
