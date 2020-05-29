@@ -45,6 +45,8 @@ use MoySklad\Entities\Documents\Positions\SupplyPosition;
 use MoySklad\Entities\Documents\PriceLists\PriceList;
 use MoySklad\Entities\Documents\PriceLists\PriceListRow;
 use MoySklad\Entities\Documents\Processings\ProcessingPlanFolder;
+use MoySklad\Entities\Documents\Processings\ProcessingPlanMaterial;
+use MoySklad\Entities\Documents\Processings\ProcessingPlanProduct;
 use MoySklad\Entities\Documents\Templates\CustomTemplate;
 use MoySklad\Entities\Products\Components\AbstractComponent;
 use MoySklad\Entities\Products\Components\BundleComponent;
@@ -175,7 +177,9 @@ class EntityRegistry extends AbstractSingleton{
         PriceList::class,
         PriceListRow::class,
         Audit::class,
-        AuditEvent::class
+        AuditEvent::class,
+        ProcessingPlanMaterial::class,
+        ProcessingPlanProduct::class,
     ];
     public $entityNames = [];
 
