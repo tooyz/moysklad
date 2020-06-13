@@ -137,6 +137,7 @@ class EntityRegistry extends AbstractSingleton{
         Variant::class,
         AbstractMovement::class,
         Enter::class,
+        Move::class,
         Attribute::class,
         Publication::class,
         Store::class,
