@@ -22,6 +22,7 @@ use MoySklad\Entities\Documents\Invoices\InvoiceOut;
 use MoySklad\Entities\Documents\Movements\Demand;
 use MoySklad\Entities\Documents\Movements\Enter;
 use MoySklad\Entities\Documents\Movements\Loss;
+use MoySklad\Entities\Documents\Movements\Move;
 use MoySklad\Entities\Documents\Movements\Supply;
 use MoySklad\Entities\Documents\Orders\CustomerOrder;
 use MoySklad\Entities\Documents\Orders\PurchaseOrder;
@@ -30,6 +31,7 @@ use MoySklad\Entities\Documents\Payments\PaymentOut;
 use MoySklad\Entities\Documents\Positions\CustomerOrderPosition;
 use MoySklad\Entities\Documents\Positions\EnterPosition;
 use MoySklad\Entities\Documents\Positions\LossPosition;
+use MoySklad\Entities\Documents\Positions\MovePosition;
 use MoySklad\Entities\Documents\RetailShift;
 use MoySklad\Entities\Documents\PriceList;
 use MoySklad\Entities\Documents\Processings\Processing;
@@ -286,6 +288,16 @@ abstract class AbstractMutationBuilder{
     }
 
     /**
+     * @param Move $move
+     * @param LinkingSpecs|null $specs
+     * @return AbstractMutationBuilder
+     * @throws \Exception
+     */
+    public function addMove(Move $move, LinkingSpecs $specs = null){
+        return $this->simpleLink($move, $specs);
+    }
+
+    /**
      * @param Supply $supply
      * @param LinkingSpecs|null $specs
      * @return AbstractMutationBuilder
@@ -365,6 +377,16 @@ abstract class AbstractMutationBuilder{
      */
     public function addLossPosition(LossPosition $lossPosition, LinkingSpecs $specs = null){
         return $this->simpleLink($lossPosition, $specs);
+    }
+
+    /**
+     * @param MovePosition $movePosition
+     * @param LinkingSpecs|null $specs
+     * @return AbstractMutationBuilder
+     * @throws \Exception
+     */
+    public function addMovePosition(MovePosition $movePosition, LinkingSpecs $specs = null){
+        return $this->simpleLink($movePosition, $specs);
     }
 
     /**
