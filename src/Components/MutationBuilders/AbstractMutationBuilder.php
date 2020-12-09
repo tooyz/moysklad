@@ -63,6 +63,7 @@ use MoySklad\Entities\Project;
 use MoySklad\Entities\RetailStore;
 use MoySklad\Entities\Store;
 use MoySklad\Entities\Uom;
+use MoySklad\Entities\Bonusprogram;
 use MoySklad\Lists\EntityList;
 
 abstract class AbstractMutationBuilder{
@@ -327,6 +328,18 @@ abstract class AbstractMutationBuilder{
      */
     public function addPurchaseOrder(PurchaseOrder $purchaseOrder, LinkingSpecs $specs = null){
         return $this->simpleLink($purchaseOrder, $specs);
+    }
+
+    /**
+     * @param Bonusprogram $bonusprogram
+     * @param LinkingSpecs|null $specs
+     * @return AbstractMutationBuilder
+     * @throws \Exception
+     */
+    public function addBonusprogram(Bonusprogram $bonusprogram, LinkingSpecs $specs = null){
+        return $this->simpleLink($bonusprogram, $specs, LinkingSpecs::create([
+            'name' => 'bonusProgram'
+        ]));
     }
 
     /**

@@ -90,6 +90,8 @@ use MoySklad\Entities\Project;
 use MoySklad\Entities\RetailStore;
 use MoySklad\Entities\Store;
 use MoySklad\Entities\Uom;
+use MoySklad\Entities\Bonustransaction;
+use MoySklad\Entities\Bonusprogram;
 use MoySklad\Utils\AbstractSingleton;
 
 /**
@@ -187,7 +189,9 @@ class EntityRegistry extends AbstractSingleton{
         ProcessingPlanMaterial::class,
         ProcessingPlanProduct::class,
         ProcessingProduct::class,
-        ProcessingMaterial::class
+        ProcessingMaterial::class,
+        Bonustransaction::class,
+        Bonusprogram::class
     ];
     public $entityNames = [];
 
