@@ -29,11 +29,12 @@ use MoySklad\Entities\Documents\Orders\PurchaseOrder;
 use MoySklad\Entities\Documents\Payments\PaymentIn;
 use MoySklad\Entities\Documents\Payments\PaymentOut;
 use MoySklad\Entities\Documents\Positions\CustomerOrderPosition;
+use MoySklad\Entities\Documents\Positions\InventoryPosition;
 use MoySklad\Entities\Documents\Positions\EnterPosition;
 use MoySklad\Entities\Documents\Positions\LossPosition;
 use MoySklad\Entities\Documents\Positions\MovePosition;
 use MoySklad\Entities\Documents\RetailShift;
-use MoySklad\Entities\Documents\PriceList;
+use MoySklad\Entities\Documents\PriceLists\PriceList;
 use MoySklad\Entities\Documents\Processings\Processing;
 use MoySklad\Entities\Documents\Processings\ProcessingOrder;
 use MoySklad\Entities\Documents\Processings\ProcessingPlan;
@@ -370,6 +371,16 @@ abstract class AbstractMutationBuilder{
      */
     public function addCustomerOrderPosition(CustomerOrderPosition $customerOrderPosition, LinkingSpecs $specs = null){
         return $this->simpleLink($customerOrderPosition, $specs);
+    }
+
+    /**
+     * @param InventoryPosition $inventoryPosition
+     * @param LinkingSpecs|null $specs
+     * @return AbstractMutationBuilder
+     * @throws \Exception
+     */
+    public function addInventoryPosition(InventoryPosition $inventoryPosition, LinkingSpecs $specs = null){
+        return $this->simpleLink($inventoryPosition, $specs);
     }
 
     /**
