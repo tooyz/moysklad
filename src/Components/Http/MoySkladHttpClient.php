@@ -101,6 +101,20 @@ class MoySkladHttpClient{
         );
     }
 
+    /**
+     * @param $link
+     * @param $options
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function getRaw($link, $options) {
+        if (empty($options['headers']['Authorization'])) {
+            $options['headers']['Authorization'] = "Basic " . base64_encode($this->login . ':' . $this->password);
+        }
+
+        $client = new Client();
+        return $client->get($link, $options);
+    }
+
     public function getLastRequest(){
         return RequestLog::getLast();
     }

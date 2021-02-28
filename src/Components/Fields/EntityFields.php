@@ -18,13 +18,13 @@ class EntityFields extends AbstractFieldAccessor {
         foreach ( $fields as $fieldName => $field ){
             switch ( $fieldName ){
                 case "meta":
-                    $this->storage->meta = new MetaField($field);
+                    $this->storage->meta = new MetaField($field, $this->e);
                     break;
                 case "attributes":
-                    $this->storage->attributes = new AttributeCollection($field);
+                    $this->storage->attributes = new AttributeCollection($field, $this->e);
                     break;
                 case "image":
-                    $this->storage->image = new ImageField($field);
+                    $this->storage->image = new ImageField($field, $this->e);
                     break;
                 default:
                     $this->storage->{$fieldName} = $field;
