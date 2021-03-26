@@ -753,6 +753,19 @@ abstract class AbstractMutationBuilder{
     }
 
     /**
+     * @param Employee $employee
+     * @param LinkingSpecs|null $specs
+     * @return AbstractMutationBuilder
+     * @throws \Exception
+     */
+    public function addOwner(Employee $employee, LinkingSpecs $specs = null)
+    {
+        return $this->simpleLink($employee, $specs, LinkingSpecs::create([
+            "name" => "owner"
+        ]));
+    }
+
+    /**
      * @param AbstractEntity $linkedEntity
      * @param LinkingSpecs|null $specs
      * @param LinkingSpecs|null $defaultSpecs
