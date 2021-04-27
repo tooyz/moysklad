@@ -766,6 +766,31 @@ abstract class AbstractMutationBuilder{
     }
 
     /**
+     * @param Store $store
+     * @param LinkingSpecs|null $specs
+     * @return AbstractMutationBuilder
+     * @throws \Exception
+     */
+    public function addTargetStore(Store $store, LinkingSpecs $specs = null){
+        return $this->simpleLink($store, $specs, LinkingSpecs::create([
+            'name' => 'targetStore'
+        ]));
+    }
+
+    /**
+     * @param Store $store
+     * @param LinkingSpecs|null $specs
+     * @return AbstractMutationBuilder
+     * @throws \Exception
+     */
+    public function addSourceStore(Store $store, LinkingSpecs $specs = null){
+        return $this->simpleLink($store, $specs, LinkingSpecs::create([
+            'name' => 'sourceStore'
+        ]));
+    }
+
+
+    /**
      * @param AbstractEntity $linkedEntity
      * @param LinkingSpecs|null $specs
      * @param LinkingSpecs|null $defaultSpecs
