@@ -3,5 +3,5 @@
 namespace MoySklad\Entities\Documents;
 
 class RetailShift extends AbstractDocument{
-    public static $entityName = 'retailShift';
+    public static $entityName = 'retailshift';
 }

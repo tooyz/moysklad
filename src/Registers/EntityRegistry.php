@@ -44,6 +44,7 @@ use MoySklad\Entities\Documents\Positions\EnterPosition;
 use MoySklad\Entities\Documents\Positions\LossPosition;
 use MoySklad\Entities\Documents\Positions\MovePosition;
 use MoySklad\Entities\Documents\Positions\SalesReturnPosition;
+use MoySklad\Entities\Documents\Positions\PurchaseReturnPosition;
 use MoySklad\Entities\Documents\Positions\SupplyPosition;
 use MoySklad\Entities\Documents\PriceLists\PriceList;
 use MoySklad\Entities\Documents\PriceLists\PriceListRow;
@@ -132,6 +133,7 @@ class EntityRegistry extends AbstractSingleton{
         DemandPosition::class,
         SupplyPosition::class,
         SalesReturnPosition::class,
+        PurchaseReturnPosition::class,
         AbstractComponent::class,
         BundleComponent::class,
         Country::class,
