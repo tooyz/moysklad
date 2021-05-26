@@ -74,6 +74,7 @@ use MoySklad\Entities\Misc\CompanySettings;
 use MoySklad\Entities\Misc\CustomEntity;
 use MoySklad\Entities\Misc\Publication;
 use MoySklad\Entities\Misc\State;
+use MoySklad\Entities\Misc\PriceType;
 use MoySklad\Entities\Misc\Webhook;
 use MoySklad\Entities\Organization;
 use MoySklad\Entities\Products\AbstractProduct;
@@ -116,6 +117,7 @@ class EntityRegistry extends AbstractSingleton{
         Account::class,
         ContactPerson::class,
         State::class,
+        PriceType::class,
         AbstractPosition::class,
         LossPosition::class,
         EnterPosition::class,
