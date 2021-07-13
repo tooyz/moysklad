@@ -77,6 +77,24 @@ abstract class AbstractMutationBuilder{
         $this->e = $entity;
     }
 
+    public function addOperation($linkedSum, AbstractEntity $entity)
+    {
+        $this->e->fields->operations = [
+            [
+                'meta' => $entity->getMeta(),
+                'linkedSum' => $linkedSum * 100
+            ]
+        ];
+
+        return $this;
+    }
+
+    public function setSum($sum)
+    {
+        $this->e->fields->sum = $sum * 100;
+        return $this;
+    }
+
     /**
      * @param Account $account
      * @param LinkingSpecs|null $specs
