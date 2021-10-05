@@ -42,6 +42,7 @@ class MoySklad{
      * Use it instead of constructor
      * @param $login
      * @param $password
+     * @param string $subdomain
      * @param $posToken
      * @return MoySklad
      */
@@ -78,6 +79,9 @@ class MoySklad{
         return $this->client;
     }
 
+    /**
+     * @deprecated
+     */
     public function setPosToken($posToken){
         $this->client->setPosToken($posToken);
     }

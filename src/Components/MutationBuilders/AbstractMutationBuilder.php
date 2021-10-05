@@ -29,11 +29,12 @@ use MoySklad\Entities\Documents\Orders\PurchaseOrder;
 use MoySklad\Entities\Documents\Payments\PaymentIn;
 use MoySklad\Entities\Documents\Payments\PaymentOut;
 use MoySklad\Entities\Documents\Positions\CustomerOrderPosition;
+use MoySklad\Entities\Documents\Positions\InventoryPosition;
 use MoySklad\Entities\Documents\Positions\EnterPosition;
 use MoySklad\Entities\Documents\Positions\LossPosition;
 use MoySklad\Entities\Documents\Positions\MovePosition;
 use MoySklad\Entities\Documents\RetailShift;
-use MoySklad\Entities\Documents\PriceList;
+use MoySklad\Entities\Documents\PriceLists\PriceList;
 use MoySklad\Entities\Documents\Processings\Processing;
 use MoySklad\Entities\Documents\Processings\ProcessingOrder;
 use MoySklad\Entities\Documents\Processings\ProcessingPlan;
@@ -74,6 +75,24 @@ abstract class AbstractMutationBuilder{
 
     public function __construct(AbstractEntity &$entity){
         $this->e = $entity;
+    }
+
+    public function addOperation($linkedSum, AbstractEntity $entity)
+    {
+        $this->e->fields->operations = [
+            [
+                'meta' => $entity->getMeta(),
+                'linkedSum' => $linkedSum * 100
+            ]
+        ];
+
+        return $this;
+    }
+
+    public function setSum($sum)
+    {
+        $this->e->fields->sum = $sum * 100;
+        return $this;
     }
 
     /**
@@ -370,6 +389,16 @@ abstract class AbstractMutationBuilder{
      */
     public function addCustomerOrderPosition(CustomerOrderPosition $customerOrderPosition, LinkingSpecs $specs = null){
         return $this->simpleLink($customerOrderPosition, $specs);
+    }
+
+    /**
+     * @param InventoryPosition $inventoryPosition
+     * @param LinkingSpecs|null $specs
+     * @return AbstractMutationBuilder
+     * @throws \Exception
+     */
+    public function addInventoryPosition(InventoryPosition $inventoryPosition, LinkingSpecs $specs = null){
+        return $this->simpleLink($inventoryPosition, $specs);
     }
 
     /**
@@ -698,6 +727,26 @@ abstract class AbstractMutationBuilder{
     }
 
     /**
+     * @param EntityList $positions
+     * @return $this
+     */
+    public function addComponentsList(EntityList $positions){
+        $positions->each(function(AbstractProduct $position){
+            $position->assortment = [
+                'meta' => $position->getMeta()
+            ];
+            $this->e->links->link($position, LinkingSpecs::create([
+                'multiple' => true,
+                'name' => "components",
+                'excludedFields' => [
+                    'id', 'meta'
+                ]
+            ]));
+        });
+        return $this;
+    }
+
+    /**
      * @param Counterparty $counterparty
      * @param LinkingSpecs|null $specs
      * @return AbstractMutationBuilder
@@ -720,6 +769,44 @@ abstract class AbstractMutationBuilder{
             'name' => 'carrier'
         ]));
     }
+
+    /**
+     * @param Employee $employee
+     * @param LinkingSpecs|null $specs
+     * @return AbstractMutationBuilder
+     * @throws \Exception
+     */
+    public function addOwner(Employee $employee, LinkingSpecs $specs = null)
+    {
+        return $this->simpleLink($employee, $specs, LinkingSpecs::create([
+            "name" => "owner"
+        ]));
+    }
+
+    /**
+     * @param Store $store
+     * @param LinkingSpecs|null $specs
+     * @return AbstractMutationBuilder
+     * @throws \Exception
+     */
+    public function addTargetStore(Store $store, LinkingSpecs $specs = null){
+        return $this->simpleLink($store, $specs, LinkingSpecs::create([
+            'name' => 'targetStore'
+        ]));
+    }
+
+    /**
+     * @param Store $store
+     * @param LinkingSpecs|null $specs
+     * @return AbstractMutationBuilder
+     * @throws \Exception
+     */
+    public function addSourceStore(Store $store, LinkingSpecs $specs = null){
+        return $this->simpleLink($store, $specs, LinkingSpecs::create([
+            'name' => 'sourceStore'
+        ]));
+    }
+
 
     /**
      * @param AbstractEntity $linkedEntity

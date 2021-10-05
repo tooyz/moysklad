@@ -2,6 +2,8 @@
 
 namespace MoySklad\Components\Fields;
 
+use MoySklad\Entities\AbstractEntity;
+
 /**
  * Class for storing different fields
  * Class AbstractFieldAccessor
@@ -9,9 +11,14 @@ namespace MoySklad\Components\Fields;
  */
 abstract class AbstractFieldAccessor implements \JsonSerializable {
     protected $storage;
+    /**
+     * @var AbstractEntity
+     */
+    protected $e;
 
-    public function __construct($fields)
+    public function __construct($fields, AbstractEntity &$entity = null)
     {
+        $this->e = $entity;
         $this->storage = new \stdClass();
         $this->replace($fields);
     }

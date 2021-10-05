@@ -80,9 +80,9 @@ abstract class AbstractEntity implements \JsonSerializable {
     {
         if ( !$specs ) $specs = ConstructionSpecs::create();
         if ( is_array($fields) === false && is_object($fields) === false) $fields = [$fields];
-        $this->fields = new EntityFields($fields);
-        $this->links = new EntityLinker([]);
-        $this->relations = new EntityRelation([], static::class);
+        $this->fields = new EntityFields($fields, $this);
+        $this->links = new EntityLinker([], $this);
+        $this->relations = new EntityRelation([], static::class, $this);
         $this->skladHashCode = $skladInstance->hashCode();
         $this->processConstructionSpecs($specs);
     }
@@ -156,8 +156,8 @@ abstract class AbstractEntity implements \JsonSerializable {
      * @return $this
      */
     public function replaceFields(AbstractEntity $entity){
-        $this->fields = new EntityFields($entity->fields);
-        $this->relations = new EntityRelation($entity->relations, get_class($this));
+        $this->fields = new EntityFields($entity->fields, $this);
+        $this->relations = new EntityRelation($entity->relations, get_class($this), $this);
         return $this;
     }
 
