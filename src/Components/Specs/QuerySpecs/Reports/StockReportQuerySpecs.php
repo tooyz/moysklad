@@ -7,6 +7,7 @@ use MoySklad\Components\Specs\QuerySpecs\QuerySpecs;
 
 class StockReportQuerySpecs extends QuerySpecs {
     protected static $cachedDefaultSpecs = null;
+    const MAX_LIST_LIMIT = 1000;
 
     public function getDefaults()
     {

@@ -34,7 +34,8 @@ class EntityRelation extends AbstractFieldAccessor {
                     if ( $i === 'meta' ){
                         $mf = new MetaField($e);
                         if ( isset($mf->size) ){
-                            $foundRelations[$k] = new RelationEntityList($sklad, [], $mf);
+                            $rows = !empty($ar['rows']) ? $ar['rows'] : [];
+                            $foundRelations[$k] = new RelationEntityList($sklad, $rows, $mf);
                         } else {
                             $class = $mf->getClass();
                             if ( $class ){
@@ -64,7 +65,8 @@ class EntityRelation extends AbstractFieldAccessor {
         $rel = $this->storage->{$relationName};
         if ( $rel instanceof RelationEntityList ) throw new RelationIsList($relationName, $this->relatedByClass);
         $c = get_class($rel);
-        $queriedEntity = $c::query($rel->getSkladInstance())->byId($rel->fields->meta->getId(), $expand);
+        $sklad = $rel->getSkladInstance();
+        $queriedEntity = $c::query($sklad)->byId($rel->fields->meta->getId(), $expand);
         return $rel->replaceFields($queriedEntity);
     }
 
