@@ -75,6 +75,10 @@ class ApiUrlRegistry extends AbstractSingleton {
         return 'entity/' . $entityName . "/" . $id . '/export/';
     }
 
+    public function getDocumentAddPositionsUrl($entityName, $id){
+        return 'entity/' . $entityName . "/" . $id . '/positions';
+    }
+
     public function getMetadataExportEmbeddedTemplateUrl($entityName){
         return 'entity/' . $entityName . '/metadata/embeddedtemplate/';
     }

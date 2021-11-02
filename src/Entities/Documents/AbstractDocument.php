@@ -16,6 +16,7 @@ use MoySklad\Exceptions\UnknownEntityException;
 use MoySklad\Lists\EntityList;
 use MoySklad\MoySklad;
 use MoySklad\Registers\ApiUrlRegistry;
+use MoySklad\Entities\Products\Product;
 
 class AbstractDocument extends AbstractEntity{
     public static $entityName = 'a_document';
@@ -155,7 +156,8 @@ class AbstractDocument extends AbstractEntity{
      * @return EntityList
      */
     public function getExportEmbeddedTemplates(QuerySpecs $querySpecs = null){
-        $res = EmbeddedTemplate::query($this->getSkladInstance(), $querySpecs)
+        $sklad = $this->getSkladInstance();
+        $res = EmbeddedTemplate::query($sklad, $querySpecs)
             ->setCustomQueryUrl(ApiUrlRegistry::instance()->getMetadataExportEmbeddedTemplateUrl(static::$entityName))
             ->getList();
         return $res;
@@ -166,7 +168,8 @@ class AbstractDocument extends AbstractEntity{
      * @return EntityList
      */
     public function getExportCustomTemplates(QuerySpecs $querySpecs = null){
-        $res = CustomTemplate::query($this->getSkladInstance(), $querySpecs)
+        $sklad = $this->getSkladInstance();
+        $res = CustomTemplate::query($sklad, $querySpecs)
             ->setCustomQueryUrl(ApiUrlRegistry::instance()->getMetadataExportCustomTemplateUrl(static::$entityName))
             ->getList();
         return $res;
@@ -194,5 +197,40 @@ class AbstractDocument extends AbstractEntity{
             ApiUrlRegistry::instance()->getMetadataExportEmbeddedTemplateWithIdUrl(static::$entityName, $id)
         );
         return new EmbeddedTemplate($this->getSkladInstance(), $res);
+    }
+
+    /**
+     * @param EntityList $positions
+     * @throws \Exception
+     * @throws \MoySklad\Exceptions\EntityHasNoIdException
+     * @throws \Throwable
+     */
+    public function attachPositions($positions){
+        if ( $positions instanceof EntityList ){
+            $request = $positions->map(function($position){
+                    return [
+                        "quantity" => $position->fields->quantity,
+                        "price" => $position->fields->price,
+                        "discount" => $position->fields->discount,
+                        "vat" => $position->fields->vat,
+                        "assortment" => [
+                          "meta" => [
+                            "href" => $position->getMeta()->href,
+                            "type" => $position->getMeta()->type,
+                            "mediaType" => $position->getMeta()->mediaType
+                          ]
+                        ],
+                        "reserve" => !empty($position->fields->reserve) ? $position->fields->reserve : 0
+                    ];
+                });
+
+        } else {
+            throw new \Exception("Argument must be EntityList of positions");
+        }
+        $res = $this->getSkladInstance()->getClient()->post(
+            ApiUrlRegistry::instance()->getDocumentAddPositionsUrl(static::$entityName, $this->findEntityId()),
+            $request
+        );
+        return true;
     }
 }
