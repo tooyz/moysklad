@@ -20,6 +20,7 @@ class ProfitReportQuerySpecs extends QuerySpecs {
         $res['store.id'] = null;
         $res['project.id'] = null;
         $res['retailStore.id'] = null;
+        $res['filter'] = null; // temp hack
         return $res;
     }
 }
