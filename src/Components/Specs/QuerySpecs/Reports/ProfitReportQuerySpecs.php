@@ -13,14 +13,15 @@ class ProfitReportQuerySpecs extends QuerySpecs {
         $res = parent::getDefaults();
         $res['momentFrom'] = null;
         $res['momentTo'] = null;
-        $res['store.id'] = null;
-        $res['product.id'] = null;
-        $res['counterparty.id'] = null;
-        $res['organization.id'] = null;
-        $res['store.id'] = null;
-        $res['project.id'] = null;
-        $res['retailStore.id'] = null;
-        $res['filter'] = null; // temp hack
+        $res['filter'] = null;
+        $res['product'] = null;
+        $res['counterparty'] = null;
+        $res['organization'] = null;
+        $res['store'] = null;
+        $res['project'] = null;
+        $res['retailStore'] = null;
+        $res['supplier'] = null;
+        $res['salesChannel'] = null;
         return $res;
     }
 }
