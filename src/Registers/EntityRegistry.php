@@ -76,6 +76,7 @@ use MoySklad\Entities\Misc\Publication;
 use MoySklad\Entities\Misc\State;
 use MoySklad\Entities\Misc\PriceType;
 use MoySklad\Entities\Misc\Webhook;
+use MoySklad\Entities\Misc\SalesChannel;
 use MoySklad\Entities\Organization;
 use MoySklad\Entities\Products\AbstractProduct;
 use MoySklad\Entities\Products\Bundle;
@@ -181,7 +182,8 @@ class EntityRegistry extends AbstractSingleton{
         PriceList::class,
         PriceListRow::class,
         Audit::class,
-        AuditEvent::class
+        AuditEvent::class,
+        SalesChannel::class,
     ];
     public $entityNames = [];
 
