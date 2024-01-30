@@ -1,6 +1,6 @@
 {
-    "name": "artemyurov/moysklad",
-    "description": "Get it here: https://github.com/ArtemYurov/moysklad",
+    "name": "tooyz/moysklad",
+    "description": "Get it here: https://github.com/tooyz/moysklad",
     "require": {
         "php": ">=7.2",
         "guzzlehttp/guzzle": "^7.0"
