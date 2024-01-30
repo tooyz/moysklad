@@ -70,10 +70,14 @@ class ImageField extends AbstractFieldAccessor{
      * @throws \Exception
      */
     public function download($saveFile, $size = 'normal'){
-        if ( $link = $this->getDownloadLink($size) ){
+        if ($link = $this->getDownloadLink($size)) {
             $filePath = fopen($saveFile,'w+');
             $client = new Client();
-            $response = $client->get($link, [RequestOptions::SINK => $filePath]);
+
+            $response = $this->e->getSkladInstance()->getClient()->getRaw(
+                $link, [RequestOptions::SINK => $filePath]
+            );
+
             return $response->getStatusCode();
         }
         throw new \Exception("Image does not have a $size size link. Try to refresh hosting entity");

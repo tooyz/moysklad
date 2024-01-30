@@ -26,11 +26,12 @@ class MoySkladHttpClient{
         $password,
         $posToken;
 
-    public function __construct($login, $password, $posToken)
+    public function __construct($login, $password, $posToken, $subdomain = "online")
     {
         $this->login = $login;
         $this->password = $password;
         $this->posToken = $posToken;
+        $this->endpoint = "https://" . $subdomain . ".moysklad.ru/api/remap/1.1/";
     }
 
     public function setPosToken($posToken){
@@ -99,6 +100,20 @@ class MoySkladHttpClient{
             $payload,
             $options
         );
+    }
+
+    /**
+     * @param $link
+     * @param $options
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function getRaw($link, $options) {
+        if (empty($options['headers']['Authorization'])) {
+            $options['headers']['Authorization'] = "Basic " . base64_encode($this->login . ':' . $this->password);
+        }
+
+        $client = new Client();
+        return $client->get($link, $options);
     }
 
     public function getLastRequest(){

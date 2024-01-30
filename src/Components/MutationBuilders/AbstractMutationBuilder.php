@@ -22,16 +22,19 @@ use MoySklad\Entities\Documents\Invoices\InvoiceOut;
 use MoySklad\Entities\Documents\Movements\Demand;
 use MoySklad\Entities\Documents\Movements\Enter;
 use MoySklad\Entities\Documents\Movements\Loss;
+use MoySklad\Entities\Documents\Movements\Move;
 use MoySklad\Entities\Documents\Movements\Supply;
 use MoySklad\Entities\Documents\Orders\CustomerOrder;
 use MoySklad\Entities\Documents\Orders\PurchaseOrder;
 use MoySklad\Entities\Documents\Payments\PaymentIn;
 use MoySklad\Entities\Documents\Payments\PaymentOut;
 use MoySklad\Entities\Documents\Positions\CustomerOrderPosition;
+use MoySklad\Entities\Documents\Positions\InventoryPosition;
 use MoySklad\Entities\Documents\Positions\EnterPosition;
 use MoySklad\Entities\Documents\Positions\LossPosition;
+use MoySklad\Entities\Documents\Positions\MovePosition;
 use MoySklad\Entities\Documents\RetailShift;
-use MoySklad\Entities\Documents\PriceList;
+use MoySklad\Entities\Documents\PriceLists\PriceList;
 use MoySklad\Entities\Documents\Processings\Processing;
 use MoySklad\Entities\Documents\Processings\ProcessingOrder;
 use MoySklad\Entities\Documents\Processings\ProcessingPlan;
@@ -61,6 +64,7 @@ use MoySklad\Entities\Project;
 use MoySklad\Entities\RetailStore;
 use MoySklad\Entities\Store;
 use MoySklad\Entities\Uom;
+use MoySklad\Entities\Bonusprogram;
 use MoySklad\Lists\EntityList;
 
 abstract class AbstractMutationBuilder{
@@ -71,6 +75,24 @@ abstract class AbstractMutationBuilder{
 
     public function __construct(AbstractEntity &$entity){
         $this->e = $entity;
+    }
+
+    public function addOperation($linkedSum, AbstractEntity $entity)
+    {
+        $this->e->fields->operations = [
+            [
+                'meta' => $entity->getMeta(),
+                'linkedSum' => $linkedSum * 100
+            ]
+        ];
+
+        return $this;
+    }
+
+    public function setSum($sum)
+    {
+        $this->e->fields->sum = $sum * 100;
+        return $this;
     }
 
     /**
@@ -286,6 +308,16 @@ abstract class AbstractMutationBuilder{
     }
 
     /**
+     * @param Move $move
+     * @param LinkingSpecs|null $specs
+     * @return AbstractMutationBuilder
+     * @throws \Exception
+     */
+    public function addMove(Move $move, LinkingSpecs $specs = null){
+        return $this->simpleLink($move, $specs);
+    }
+
+    /**
      * @param Supply $supply
      * @param LinkingSpecs|null $specs
      * @return AbstractMutationBuilder
@@ -315,6 +347,18 @@ abstract class AbstractMutationBuilder{
      */
     public function addPurchaseOrder(PurchaseOrder $purchaseOrder, LinkingSpecs $specs = null){
         return $this->simpleLink($purchaseOrder, $specs);
+    }
+
+    /**
+     * @param Bonusprogram $bonusprogram
+     * @param LinkingSpecs|null $specs
+     * @return AbstractMutationBuilder
+     * @throws \Exception
+     */
+    public function addBonusprogram(Bonusprogram $bonusprogram, LinkingSpecs $specs = null){
+        return $this->simpleLink($bonusprogram, $specs, LinkingSpecs::create([
+            'name' => 'bonusProgram'
+        ]));
     }
 
     /**
@@ -348,6 +392,16 @@ abstract class AbstractMutationBuilder{
     }
 
     /**
+     * @param InventoryPosition $inventoryPosition
+     * @param LinkingSpecs|null $specs
+     * @return AbstractMutationBuilder
+     * @throws \Exception
+     */
+    public function addInventoryPosition(InventoryPosition $inventoryPosition, LinkingSpecs $specs = null){
+        return $this->simpleLink($inventoryPosition, $specs);
+    }
+
+    /**
      * @param EnterPosition $enterPosition
      * @param LinkingSpecs|null $specs
      * @return AbstractMutationBuilder
@@ -365,6 +419,16 @@ abstract class AbstractMutationBuilder{
      */
     public function addLossPosition(LossPosition $lossPosition, LinkingSpecs $specs = null){
         return $this->simpleLink($lossPosition, $specs);
+    }
+
+    /**
+     * @param MovePosition $movePosition
+     * @param LinkingSpecs|null $specs
+     * @return AbstractMutationBuilder
+     * @throws \Exception
+     */
+    public function addMovePosition(MovePosition $movePosition, LinkingSpecs $specs = null){
+        return $this->simpleLink($movePosition, $specs);
     }
 
     /**
@@ -663,6 +727,26 @@ abstract class AbstractMutationBuilder{
     }
 
     /**
+     * @param EntityList $positions
+     * @return $this
+     */
+    public function addComponentsList(EntityList $positions){
+        $positions->each(function(AbstractProduct $position){
+            $position->assortment = [
+                'meta' => $position->getMeta()
+            ];
+            $this->e->links->link($position, LinkingSpecs::create([
+                'multiple' => true,
+                'name' => "components",
+                'excludedFields' => [
+                    'id', 'meta'
+                ]
+            ]));
+        });
+        return $this;
+    }
+
+    /**
      * @param Counterparty $counterparty
      * @param LinkingSpecs|null $specs
      * @return AbstractMutationBuilder
@@ -685,6 +769,44 @@ abstract class AbstractMutationBuilder{
             'name' => 'carrier'
         ]));
     }
+
+    /**
+     * @param Employee $employee
+     * @param LinkingSpecs|null $specs
+     * @return AbstractMutationBuilder
+     * @throws \Exception
+     */
+    public function addOwner(Employee $employee, LinkingSpecs $specs = null)
+    {
+        return $this->simpleLink($employee, $specs, LinkingSpecs::create([
+            "name" => "owner"
+        ]));
+    }
+
+    /**
+     * @param Store $store
+     * @param LinkingSpecs|null $specs
+     * @return AbstractMutationBuilder
+     * @throws \Exception
+     */
+    public function addTargetStore(Store $store, LinkingSpecs $specs = null){
+        return $this->simpleLink($store, $specs, LinkingSpecs::create([
+            'name' => 'targetStore'
+        ]));
+    }
+
+    /**
+     * @param Store $store
+     * @param LinkingSpecs|null $specs
+     * @return AbstractMutationBuilder
+     * @throws \Exception
+     */
+    public function addSourceStore(Store $store, LinkingSpecs $specs = null){
+        return $this->simpleLink($store, $specs, LinkingSpecs::create([
+            'name' => 'sourceStore'
+        ]));
+    }
+
 
     /**
      * @param AbstractEntity $linkedEntity

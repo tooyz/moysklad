@@ -356,6 +356,10 @@ RequestLog::getList()
 RequestLog::setStorageSize(500); // 500 запросов
 RequestLog::setStorageSize(0); //Без лимита
 ```
+Для остановки логирования можно вызвать
+```
+RequestLog::setEnabled(false);
+```
 
 ## Другие библиотеки
 

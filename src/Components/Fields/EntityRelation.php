@@ -13,9 +13,9 @@ use MoySklad\MoySklad;
 class EntityRelation extends AbstractFieldAccessor {
     private $relatedByClass = null;
 
-    public function __construct($fields, $relatedByClass)
+    public function __construct($fields, $relatedByClass, AbstractEntity &$entity = null)
     {
-        parent::__construct($fields);
+        parent::__construct($fields, $entity);
         $this->relatedByClass = $relatedByClass;
     }
 
@@ -68,7 +68,8 @@ class EntityRelation extends AbstractFieldAccessor {
         $rel = $this->storage->{$relationName};
         if ( $rel instanceof RelationEntityList ) throw new RelationIsList($relationName, $this->relatedByClass);
         $c = get_class($rel);
-        $queriedEntity = $c::query($rel->getSkladInstance())->byId($rel->fields->meta->getId(), $expand);
+        $sklad = $rel->getSkladInstance();
+        $queriedEntity = $c::query($sklad)->byId($rel->fields->meta->getId(), $expand);
         return $rel->replaceFields($queriedEntity);
     }
 
