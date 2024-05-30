@@ -22,7 +22,7 @@ class MoySklad{
      */
     private static $instances = [];
 
-    private function __construct($login, $password, $posToken, $hashCode, $subdomain = "online")
+    private function __construct($login, $password, $posToken, $hashCode, $subdomain = "api")
     {
         $this->client = new MoySkladHttpClient($login, $password, $posToken, $subdomain);
         $this->hashCode = $hashCode;
@@ -46,7 +46,7 @@ class MoySklad{
      * @param $posToken
      * @return MoySklad
      */
-    public static function getInstance($login, $password, $subdomain = "online", $posToken = null){
+    public static function getInstance($login, $password, $subdomain = "api", $posToken = null){
         $hash = static::makeHash($login, $password);
         if ( empty(static::$instances[$hash]) ){
             static::$instances[$hash] = new static($login, $password, $posToken, $hash, $subdomain);
