@@ -108,11 +108,20 @@ class MoySkladHttpClient{
      */
     public function getRaw($link, $options) {
         if (empty($options['headers']['Authorization'])) {
-            $options['headers']['Authorization'] = "Basic " . base64_encode($this->login . ':' . $this->password);
+            $options['headers']['Authorization'] = $this->getAuthorizationHeader();
         }
 
         $client = new Client();
         return $client->get($link, $options);
+    }
+
+    private function getAuthorizationHeader() {
+        if (is_null($this->password)) {
+            $authorizationHeader = 'Bearer '.$this->login;
+        } else {
+            $authorizationHeader = "Basic " . base64_encode($this->login . ':' . $this->password);
+        }
+        return $authorizationHeader;
     }
 
     public function getLastRequest(){
@@ -158,7 +167,7 @@ class MoySkladHttpClient{
 
         $headers = [
             "Accept-Encoding" => "gzip",
-            "Authorization" => "Basic " . base64_encode($this->login . ':' . $password)
+            "Authorization" => $this->getAuthorizationHeader()
         ];
         $config = [
             "base_uri" => $endpoint,

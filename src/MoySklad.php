@@ -40,16 +40,20 @@ class MoySklad{
 
     /**
      * Use it instead of constructor
-     * @param $login
+     * @param $loginOrToken
      * @param $password
      * @param string $subdomain
      * @param $posToken
      * @return MoySklad
      */
-    public static function getInstance($login, $password, $subdomain = "api", $posToken = null){
-        $hash = static::makeHash($login, $password);
+    public static function getInstance($loginOrToken, $password = null, $subdomain = "api", $posToken = null){
+        if (is_null($password)) {
+            $hash = $loginOrToken;
+        } else {
+            $hash = static::makeHash($loginOrToken, $password);
+        }
         if ( empty(static::$instances[$hash]) ){
-            static::$instances[$hash] = new static($login, $password, $posToken, $hash, $subdomain);
+            static::$instances[$hash] = new static($loginOrToken, $password, $posToken, $hash, $subdomain);
             EntityRegistry::instance()->bootEntities();
         }
         return static::$instances[$hash];
