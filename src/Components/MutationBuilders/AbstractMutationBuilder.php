@@ -62,6 +62,7 @@ use MoySklad\Entities\Products\Service;
 use MoySklad\Entities\Products\Variant;
 use MoySklad\Entities\Project;
 use MoySklad\Entities\RetailStore;
+use MoySklad\Entities\Saleschannel;
 use MoySklad\Entities\Store;
 use MoySklad\Entities\Uom;
 use MoySklad\Entities\Bonusprogram;
@@ -237,6 +238,17 @@ abstract class AbstractMutationBuilder{
         return $this->simpleLink($retailStore, $specs);
     }
 
+    /**
+     * @param Saleschannel $saleschannel
+     * @param LinkingSpecs|null $specs
+     * @return AbstractMutationBuilder
+     * @throws \Exception
+     */
+    public function addSaleschannel(Saleschannel $saleschannel, LinkingSpecs $specs = null){
+        return $this->simpleLink($saleschannel, $specs, LinkingSpecs::create([
+            "name" => "salesChannel"
+        ]));
+    }
     /**
      * @param Store $store
      * @param LinkingSpecs|null $specs
