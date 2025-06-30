@@ -24,6 +24,7 @@ class StockReportQuerySpecs extends QuerySpecs {
         $res['characteristics'] = null;
         $res['includeRelated'] = null;
         $res['operation.id'] = null;
+        $res['filter'] = null;
         return $res;
     }
 }
